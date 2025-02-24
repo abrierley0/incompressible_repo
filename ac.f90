@@ -68,6 +68,24 @@ PROGRAM ac
 	!              j = 1)         -dp/dy = 0           j = 1)
 
 
+	!=================!
+	! ALLOCATE MEMORY !
+	!=================!
+
+	! Allocatable Reals
+	REAL, ALLOCATABLE :: X(:,:)   ! Current x [m]
+	REAL, ALLOCATABLE :: Y(:,:)   ! Current y [m]   
+
+	REAL, ALLOCATABLE :: un(:,:)  ! Current u [m/s]
+	REAL, ALLOCATABLE :: vn(:,:)  ! Current v [m/s]
+	REAL, ALLOCATABLE :: pn(:,:)  ! Current p [Pa]
+
+	REAL, ALLOCATABLE :: u(:,:)   ! Next u [m/s]
+	REAL, ALLOCATABLE :: v(:,:)   ! Next v [m/s]
+	REAL, ALLOCATABLE :: p(:,:)   ! Next p [Pa]	
+
+	REAL, ALLOCATABLE :: unanalytical(:,:)  ! Analytical memory [m/s]
+
 
 
 END PROGRAM ac
