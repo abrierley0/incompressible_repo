@@ -1,39 +1,47 @@
-! A.C. METHOD OF CHORIN (1965) FOR SOLUTION TO INCOMPRESSIBLE
-! CHANNEL FLOW
+! A.C. Method of Chorin (1965) for the Solution to the Incompressible 
+! Channel Flow
 
-! WRITTEN BY MR A. J. BRIERLEY
+! Written by Mr A. J. Brierley
 
-! CRANFIELD UNIVERSITY
-! CENTRE FOR COMPUTATIONAL ENGINEERING SCIENCES (CES)
-! BEDFORDSHIRE, MK43 OAL, UK
+! Cranfield University
+! Centre for Computational Engineering Sciences (CES)
+! Bedfordshire, MK43 OAL, UK
 
 ! 24.02.2025
 
-PROGRAM AC
+
+
+PROGRAM ac
 
 IMPLICIT NONE
 
-REAL :: UA  ! INLET VELOCITY [m/s]
-REAL :: DX  ! X GRID SPACING [m]
-REAL :: DY  ! Y GRID SPACING [m]
-REAL :: L   ! CHANNEL LENGTH [m]
-REAL :: W   ! CHANNEL WIDTH [m]
-REAL :: H   ! CHANNEL HEIGHT [m]
-REAL :: MU  ! DYNAMIC VISCOSITY [Pa*s]
-REAL :: NU  ! KINEMATIC VISCOSITY [
-REAL :: RHO ! DENSITY [kg/m^3]
+!==========================
+! INTIALISE FLOW VARIABLES
+!==========================
 
-INTEGER :: N   ! NUMBER OF ITERATIONS
-INTEGER :: RE  ! REYNOLDS NUMBER
+! Constant Integers
+INTEGER, PARAMETER :: RE = 100    ! Reynolds number 
+INTEGER, PARAMETER :: IMAX = 100  ! Max. cells in x direction
+INTEGER, PARAMETER :: JMAX = 41   ! Max. cells in y direction
+
+! Reals
+REAL :: ua  ! Inlet velocity [m/s]
+REAL :: nu  ! Kinematic viscosity [m^2/s]
+
+! Constant Reals
+REAL, PARAMETER :: L = 0.1  ! Channel length [m]
+REAL, PARAMETER :: W = 1.0  ! Channel width [m]
+REAL, PARAMETER :: H = 0.02 ! Channel height [m]
+REAL, PARAMETER :: BETA = 10.0    ! AC parameter
+REAL, PARAMETER :: MU = 0.001003  ! Dynamic viscosity [Pa*s]
+REAL, PARAMETER :: RHO = 998.2    ! Density of water [kg/m^3]
+
+INTEGER, PARAMETER :: NMAX = 40000  ! NUMBER OF ITERATIONS
+
+ua = (RE * NU) / (2.0 * H)  
 
 
 
 
 
-
-
-
-
-
-
-END PROGRAM AC
+END PROGRAM ac
