@@ -155,6 +155,44 @@ PROGRAM ac
 			pn(i,j) = 0.0
 		END DO
 	END DO
+
+	!=======================
+	! ANALYTICAL SOLUTION
+	!=======================
+
+	DO i = 1, IMAX
+		DO j = 1, JMAX
+		uanalytical(i,j) = (dp / 2.0 * MU * L) * y(i,j) * (H - y(i,j))
+		END DO
+	END DO
+
+	!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	!===================
+	! START MAIN LOOP
+	!===================
+
+	DO 1, NMAX
+
+	! Assign fields of new variables to old
+
+	! 1. Solve perturbed Continuity equation on internal domain
+	! Update pressure boundary conds on walls
+	! Pressure at corner points
+
+	! 2. Solve Navier-Stokes momentum equations
+	! Update east boundary condition
+
+	! Compute residuals
+	! Display iterations and residuals
+
+	END DO
+
+	!=================
+	! END MAIN LOOP
+	!=================
+
+	! Plots
+
 			
 	
 
