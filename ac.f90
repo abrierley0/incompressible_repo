@@ -15,7 +15,7 @@ PROGRAM ac
 	IMPLICIT NONE
 
 	!==========================
-	! INTIALISE FLOW VARIABLES
+	! INTIALISE FLOW VARIABLES 
 	!==========================
 
 	! Constant Integers
@@ -28,6 +28,12 @@ PROGRAM ac
 	REAL :: ua  ! Inlet velocity [m/s]
 	REAL :: nu  ! Kinematic viscosity [m^2/s]
 	REAL :: dp  ! Pressure differential for analytical solution [Pa]
+	REAL :: dx  ! Grid spacing in x [m]
+	REAL :: dy  ! Grid spacing in y [m]
+	REAL :: i   ! x counter
+	REAL :: j   ! y counter
+	REAL :: xx  ! x distance
+	REAL :: yy  ! y distance
 
 	! Constant Reals
 	REAL, PARAMETER :: L = 0.1  ! Channel length [m]
@@ -38,18 +44,28 @@ PROGRAM ac
 	REAL, PARAMETER :: RHO = 998.2    ! Density of water [kg/m^3]
 	REAL, PARAMETER :: D_TAU = 0.001  ! Pseudo-time-step [s]
 
-	! Define flow quantities
+	! Declare arrays
+	REAL, ALLOCATABLE :: x(:,:)   ! Current x [m]
+	REAL, ALLOCATABLE :: y(:,:)   ! Current y [m]   
+	REAL, ALLOCATABLE :: un(:,:)  ! Current u [m/s]
+	REAL, ALLOCATABLE :: vn(:,:)  ! Current v [m/s]
+	REAL, ALLOCATABLE :: pn(:,:)  ! Current p [Pa]
+	REAL, ALLOCATABLE :: u(:,:)   ! Next u [m/s]
+	REAL, ALLOCATABLE :: v(:,:)   ! Next v [m/s]
+	REAL, ALLOCATABLE :: p(:,:)   ! Next p [Pa]	
+	REAL, ALLOCATABLE :: uanalytical(:,:)  ! Analytical memory [m/s]
 
-	ua = (RE * NU) / (2.0 * H)  
+	! Define flow quantities
 	nu = MU / RHO
+	ua = (RE * nu) / (2.0 * H)  
 	dx = L / (IMAX - 1)
 	dy = H / (JMAX - 1)
 	dp = (12.0 * MU * L / H * H) * UA
 
 
-	!=============================!
-	! COMPUTATIONAL DOMAIN SKETCH !
-	!=============================!
+	!=============================
+	! COMPUTATIONAL DOMAIN SKETCH 
+	!=============================
 
 	!            (i = 1,          dp/dy = 0        (i = imax,
 	!             j = jmax)                         j = jmax)
@@ -68,24 +84,116 @@ PROGRAM ac
 	!              j = 1)         -dp/dy = 0           j = 1)
 
 
-	!=================!
-	! ALLOCATE MEMORY !
-	!=================!
+	!=================
+	! ALLOCATE MEMORY 
+	!=================
+	ALLOCATE(x(IMAX,JMAX))
+	ALLOCATE(y(IMAX,JMAX))
 
-	! Allocatable Reals
-	REAL, ALLOCATABLE :: X(:,:)   ! Current x [m]
-	REAL, ALLOCATABLE :: Y(:,:)   ! Current y [m]   
+	ALLOCATE(un(IMAX,JMAX))
+	ALLOCATE(vn(IMAX,JMAX))
+	ALLOCATE(pn(IMAX,JMAX))
 
-	REAL, ALLOCATABLE :: un(:,:)  ! Current u [m/s]
-	REAL, ALLOCATABLE :: vn(:,:)  ! Current v [m/s]
-	REAL, ALLOCATABLE :: pn(:,:)  ! Current p [Pa]
+	ALLOCATE(u(IMAX,JMAX))
+	ALLOCATE(v(IMAX,JMAX))
+	ALLOCATE(p(IMAX,JMAX))
 
-	REAL, ALLOCATABLE :: u(:,:)   ! Next u [m/s]
-	REAL, ALLOCATABLE :: v(:,:)   ! Next v [m/s]
-	REAL, ALLOCATABLE :: p(:,:)   ! Next p [Pa]	
+	ALLOCATE(uanalytical(IMAX,JMAX))
 
-	REAL, ALLOCATABLE :: unanalytical(:,:)  ! Analytical memory [m/s]
+	!========================
+	! SPATIAL DISCRETISATION 
+	!========================
 
+	xx = 0.0
+	DO i = 1,IMAX
+		yy = 0.0
+		DO j = 1,JMAX
+			X(i,j) = xx
+			Y(i,j) = yy
+			yy = yy + dy
+		END DO
+		xx = xx + dx
+	END DO
 
+	!WRITE(*,*) 'X: ', X
+	!WRITE(*,*) 'Y: ', Y
+
+	!=======================
+	! BOUNDARY CONDITIONS 
+	!=======================
+
+	! North boundary
+	j = JMAX
+	DO i = 2, (IMAX - 1)
+		u(i,j) = 0.0
+		v(i,j) = 0.0
+	END DO
+	! South boundary
+	j = 1
+	DO i = 2, (IMAX - 1)
+		u(i,j) = 0.0
+		v(i,j) = 0.0
+	END DO
+	! West boundary
+	i = 1
+	DO j = 2, (JMAX - 1)
+		u(i,j) = ua
+		v(i,j) = 0.0
+	END DO
+
+	!WRITE(*,*) 'u(i,j) = ', u
+	!WRITE(*,*) 'v(i,j) = ', v
+
+	!========================================
+	! INITIAL CONDITION (ON INTERNAL DOMAIN)
+	!========================================
+	
+	DO i = 2, (IMAX - 1)
+		DO j = 2, (JMAX - 1)
+			un(i,j) = ua
+			vn(i,j) = 0.0
+			pn(i,j) = 0.0
+		END DO
+	END DO
+			
+	
+
+	
 
 END PROGRAM ac
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
