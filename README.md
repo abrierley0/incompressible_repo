@@ -3,7 +3,7 @@
 24.02.2025
 
 Welcome. This is a repository for storing files related to the numerical 
-modelling of incomrpessinle flows as part of my MSc at Cranfield University.
+modelling of incompressible flows as part of my MSc at Cranfield University.
 This repository contains the following files:
 
 * Practice Fortran programmes.
