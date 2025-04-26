@@ -2,11 +2,11 @@
 
 24.02.2025
 
-Welcome. This is a repository for storing files related to the Numerical
-Methods for Incompressible Flows module as part of MSc CFD at Cranfield University, UK.
+Welcome. This is a repository for storing files related to the 'Numerical
+Modelling for Incompressible Flows' module as part of my MSc at Cranfield University.
 This repository contains the following files:
 
 * Practice Fortran programmes.
-* AC Solver for Incompressible Channel Flow - written in Matlab and Fortran.
-* FS-PP Solver for Incompressible Channel Flow - written in Matlab and Fortran.
-* SiMPLE Solver for Incompressible Lid-Driven Cavity Flow - written in Matlab and Fortran.
+* AC solver for a 2D channel
+* FS-PP solver for a 2D channel
+* SIMPLE solver for incompressible lid-driven cavity flow
