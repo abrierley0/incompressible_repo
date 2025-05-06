@@ -1,4 +1,4 @@
-Incompressible_Flows
+Incompressible Flows
 ====================
 
 Written by Mr A. J. Brierley
