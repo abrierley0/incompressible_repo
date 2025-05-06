@@ -1,12 +1,13 @@
-# incompressible_repo
+Incompressible_Flows
+====================
 
-24.02.2025
+Written by Mr A. J. Brierley
+MSc CFD
 
-Welcome. This is a repository for storing files related to the numerical 
-modelling of incompressible flows related to my MSc at Cranfield University.
-This repository contains the following files:
+6th April 2025
 
-* Practice Fortran programs.
-* AC solver for a 2D channel
-* FS-PP solver for a 2D channel
-* SIMPLE solver for incompressible lid-driven cavity flow
+Cranfield University
+Centre for Engineering Science (CES)
+Cranfield, Bedfordshire, MK43 0AL, UK
+
+Welcome. This is a repository for studying incompressible flow modelling.
