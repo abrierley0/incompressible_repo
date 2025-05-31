@@ -29,7 +29,7 @@ where each scalar component is representing ths strength and direction of rotati
 $\mathbf{\Omega}(x,y,z;t) = \Omega_x \mathbf{e}_x + \Omega_y \mathbf{e}_y + \Omega_z \mathbf{e}_z$.
 In 2D, there is only one component of vorticity, $\Omega_z$:
 $\Omega_z = \frac{\partial v}{\partial x} - \frac{\partial u}{\partial y}$.\
-This is like imagining the domain is a 2D sheet of paper, where the axis of rotation points directly into the paper, and rotation at each point in space and time in the domain is of a particular strength and clockwise or anti-clockwise.
+This is like imagining the domain is a 2D sheet of paper, where the axis of rotation points directly into the paper, and rotation at each point in space and time in the domain is of a particular strength, and of clockwise or anti-clockwise predisposition.
 
 -----------------------------------------
 
