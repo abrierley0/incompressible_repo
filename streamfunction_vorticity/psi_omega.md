@@ -1,7 +1,7 @@
 Streamfunction-Vorticity Formulation
 ====================================
 
-#### Pseudo-code for the program
+#### Pseudo-code for the lid-driven cavity program
 ```python
 # Define cavity dimensions, cell count, and grid spacing
 # Set the lid speed
@@ -12,11 +12,29 @@ Streamfunction-Vorticity Formulation
     # based on the rigid wall conditions of no-slip and no-penetration
     # u=0, v=0
     # This implies psi=0
+    # w = dv/dx - du/dy
+    # v on wall is zero, so dv/dx = 0
+    # w = - du/dy
+    # w = - d2psi/dy2
 ```
 
 #### Aspects of the Theory
 
 ------------------------------------------
+
+###### Vorticity Boundary Conditions
+The boundary conditions derived based on the conditions of no slip and no penetration.
+Take the bottom wall for example, in a lid-driven cavity, $u = 0$ and $v = 0$ _at the wall_. Therefore,
+$ u = \frac{\partial \psi}{\partial y} = 0$
+$ v = -\frac{\partial \psi}{\partial x} = 0$.
+Which implies $\psi = 0$ _at the wall_.
+$ \Omega_z = \frac{\partial v}{\partial x} - \frac{\partial u}{\partial y}$.
+At the wall, $v = 0$, so $\frac{\partial v}{\partial x} = 0$ also. Hence,
+$ \Omega_z = -\frac{\partial u}{\partial y} = -\frac{\partial}{\partial y}\left(\frac{\partial \psi}{\partial y}\right) = -\frac{\partial^2 \psi}{\partial y^2}$.
+So we need $ \Omega_z = -\frac{\partial^2 \psi}{\partial y^2}$ at the wall ($j = 0$). To do that we use a Taylor series expansion out from the wall by one cell.
+$\Omega_{i,0} \approx \frac{2(0 - \psi_{i,1})}{\Delta y^2}$.
+
+We repeat a similar procedure for the vorticity boundary conditions at the other walls.
 
 ###### Vorticity Vector Field
 The vorticity vector field is,
@@ -29,7 +47,7 @@ where each scalar component is representing ths strength and direction of rotati
 $\vec{\Omega}(x,y,z;t) = \Omega_x \vec{e}_x + \Omega_y \vec{e}_y + \Omega_z \vec{e}_z$.
 In 2D, there is only one component of vorticity, $\Omega_z$:
 $\Omega_z = \frac{\partial v}{\partial x} - \frac{\partial u}{\partial y}$.\
-This is like imagining the domain is a 2D sheet of paper, where the axis of rotation points directly into the paper, and rotation at each point in space and time in the domain is of a particular strength, and of either clockwise or anti-clockwise predisposition.
+This is like imagining the domain is a 2D sheet of paper, where the axis of rotation points directly into the paper, and rotation at each point in space and time in the domain is of a particular strength, and of either clockwise or anti-clockwise disposition.
 
 -----------------------------------------
 
