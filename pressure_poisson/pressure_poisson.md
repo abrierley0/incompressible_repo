@@ -33,3 +33,8 @@ Questions
 - Why can this equation for the pressure be used?
 - Is it an approximation?
 - Why do the boundary conditions use (u,v,p) but the initial conditions (un,vn,pn)?
+
+Notes
+-----
+
+- 

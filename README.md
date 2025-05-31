@@ -7,4 +7,4 @@ Cranfield University, Bedfordshire, UK
 
 6th April 2025
 
-Welcome. This is a repository for studying incompressible flow models.
+Welcome. This is a repository for studying incompressible flow solvers.
