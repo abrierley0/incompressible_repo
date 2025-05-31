@@ -20,9 +20,9 @@ Streamfunction-Vorticity Formulation
 
 ###### Vorticity Vector Field
 The vorticity vector field is,
-$\mathbf{\Omega} = \nabla \times \mathbf{u}$
+$\mathbf{\Omega} = \nabla \times \mathbf{u}$.\
 At every point in the spatial and time domain there is a particular vorticity vector:
-$\mathbf{\Omega} = \mathbf{\Omega}(x,y,z;t)$
+$\mathbf{\Omega} = \mathbf{\Omega}(x,y,z;t)$\
 In three dimensions, there are three scalar components of the vorticity vector which are generally non-zero.
 $\Omega_x, \Omega_y, \Omega_z \ne 0$.
 Where each scalar component is representing ths strength and direction of rotation about the rotation axis at that point in space and time:
