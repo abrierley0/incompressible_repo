@@ -25,12 +25,14 @@ Streamfunction-Vorticity Formulation
 ###### Vorticity Boundary Conditions
 The boundary conditions derived based on the conditions of no slip and no penetration.
 Take the bottom wall for example, in a lid-driven cavity, $u = 0$ and $v = 0$ _at the wall_. Therefore,
-$ u = \frac{\partial \psi}{\partial y} = 0$
+$ u = \frac{\partial \psi}{\partial y} = 0$ and
 $ v = -\frac{\partial \psi}{\partial x} = 0$.
-Which implies $\psi = 0$ _at the wall_.
+Which implies $\psi = 0$ _at the wall_,
 $ \Omega_z = \frac{\partial v}{\partial x} - \frac{\partial u}{\partial y}$.
 At the wall, $v = 0$, so $\frac{\partial v}{\partial x} = 0$ also. Hence,
+
 $ \Omega_z = -\frac{\partial u}{\partial y} = -\frac{\partial}{\partial y}\left(\frac{\partial \psi}{\partial y}\right) = -\frac{\partial^2 \psi}{\partial y^2}$.
+
 So we need $ \Omega_z = -\frac{\partial^2 \psi}{\partial y^2}$ at the wall ($j = 0$). To do that we use a Taylor series expansion out from the wall by one cell.
 $\Omega_{i,0} \approx \frac{2(0 - \psi_{i,1})}{\Delta y^2}$.
 
