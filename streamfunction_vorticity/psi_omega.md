@@ -10,12 +10,10 @@ Streamfunction-Vorticity Formulation
 # Set psi on the wall as zero to coincide with zero velocity of the walls
 # Apply vorticity boundary conditions 
     # based on the rigid wall conditions of no-slip and no-penetration
-    # u=0, v=0
-    # This implies psi=0
-    # w = dv/dx - du/dy
-    # v on wall is zero, so dv/dx = 0
-    # w = - du/dy
-    # w = - d2psi/dy2
+# Create a list for the psi and omega solutions
+# Initialise them with above arrays
+# SET SIMULATION PARAMETERS: beta, tolerance, initial time, time step, end time
+# Start main while loop (while t < t_end)
 ```
 
 #### Aspects of the Theory
@@ -89,13 +87,13 @@ $u = \frac{\partial \psi}{\partial y} ; v = - \frac{\partial \psi}{\partial x}$
 
 $\Omega_z = \frac{\partial v}{\partial x} - \frac{\partial u}{\partial y} = -\frac{\partial}{\partial x}\left(\frac{\partial \psi}{\partial x}\right) - \frac{\partial}{\partial y}\left(\frac{\partial \psi}{\partial y}\right) $
 
-$\nabla^2 = -{\vec{\Omega}(x,y;t)}$
+$\nabla^2 \psi = -{\vec{\Omega}(x,y;t)}$
 
 In scalar form,
 
 $\boxed{\frac{\partial^2 \psi}{\partial x^2} + \frac{\partial^2 \psi}{\partial x^2} = -\Omega_z(x,y;t)}$
 
-Discretise. Solve with sub-iterations for every cell in every time step.
+Discretise. Solve with sub-iterations and over-relaxation for every cell in every time step.
 
 #### Streamfunction-Vorticity Formulation Algorithm
 
