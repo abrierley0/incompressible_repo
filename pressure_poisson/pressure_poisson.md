@@ -9,7 +9,7 @@ Then there are two vector identities used to change the LHS and you multiply by 
 
 $$ \nabla ^2 p = - \rho \left[(\nabla \otimes \mathbf{u}) \cdot \cdot (\nabla \otimes \mathbf{u})\right]$$
 
-Giving us an equation for the pressure. It can be seen that there is a strong dependence on the velocity-gradient tensors. **Note**: exactly why this equation can be used should be thought about.
+Giving us an equation for the pressure. It can be seen that there is a strong dependence on the velocity-gradient tensors. **Note to self**: exactly why this equation can be used should be thought about.
 
 Expanding for the scalar form of the Pressure-Poisson equation,
 
@@ -33,8 +33,3 @@ Questions
 - Why can this equation for the pressure be used?
 - Is it an approximation?
 - Why do the boundary conditions use (u,v,p) but the initial conditions (un,vn,pn)?
-
-Notes
------
-
-- 
