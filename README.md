@@ -1,7 +1,7 @@
 Incompressible Flows
 ====================
 
-_Written by Mr A. J. Brierley_
+_Written by Mr A. J. Brierley_\
 _Cranfield University, Bedfordshire, UK_\
 _6th April 2025_
 
