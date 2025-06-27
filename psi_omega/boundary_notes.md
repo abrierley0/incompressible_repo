@@ -24,7 +24,7 @@ Left Wall
 
 $u_{i,j} = \frac{\psi_{i,j} - \psi_{i,j-1}}{\Delta y} = 0$
 
-$\psi_{i,j} = \psi_{i-1,j}$
+$\psi_{i,j} = \psi_{i,j-1}$
 
 $v_{i,j} = - (\frac{\psi_{i+1,j} - \psi_{i,j}}{\Delta x})$ = 0
 
