@@ -175,10 +175,11 @@ while t < tend:
     ψ[ny-1,0] = (ψ[ny-2,0] + ψ[ny-1,1])/2.0                       # Top left
     ψ[ny-1,nx-1] = (ψ[ny-1,nx-2] + ψ[ny-2,nx-1])/2.0              # Top right
 
+    # Update the streamfunction solution
     ψ_sol.append(ψ.copy())
 
     #----------------------------------
-    # SOLVE FOR THE VELOCITY FIELDS
+    # SOLVE FOR THE VELOCITY VECTOR FIELD
     #---------------------------------
 
     #---------------------------------------
