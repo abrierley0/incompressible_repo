@@ -7,8 +7,8 @@ from pyevtk.hl import gridToVTK
 
 
 # Grid parameters
-nx = 13  # imax
-ny = 13  # jmax
+nx = 26  # imax
+ny = 26  # jmax
 Lx = 1.0
 Ly = 1.0
 dx = Lx/(nx-1)
@@ -111,11 +111,11 @@ print(ω0)
 t = 0.0
 itmax = 100 
 tol = 1e-4
-beta = 1.7
+β = 1.7
 dt = min(0.25*dx*dx/nu, 4*nu/Ut/Ut)
 #dt = min(0.1 * dx / Ut, 0.25 * dx * dx / nu)
 print(f"dt = {dt}")
-tend = 5.0
+tend = 30.0
 print(f"tend = {tend}")
 
 
@@ -151,7 +151,7 @@ while t < tend:
         # Solve for psi on the internal domain in the present time step
         for i in range(1,nx-1):
             for j in range(1,ny-1):
-                ψ[i,j] = (beta/(2*(dx**2+dy**2))) * ((dx**2*dy**2)*ωn[i,j] + dy**2*(ψ[i+1,j] + ψ[i-1,j]) + dx**2*(ψ[i,j+1]+ψ[i,j-1])) + (1-beta)*ψ[i,j]
+                ψ[i,j] = (β/(2*(dx**2+dy**2))) * ((dx**2*dy**2)*ωn[i,j] + dy**2*(ψ[i+1,j] + ψ[i-1,j]) + dx**2*(ψ[i,j+1]+ψ[i,j-1])) + (1-β)*ψ[i,j]
         it = it + 1
         err = np.linalg.norm(ψ.ravel() - ψ_k.ravel())
         #if it % 10 == 0:
@@ -246,8 +246,8 @@ while t < tend:
     print(f"t = {t}")
 
 # INSPECT FINAL MATRICES
-print(ψ)
-print(ω)
+#print(ψ)
+#print(ω)
 
 #IMAGES
 X, Y = np.meshgrid(np.linspace(0, Lx, nx), np.linspace(0, Ly, ny))
@@ -256,7 +256,19 @@ plt.colorbar()
 plt.xlabel('x')
 plt.ylabel('y')
 #plt.gca().invert_yaxis()
+plt.title(f't = {t}, Re = {Re}, tol = {tol}, nx = {nx}, β = {β}, itmax = {itmax}')
+#plt.text(X, Y, 'text')
 plt.savefig("psi_sol.png")
 plt.close()
 
+X, Y = np.meshgrid(np.linspace(0, Lx, nx), np.linspace(0, Ly, ny))
+plt.contourf(X, Y, ω_sol[-1])
+plt.colorbar()
+plt.xlabel('x')
+plt.ylabel('y')
+#plt.gca().invert_yaxis()
+plt.title(f't = {t}, Re = {Re}, tol = {tol}, nx = {nx}, β = {β}, itmax = {itmax}')
+#plt.text(X, Y, 'text')
+plt.savefig("omega_sol.png")
+plt.close()
 
