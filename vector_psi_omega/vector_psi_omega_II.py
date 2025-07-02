@@ -54,38 +54,70 @@ dt = min(0.25*dx*dx/Ϟ, 4*Ϟ/Ut/Ut)
 
 
 # Create solution storage
-ψ_sol = []
-ψ_sol.append(ψ0)
-ω_sol = []
-ω_sol.append(ω0)
+ψx_sol = []
+ψx_sol.append(ψ0)
+ψy_sol = []
+ψy_sol.append(ψ0)
+ψz_sol = []
+ψz_sol.append(ψ0)
+ωx_sol = []
+ωx_sol.append(ω0)
+ωy_sol = []
+ωy_sol.append(ω0)
+ωz_sol = []
+ωz_sol.append(ω0)
 
 
 # Start main time loop
 t = 0
-ψ = ψ0
-ω = ω0
 while t < tend:
 
+    #---------------------------------------------------------------------------
+    # SOLVE THREE VECTOR-POTENTIAL POISSON EQUATIONS USING GAUSS-SEIDEL S.O.R
+    #---------------------------------------------------------------------------
+
+    # POISSON SOLVER FOR ψ_x
     it = 0
-    ψ = ψ_sol[-1].copy()
-    ω = ω_sol[-1].copy()
-    # Solve three Poisson equations for the vector-potential field
+    ψx = ψx_sol[-1].copy()
+    ωx = ωx_sol[-1].copy()
     while it < itmax and err > tol:
         for i in range(1,nx-1):
             for j in range(1,ny-1):
                 for k in range(1,nz-1):
-                    ψ[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*ω[i,j,k] + dy**2*dz**2*(ψ[i+1,j,k]+ψ[i-1,j,k]) + dx**2*dz**2*(ψ[i,j+1,k]+ψ[i,j-1,k]) + dx**2*dy**2*(ψ[i,j,k+1] + ψ[i,j,k+1])) + (1 - β) * ψ[i,j,k]
+                    ψx[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*ωx[i,j,k] + dy**2*dz**2*(ψx[i+1,j,k]+ψx[i-1,j,k]) + dx**2*dz**2*(ψx[i,j+1,k]+ψx[i,j-1,k]) + dx**2*dy**2*(ψx[i,j,k+1] + ψx[i,j,k+1])) + (1 - β) * ψx[i,j,k]
+        it = it + 1
+    ψx_sol.append(ψx)
 
-    ψ_sol.append(ψ)
+    # POISSON SOLVER FOR ψ_y
+    it = 0
+    ψy = ψy_sol[-1].copy()
+    ωy = ωy_sol[-1].copy()
+    while it < itmax and err > tol:
+        for i in range(1,nx-1):
+            for j in range(1,ny-1):
+                for k in range(1,nz-1):
+                    ψy[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*ωy[i,j,k] + dy**2*dz**2*(ψy[i+1,j,k]+ψy[i-1,j,k]) + dx**2*dz**2*(ψy[i,j+1,k]+ψy[i,j-1,k]) + dx**2*dy**2*(ψy[i,j,k+1] + ψy[i,j,k+1])) + (1 - β) * ψy[i,j,k]
+        it = it + 1
+    ψy_sol.append(ψy)
 
-    # Solve the 3D vorticity transport equation with the vortex stretching term
-    #
-    #
-    #
+    # POISSON SOLVER FOR ψ_z
+    it = 0 
+    ψz = ψz_sol[-1].copy()
+    ωz = ωz_sol[-1].copy()
+    while it < itmax and err > tol:
+        for i in range(1,nx-1):
+            for j in range(1,ny-1):
+                for k in range(1,nz-1):
+                    ψz[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*ωz[i,j,k] + dy**2*dz**2*(ψz[i+1,j,k]+ψz[i-1,j,k]) + dx**2*dz**2*(ψz[i,j+1,k]+ψz[i,j-1,k]) + dx**2*dy**2*(ψz[i,j,k+1] + ψz[i,j,k+1])) + (1 - β) * ψz[i,j,k]
+        it = it + 1
+    ψz_sol.append(ψz)
 
-    ω_sol.append(ω)
+    #---------------------------------------------------------------------------------
+    # SOLVE THE 3D VORTICITY TRANSPORT EQUATION INCLUDING THE VORTEX STRETCHING TERM
+    #---------------------------------------------------------------------------------
+
+    #ω_sol.append(ω)
 
     t = t + dt
-    it = it + 1
 
 
