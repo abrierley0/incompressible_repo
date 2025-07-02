@@ -2,7 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pyevtk.hl import gridToVTK
 
-# Streamfunction-Vorticity Formulation
+# STREAMFUNCTION VORTICITY FORMULATION
+#
+# Written by Mr A. J. Brierley
+#
+# Centre for Computational Engineering Sciences (CES)
+# Cranfield University
+# Bedfordshire
+# UK
+#
+# adam.brierley@cranfield.ac.uk
+#
+# 2nd July 2025
 
 
 
