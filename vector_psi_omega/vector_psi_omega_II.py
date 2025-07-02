@@ -35,6 +35,7 @@ print()
 
 
 # Initialise arrays
+ψ0 = np.zeros([nx,ny,nz])
 ψx0 = np.zeros([nx,ny,nz])
 ψy0 = np.zeros([nx,ny,nz])
 ψz0 = np.zeros([nx,ny,nz])
@@ -42,6 +43,109 @@ print()
 Ωx0 = np.zeros([nx,ny,nz])
 Ωy0 = np.zeros([nx,ny,nz])
 Ωz0 = np.zeros([nx,ny,nz])
+
+# print(f"ψx0 is : ")
+# print()
+# print(ψx0)
+
+# print(f"Ωx0 is : ")
+# print()
+# print(Ωx0)
+
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+
+
+#---------------------------------------------
+# VECTOR-POTENTIAL (ψ) BOUNDARY CONDITIONS
+#---------------------------------------------
+# according to Tokunaga (1992),
+
+for j in range(1,ny-1):
+    for k in range(1,nz-1):
+        ψx0[0,j,k] = ψx0[1,j,k]         # Left wall
+        ψy0[0,j,k] = 0.0
+        ψz0[0,j,k] = 0.0  
+        ψx0[nx-1,j,k] = ψx0[nx-2,j,k]   # Right wall
+        ψy0[nx-1,j,k] = 0.0
+        ψz0[nx-1,j,k] = 0.0
+
+for i in range(1,nx-1):
+    for j in range(1,ny-1):
+        ψx0[i,j,0] = 0.0                # Front wall
+        ψy0[i,j,0] = 0.0
+        ψz0[i,j,0] = ψz0[i,j,1]       
+        ψx0[i,j,nz-1] = 0.0             # Back wall
+        ψy0[i,j,nz-1] = 0.0
+        ψz0[i,j,nz-1] = ψz0[i,j,nz-2]
+
+for i in range(1,nx-1):
+    for k in range(1,ny-1):
+        ψx0[i,0,k] = 0.0                # Bottom wall
+        ψy0[i,0,k] = ψy0[i,1,k]   
+        ψz0[i,0,k] = 0.0
+        
+        #---------------------
+        # TOP WALL BOUNDARY CONDITION
+        #---------------------
+        # NOTE: Check top wall derivation
+        ψx0[i,ny-1,k] = Ut                # Top wall
+        ψy0[i,ny-1,k] = ψy0[i,ny-2,k]   
+        ψz0[i,ny-1,k] = 0.0
+
+# Vector-potential corner points
+ψx0[0,0,0] = (ψx0[1,0,0] + ψx0[0,1,0] + ψx0[0,0,1]) / 3.0
+ψy0[0,0,0] = (ψy0[1,0,0] + ψy0[0,1,0] + ψy0[0,0,1]) / 3.0
+ψz0[0,0,0] = (ψz0[1,0,0] + ψz0[0,1,0] + ψz0[0,0,1]) / 3.0
+
+ψx0[0,0,nz-1] = (ψx0[0,0,nz-2] + ψx0[1,0,nz-1] + ψx0[0,1,nz-1]) / 3.0
+ψy0[0,0,nz-1] = (ψy0[0,0,nz-2] + ψy0[1,0,nz-1] + ψy0[0,1,nz-1]) / 3.0
+ψz0[0,0,nz-1] = (ψz0[0,0,nz-2] + ψz0[1,0,nz-1] + ψz0[0,1,nz-1]) / 3.0
+
+ψx0[nx-1,0,0] = (ψx0[nx-2,0,0] + ψx0[nx-1,1,0] + ψx0[nx-1,0,1]) / 3.0
+ψy0[nx-1,0,0] = (ψy0[nx-2,0,0] + ψy0[nx-1,1,0] + ψy0[nx-1,0,1]) / 3.0
+ψz0[nx-1,0,0] = (ψz0[nx-2,0,0] + ψz0[nx-1,1,0] + ψz0[nx-1,0,1]) / 3.0
+
+ψx0[nx-1,0,nz-1] = (ψx0[nx-2,0,nz-1] + ψx0[nx-1,0,nz-2] + ψx0[nx-1,1,nz-1]) / 3.0
+ψy0[nx-1,0,nz-1] = (ψy0[nx-2,0,nz-1] + ψy0[nx-1,0,nz-2] + ψy0[nx-1,1,nz-1]) / 3.0
+ψz0[nx-1,0,nz-1] = (ψz0[nx-2,0,nz-1] + ψz0[nx-1,0,nz-2] + ψz0[nx-1,1,nz-1]) / 3.0
+
+ψx0[0,ny-1,0] = (ψx0[1,ny-1,0] + ψx0[0,ny-2,0] + ψx0[0,ny-1,1]) / 3.0
+ψy0[0,ny-1,0] = (ψy0[1,ny-1,0] + ψy0[0,ny-2,0] + ψy0[0,ny-1,1]) / 3.0
+ψz0[0,ny-1,0] = (ψz0[1,ny-1,0] + ψz0[0,ny-2,0] + ψz0[0,ny-1,1]) / 3.0
+
+ψx0[0,ny-1,nz-1] = (ψx0[0,ny-1,nz-2] + ψx0[1,ny-1,nz-1] + ψx0[0,ny-2,nz-1]) / 3.0
+ψy0[0,ny-1,nz-1] = (ψy0[0,ny-1,nz-2] + ψy0[1,ny-1,nz-1] + ψy0[0,ny-2,nz-1]) / 3.0
+ψz0[0,ny-1,nz-1] = (ψz0[0,ny-1,nz-2] + ψz0[1,ny-1,nz-1] + ψz0[0,ny-2,nz-1]) / 3.0
+
+ψx0[nx-1,ny-1,0] = (ψx0[nx-2,ny-1,0] + ψx0[nx-1,ny-2,0] + ψx0[nx-1,ny-1,1]) / 3.0
+ψy0[nx-1,ny-1,0] = (ψy0[nx-2,ny-1,0] + ψy0[nx-1,ny-2,0] + ψy0[nx-1,ny-1,1]) / 3.0
+ψz0[nx-1,ny-1,0] = (ψz0[nx-2,ny-1,0] + ψz0[nx-1,ny-2,0] + ψz0[nx-1,ny-1,1]) / 3.0
+
+ψx0[nx-1,ny-1,nz-1] = (ψx0[nx-2,ny-1,nz-1] + ψx0[nx-1,ny-1,nz-2] + ψx0[nx-1,ny-2,nz-1]) / 3.0
+ψy0[nx-1,ny-1,nz-1] = (ψy0[nx-2,ny-1,nz-1] + ψy0[nx-1,ny-1,nz-2] + ψy0[nx-1,ny-2,nz-1]) / 3.0
+ψz0[nx-1,ny-1,nz-1] = (ψz0[nx-2,ny-1,nz-1] + ψz0[nx-1,ny-1,nz-2] + ψz0[nx-1,ny-2,nz-1]) / 3.0
+
+
+
+# ψy0[0,j,k] = 0.0
+# ψz0[0,j,k] = 0.0  
+# ψx0[nx-1,j,k] = ψx0[nx-2,j,k]   # Right wall
+# ψy0[nx-1,j,k] = 0.0
+# ψz0[nx-1,j,k] = 0.0
 
 print(f"ψx0 is : ")
 print()
@@ -51,17 +155,8 @@ print(f"Ωx0 is : ")
 print()
 print(Ωx0)
 
-
-
-
-#---------------------------------------------
-# VECTOR-POTENTIAL (ψ) BOUNDARY CONDITIONS
-#---------------------------------------------
-
-
-
 #----------------------------------------------
-# VORTICITY VECTOR FIELD BOUNDARY CONDITIONS
+# VORTICITY VECTOR FIELD (Ω) BOUNDARY CONDITIONS
 #----------------------------------------------
 
 
