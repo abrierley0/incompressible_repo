@@ -711,32 +711,75 @@ while t < tend:
     for i in range(1,nx-1):
         for j in range(1,ny-1):
             for k in range(1,nz-1):
-                Cx = (Ωxn[i+1,j,k] - Ωxn[i-1,j,k])/(2*dx)
-                Cy = (Ωyn[i,j+1,k] - Ωyn[i,j-1,k])/(2*dy)
-                Cz = (Ωzn[i,j,k+1] - Ωzn[i,j,k-1])/(2*dz)
+                Cx = u[i,j,k] * (Ωxn[i+1,j,k] - Ωxn[i-1,j,k])/(2*dx)
+                Cy = v[i,j,k] * (Ωxn[i,j+1,k] - Ωxn[i,j-1,k])/(2*dy)
+                Cz = w[i,j,k] * (Ωxn[i,j,k+1] - Ωxn[i,j,k-1])/(2*dz)
 
                 Dx = (Ωxn[i+1,j,k] - Ωxn[i-1,j,k] + 2*Ωxn[i,j,k])/(dx**2)
-                Dy = (Ωyn[i,j+1,k] - Ωyn[i,j-1,k] + 2*Ωyn[i,j,k])/(dy**2)
-                Dz = (Ωzn[i,j,k+1] - Ωzn[i,j,k-1] + 2*Ωzn[i,j,k])/(dz**2)
+                Dy = (Ωxn[i,j+1,k] - Ωxn[i,j-1,k] + 2*Ωxn[i,j,k])/(dy**2)
+                Dz = (Ωxn[i,j,k+1] - Ωxn[i,j,k-1] + 2*Ωxn[i,j,k])/(dz**2)
 
-                Ux = (u[i+1,j,k] - u[i-1,j,k])/(2*dx)
-                Uy = (u[i,j+1,k] - u[i,j-1,k])/(2*dy)
-                Uz = (u[i,j,k+1] - u[i,j,k-1])/(2*dz)
+                Ux = Ωxn[i,j,k] * (u[i+1,j,k] - u[i-1,j,k])/(2*dx)
+                Uy = Ωyn[i,j,k] * (u[i,j+1,k] - u[i,j-1,k])/(2*dy)
+                Uz = Ωzn[i,j,k] * (u[i,j,k+1] - u[i,j,k-1])/(2*dz)
 
                 # The equation
-                Ωx[i,j,k] = Ωxn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz) + Ωxn[i,j,k]*Ux + Ωyn[i,j,k]*Uy + Ωzn[i,j,k]*Uz - u[i,j,k]*Cx - v[i,j,k]*Cy - w[i,j,k]*Cz)
+                Ωx[i,j,k] = Ωxn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz)) + Ux + Uy + Uz - (Cx + Cy + Cz)
 
-    #-----------------------------------
+    #-------------------------------
     # Ω_Y
     #-------------------------------
+    Ωy = Ωyn.copy()
+    for i in range(1,nx-1):
+        for j in range(1,ny-1):
+            for k in range(1,nz-1):
+                Cx = u[i,j,k] * (Ωyn[i+1,j,k] - Ωyn[i-1,j,k])/(2*dx)
+                Cy = v[i,j,k] * (Ωyn[i,j+1,k] - Ωyn[i,j-1,k])/(2*dy)
+                Cz = w[i,j,k] * (Ωyn[i,j,k+1] - Ωyn[i,j,k-1])/(2*dz)
 
+                Dx = (Ωyn[i+1,j,k] - Ωyn[i-1,j,k] + 2*Ωyn[i,j,k])/(dx**2)
+                Dy = (Ωyn[i,j+1,k] - Ωyn[i,j-1,k] + 2*Ωyn[i,j,k])/(dy**2)
+                Dz = (Ωyn[i,j,k+1] - Ωyn[i,j,k-1] + 2*Ωyn[i,j,k])/(dz**2)
+
+                Ux = Ωxn[i,j,k] * (v[i+1,j,k] - v[i-1,j,k])/(2*dx)
+                Uy = Ωyn[i,j,k] * (v[i,j+1,k] - v[i,j-1,k])/(2*dy)
+                Uz = Ωzn[i,j,k] * (v[i,j,k+1] - v[i,j,k-1])/(2*dz)
+
+                # The equation
+                Ωy[i,j,k] = Ωyn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz)) + Ux + Uy + Uz - (Cx + Cy + Cz)
+
+    
+    #-------------------------------
+    # Ω_Z
+    #-------------------------------
+    Ωz = Ωzn.copy()
+    for i in range(1,nx-1):
+        for j in range(1,ny-1):
+            for k in range(1,nz-1):
+                Cx = u[i,j,k] * (Ωzn[i+1,j,k] - Ωzn[i-1,j,k])/(2*dx)
+                Cy = v[i,j,k] * (Ωzn[i,j+1,k] - Ωzn[i,j-1,k])/(2*dy)
+                Cz = w[i,j,k] * (Ωzn[i,j,k+1] - Ωzn[i,j,k-1])/(2*dz)
+
+                Dx = (Ωzn[i+1,j,k] - Ωzn[i-1,j,k] + 2*Ωzn[i,j,k])/(dx**2)
+                Dy = (Ωzn[i,j+1,k] - Ωzn[i,j-1,k] + 2*Ωzn[i,j,k])/(dy**2)
+                Dz = (Ωzn[i,j,k+1] - Ωzn[i,j,k-1] + 2*Ωzn[i,j,k])/(dz**2)
+
+                Ux = Ωxn[i,j,k] * (w[i+1,j,k] - w[i-1,j,k])/(2*dx)
+                Uy = Ωyn[i,j,k] * (w[i,j+1,k] - w[i,j-1,k])/(2*dy)
+                Uz = Ωzn[i,j,k] * (w[i,j,k+1] - w[i,j,k-1])/(2*dz)
+
+                # The equation
+                Ωz[i,j,k] = Ωzn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz)) + Ux + Uy + Uz - (Cx + Cy + Cz)
 
 
 
     # Re-apply the vorticity boundary conditions
 
 
+    # Store the solution
     Ωx_sol.append(Ωx.copy())
+    Ωy_sol.append(Ωy.copy())
+    Ωz_sol.append(Ωz.copy())
 
 
 
