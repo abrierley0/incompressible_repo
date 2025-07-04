@@ -724,7 +724,7 @@ while t < tend:
                 Uz = Ωzn[i,j,k] * (u[i,j,k+1] - u[i,j,k-1])/(2*dz)
 
                 # The equation
-                Ωx[i,j,k] = Ωxn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz)) + Ux + Uy + Uz - (Cx + Cy + Cz)
+                Ωx[i,j,k] = Ωxn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz) + Ux + Uy + Uz - (Cx + Cy + Cz))
 
     #-------------------------------
     # Ω_Y
@@ -746,7 +746,7 @@ while t < tend:
                 Uz = Ωzn[i,j,k] * (v[i,j,k+1] - v[i,j,k-1])/(2*dz)
 
                 # The equation
-                Ωy[i,j,k] = Ωyn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz)) + Ux + Uy + Uz - (Cx + Cy + Cz)
+                Ωy[i,j,k] = Ωyn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz) + Ux + Uy + Uz - (Cx + Cy + Cz))
 
     
     #-------------------------------
@@ -769,7 +769,7 @@ while t < tend:
                 Uz = Ωzn[i,j,k] * (w[i,j,k+1] - w[i,j,k-1])/(2*dz)
 
                 # The equation
-                Ωz[i,j,k] = Ωzn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz)) + Ux + Uy + Uz - (Cx + Cy + Cz)
+                Ωz[i,j,k] = Ωzn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz) + Ux + Uy + Uz - (Cx + Cy + Cz))
 
 
 
@@ -786,5 +786,6 @@ while t < tend:
 
 
     t = t + dt
+    print(f"t = {t}")
 
 
