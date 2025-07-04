@@ -90,46 +90,46 @@ for i in range(1,nx-1):
 
 # Vector-potential edge points
 for j in range(1,ny-1):
-    u[0,j,0] = (u[1,j,0] + u[0,j,1])/2.0                            # Front-left edge
-    v[0,j,0] = (v[1,j,0] + v[0,j,1])/2.0
-    w[0,j,0] = (w[1,j,0] + w[0,j,1])/2.0
-    u[nx-1,j,0] = (u[nx-2,j,0] + u[nx-1,j,1])/2.0                   # Front-right edge
-    v[nx-1,j,0] = (v[nx-2,j,0] + v[nx-1,j,1])/2.0
-    w[nx-1,j,0] = (w[nx-2,j,0] + w[nx-1,j,1])/2.0
-    u[nx-1,j,nz-1] = (u[nx-2,j,nz-1] + u[nx-1,j,nz-2])/2.0          # Back-right edge
-    v[nx-1,j,nz-1] = (v[nx-2,j,nz-1] + v[nx-1,j,nz-2])/2.0
-    w[nx-1,j,nz-1] = (w[nx-2,j,nz-1] + w[nx-1,j,nz-2])/2.0
-    u[0,j,nz-1] = (u[1,j,nz-1] + u[0,j,nz-2])/2.0                   # Back-left edge
-    v[0,j,nz-1] = (v[1,j,nz-1] + v[0,j,nz-2])/2.0
-    w[0,j,nz-1] = (w[1,j,nz-1] + w[0,j,nz-2])/2.0
+    ψx0[0,j,0] = (ψx0[1,j,0] + ψx0[0,j,1])/2.0                            # Front-left edge
+    ψy0[0,j,0] = (ψy0[1,j,0] + ψy0[0,j,1])/2.0
+    ψz0[0,j,0] = (ψz0[1,j,0] + ψz0[0,j,1])/2.0
+    ψx0[nx-1,j,0] = (ψx0[nx-2,j,0] + ψx0[nx-1,j,1])/2.0                   # Front-right edge
+    ψy0[nx-1,j,0] = (ψy0[nx-2,j,0] + ψy0[nx-1,j,1])/2.0
+    ψz0[nx-1,j,0] = (ψz0[nx-2,j,0] + ψz0[nx-1,j,1])/2.0
+    ψx0[nx-1,j,nz-1] = (ψx0[nx-2,j,nz-1] + ψx0[nx-1,j,nz-2])/2.0          # Back-right edge
+    ψy0[nx-1,j,nz-1] = (ψy0[nx-2,j,nz-1] + ψy0[nx-1,j,nz-2])/2.0
+    ψz0[nx-1,j,nz-1] = (ψz0[nx-2,j,nz-1] + ψz0[nx-1,j,nz-2])/2.0
+    ψx0[0,j,nz-1] = (ψx0[1,j,nz-1] + ψx0[0,j,nz-2])/2.0                   # Back-left edge
+    ψy0[0,j,nz-1] = (ψy0[1,j,nz-1] + ψy0[0,j,nz-2])/2.0
+    ψz0[0,j,nz-1] = (ψz0[1,j,nz-1] + ψz0[0,j,nz-2])/2.0
 
 for z in range(1,nz-1):
-    u[0,0,z] = (u[1,0,z] + u[0,1,z])/2.0                            # Bottom-left edge
-    v[0,0,z] = (v[1,0,z] + v[0,1,z])/2.0        
-    w[0,0,z] = (w[1,0,z] + w[0,1,z])/2.0
-    u[nx-1,0,z] = (u[nx-2,0,z] + u[0,1,z])/2.0                      # Bottom-right edge
-    v[nx-1,0,z] = (v[nx-2,0,z] + v[0,1,z])/2.0        
-    w[nx-1,0,z] = (w[nx-2,0,z] + w[0,1,z])/2.0
-    u[nx-1,ny-1,z] = (u[nx-2,ny-1,z] + u[nx-1,ny-2,z])/2.0          # Top-right edge
-    v[nx-1,ny-1,z] = (v[nx-2,ny-1,z] + v[nx-1,ny-2,z])/2.0        
-    w[nx-1,ny-1,z] = (w[nx-2,ny-1,z] + w[nx-1,ny-2,z])/2.0
-    u[0,ny-1,z] = (u[0,ny-2,z] + u[1,ny-1,z])/2.0                   # Top-left edge
-    v[0,ny-1,z] = (v[0,ny-2,z] + v[1,ny-1,z])/2.0        
-    w[0,ny-1,z] = (w[0,ny-2,z] + w[1,ny-1,z])/2.0
+    ψx0[0,0,z] = (ψx0[1,0,z] + ψx0[0,1,z])/2.0                            # Bottom-left edge
+    ψy0[0,0,z] = (ψy0[1,0,z] + ψy0[0,1,z])/2.0        
+    ψz0[0,0,z] = (ψz0[1,0,z] + ψz0[0,1,z])/2.0
+    ψx0[nx-1,0,z] = (ψx0[nx-2,0,z] + ψx0[0,1,z])/2.0                      # Bottom-right edge
+    ψy0[nx-1,0,z] = (ψy0[nx-2,0,z] + ψy0[0,1,z])/2.0        
+    ψz0[nx-1,0,z] = (ψz0[nx-2,0,z] + ψz0[0,1,z])/2.0
+    ψx0[nx-1,ny-1,z] = (ψx0[nx-2,ny-1,z] + ψx0[nx-1,ny-2,z])/2.0          # Top-right edge
+    ψy0[nx-1,ny-1,z] = (ψy0[nx-2,ny-1,z] + ψy0[nx-1,ny-2,z])/2.0        
+    ψz0[nx-1,ny-1,z] = (ψz0[nx-2,ny-1,z] + ψz0[nx-1,ny-2,z])/2.0
+    ψx0[0,ny-1,z] = (ψx0[0,ny-2,z] + ψx0[1,ny-1,z])/2.0                   # Top-left edge
+    ψy0[0,ny-1,z] = (ψy0[0,ny-2,z] + ψy0[1,ny-1,z])/2.0        
+    ψz0[0,ny-1,z] = (ψz0[0,ny-2,z] + ψz0[1,ny-1,z])/2.0
 
 for i in range(1,nx-1):
-    u[i,0,0] = (u[i,1,0] + u[i,0,1])/2.0                            # Front-bottom edge
-    v[i,0,0] = (v[i,1,0] + v[i,0,1])/2.0        
-    w[i,0,0] = (w[i,1,0] + w[i,0,1])/2.0
-    u[i,0,nz-1] = (u[i,1,nz-1] + u[i,0,nz-2])/2.0                   # Back-bottom edge
-    v[i,0,nz-1] = (v[i,1,nz-1] + v[i,0,nz-2])/2.0         
-    w[i,0,nz-1] = (w[i,1,nz-1] + w[i,0,nz-2])/2.0 
-    u[i,ny-1,0] = (u[i,ny-1,1] + u[i,ny-2,0])/2.0                   # Front-top edge
-    v[i,ny-1,0] = (v[i,ny-1,1] + v[i,ny-2,0])/2.0         
-    w[i,ny-1,0] = (w[i,ny-1,1] + w[i,ny-2,0])/2.0 
-    u[i,ny-1,nz-1] = (u[i,ny-2,nz-1] + u[i,ny-1,nz-2])/2.0          # Back-top edge
-    v[i,ny-1,nz-1] = (v[0,ny-2,nz-1] + v[1,ny-1,nz-2])/2.0        
-    w[i,ny-1,nz-1] = (w[0,ny-2,nz-1] + w[1,ny-1,nz-2])/2.0
+    ψx0[i,0,0] = (ψx0[i,1,0] + ψx0[i,0,1])/2.0                            # Front-bottom edge
+    ψy0[i,0,0] = (ψy0[i,1,0] + ψy0[i,0,1])/2.0        
+    ψz0[i,0,0] = (ψz0[i,1,0] + ψz0[i,0,1])/2.0
+    ψx0[i,0,nz-1] = (ψx0[i,1,nz-1] + ψx0[i,0,nz-2])/2.0                   # Back-bottom edge
+    ψy0[i,0,nz-1] = (ψy0[i,1,nz-1] + ψy0[i,0,nz-2])/2.0         
+    ψz0[i,0,nz-1] = (ψz0[i,1,nz-1] + ψz0[i,0,nz-2])/2.0 
+    ψx0[i,ny-1,0] = (ψx0[i,ny-1,1] + ψx0[i,ny-2,0])/2.0                   # Front-top edge
+    ψy0[i,ny-1,0] = (ψy0[i,ny-1,1] + ψy0[i,ny-2,0])/2.0         
+    ψz0[i,ny-1,0] = (ψz0[i,ny-1,1] + ψz0[i,ny-2,0])/2.0 
+    ψx0[i,ny-1,nz-1] = (ψx0[i,ny-2,nz-1] + ψx0[i,ny-1,nz-2])/2.0          # Back-top edge
+    ψy0[i,ny-1,nz-1] = (ψy0[0,ny-2,nz-1] + ψy0[1,ny-1,nz-2])/2.0        
+    ψz0[i,ny-1,nz-1] = (ψz0[0,ny-2,nz-1] + ψz0[1,ny-1,nz-2])/2.0
 
 # Vector-potential corner points
 ψx0[0,0,0] = (ψx0[1,0,0] + ψx0[0,1,0] + ψx0[0,0,1]) / 3.0                                           # Lower bottom left 
@@ -284,9 +284,10 @@ w0[nx-1,ny-1,nz-1] = (w0[nx-2,ny-1,nz-1] + w0[nx-1,ny-1,nz-2] + w0[nx-1,ny-2,nz-
 # If vorticity boundary conditions are using vorticity, we also need the initial velocity field
 # and boundary conditions?
 
-#----------------------------------------------
+#------------------------------------------------
 # VORTICITY VECTOR FIELD (Ω) BOUNDARY CONDITIONS
-#----------------------------------------------
+#------------------------------------------------
+# derived using the definition of vorticity
 
 for j in range(1,ny-1):
     for k in range(1,nz-1):
@@ -316,6 +317,47 @@ for i in range(1,nx-1):
         Ωz0[i,0,k] = -(u0[i,ny-1,k] - u0[i,ny-2,k])/dy
 
 # Vorticity edge points
+for j in range(1,ny-1):
+    Ωx0[0,j,0] = (Ωx0[1,j,0] + Ωx0[0,j,1])/2.0                            # Front-left edge
+    Ωy0[0,j,0] = (Ωy0[1,j,0] + Ωy0[0,j,1])/2.0
+    Ωz0[0,j,0] = (Ωz0[1,j,0] + Ωz0[0,j,1])/2.0
+    Ωx0[nx-1,j,0] = (Ωx0[nx-2,j,0] + Ωx0[nx-1,j,1])/2.0                   # Front-right edge
+    Ωy0[nx-1,j,0] = (Ωy0[nx-2,j,0] + Ωy0[nx-1,j,1])/2.0
+    Ωz0[nx-1,j,0] = (Ωz0[nx-2,j,0] + Ωz0[nx-1,j,1])/2.0
+    Ωx0[nx-1,j,nz-1] = (Ωx0[nx-2,j,nz-1] + Ωx0[nx-1,j,nz-2])/2.0          # Back-right edge
+    Ωy0[nx-1,j,nz-1] = (Ωy0[nx-2,j,nz-1] + Ωy0[nx-1,j,nz-2])/2.0
+    Ωz0[nx-1,j,nz-1] = (Ωz0[nx-2,j,nz-1] + Ωz0[nx-1,j,nz-2])/2.0
+    Ωx0[0,j,nz-1] = (Ωx0[1,j,nz-1] + Ωx0[0,j,nz-2])/2.0                   # Back-left edge
+    Ωy0[0,j,nz-1] = (Ωy0[1,j,nz-1] + Ωy0[0,j,nz-2])/2.0
+    Ωz0[0,j,nz-1] = (Ωz0[1,j,nz-1] + Ωz0[0,j,nz-2])/2.0
+
+for z in range(1,nz-1):
+    Ωx0[0,0,z] = (Ωx0[1,0,z] + Ωx0[0,1,z])/2.0                            # Bottom-left edge
+    Ωy0[0,0,z] = (Ωy0[1,0,z] + Ωy0[0,1,z])/2.0        
+    Ωz0[0,0,z] = (Ωz0[1,0,z] + Ωz0[0,1,z])/2.0
+    Ωx0[nx-1,0,z] = (Ωx0[nx-2,0,z] + Ωx0[0,1,z])/2.0                      # Bottom-right edge
+    Ωy0[nx-1,0,z] = (Ωy0[nx-2,0,z] + Ωy0[0,1,z])/2.0        
+    Ωz0[nx-1,0,z] = (Ωz0[nx-2,0,z] + Ωz0[0,1,z])/2.0
+    Ωx0[nx-1,ny-1,z] = (Ωx0[nx-2,ny-1,z] + Ωx0[nx-1,ny-2,z])/2.0          # Top-right edge
+    Ωy0[nx-1,ny-1,z] = (Ωy0[nx-2,ny-1,z] + Ωy0[nx-1,ny-2,z])/2.0        
+    Ωz0[nx-1,ny-1,z] = (Ωz0[nx-2,ny-1,z] + Ωz0[nx-1,ny-2,z])/2.0
+    Ωx0[0,ny-1,z] = (Ωx0[0,ny-2,z] + Ωx0[1,ny-1,z])/2.0                   # Top-left edge
+    Ωy0[0,ny-1,z] = (Ωy0[0,ny-2,z] + Ωy0[1,ny-1,z])/2.0        
+    Ωz0[0,ny-1,z] = (Ωz0[0,ny-2,z] + Ωz0[1,ny-1,z])/2.0
+
+for i in range(1,nx-1):
+    Ωx0[i,0,0] = (Ωx0[i,1,0] + Ωx0[i,0,1])/2.0                            # Front-bottom edge
+    Ωy0[i,0,0] = (Ωy0[i,1,0] + Ωy0[i,0,1])/2.0        
+    Ωz0[i,0,0] = (Ωz0[i,1,0] + Ωz0[i,0,1])/2.0
+    Ωx0[i,0,nz-1] = (Ωx0[i,1,nz-1] + Ωx0[i,0,nz-2])/2.0                   # Back-bottom edge
+    Ωy0[i,0,nz-1] = (Ωy0[i,1,nz-1] + Ωy0[i,0,nz-2])/2.0         
+    Ωz0[i,0,nz-1] = (Ωz0[i,1,nz-1] + Ωz0[i,0,nz-2])/2.0 
+    Ωx0[i,ny-1,0] = (Ωx0[i,ny-1,1] + Ωx0[i,ny-2,0])/2.0                   # Front-top edge
+    Ωy0[i,ny-1,0] = (Ωy0[i,ny-1,1] + Ωy0[i,ny-2,0])/2.0         
+    Ωz0[i,ny-1,0] = (Ωz0[i,ny-1,1] + Ωz0[i,ny-2,0])/2.0 
+    Ωx0[i,ny-1,nz-1] = (Ωx0[i,ny-2,nz-1] + Ωx0[i,ny-1,nz-2])/2.0          # Back-top edge
+    Ωy0[i,ny-1,nz-1] = (Ωy0[0,ny-2,nz-1] + Ωy0[1,ny-1,nz-2])/2.0        
+    Ωz0[i,ny-1,nz-1] = (Ωz0[0,ny-2,nz-1] + Ωz0[1,ny-1,nz-2])/2.0
 
 # Vorticity corner points
 Ωx0[0,0,0] = (Ωx0[1,0,0] + Ωx0[0,1,0] + Ωx0[0,0,1]) / 3.0
@@ -385,6 +427,9 @@ dt = min(0.25*dx*dx/Ϟ, 4*Ϟ/Ut/Ut)
 
 # Start main time loop
 t = 0
+u = u0.copy()
+v = v0.copy()
+w = w0.copy()
 while t < tend:
 
     #------------------------------------------------------------------
@@ -442,12 +487,25 @@ while t < tend:
     # Use the above calculated ψ field in several finite differences for the velocity components
     # And enforce velocity boundary conditions
     # This is uses the definition of the 3D velocity vector field, which is the curl of the vector-potential field
+
+    # Solve on the internal domain for the velocity field
+    # Try first-order central in the first instance
     for i in range(1,nx-1):
         for j in range(1,ny-1):
             for k in range(1,nz-1):
-                u[i,j,k] = (ψ[i+1,j,k] - ψ[i,j,k])/dx
-                v[i,j,k] = (ψ[i,j+1,k] - ψ[i,j,k])/dy
-                w[i,j,k] = (ψ[i,j,k+1] - ψ[i,j,k])/dz
+                u[i,j,k] = (ψz[i,j+1,k] - ψz[i,j-1,k])/dy + (ψy[i,j,k-1] - ψy[i,j,k+1])/dz
+                v[i,j,k] = (ψx[i,j,k+1] - ψx[i,j,k-1])/dz + (ψz[i-1,j,k] - ψz[i+1,j,k])/dx
+                w[i,j,k] = (ψy[i+1,j,k] - ψy[i-1,j,k])/dx + (ψx[i,j-1,k] - ψx[i,j+1,k])/dy
+
+
+
+
+    for i in range(1,nx-1):
+        for j in range(1,ny-1):
+            for k in range(1,nz-1):
+                u[0,j,k] = 0.0
+                v[0,j,k] = -ψz[i+1,j,k]/dx
+                w[0,j,k] = ψy[i+1,j,k]/dx
 
 
 
