@@ -433,7 +433,9 @@ w_sol.append(w0)
 # Time-marching parameters
 tend = 5.0
 tol = 1e-3
-err = 1e5
+errx = 1e5
+erry = 1e5
+errz = 1e5
 itmax = 100
 β = 1.7
 dt = min(0.25*dx*dx/Ϟ, 4*Ϟ/Ut/Ut)
@@ -452,48 +454,51 @@ while t < tend:
     # POISSON SOLVER FOR ψ_x
     it = 0
     ψx = ψx_sol[-1].copy()
-    Ωx = Ωx_sol[-1].copy()
-    while it < itmax and err > tol:
+    Ωxn = Ωx_sol[-1].copy()
+    while it < itmax and errx > tol:
         ψx_k = ψx.copy()
         for i in range(1,nx-1):
             for j in range(1,ny-1):
                 for k in range(1,nz-1):
-                    ψx[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωx[i,j,k] + dy**2*dz**2*(ψx[i+1,j,k]+ψx[i-1,j,k]) + dx**2*dz**2*(ψx[i,j+1,k]+ψx[i,j-1,k]) + dx**2*dy**2*(ψx[i,j,k+1] + ψx[i,j,k+1])) + (1 - β) * ψx[i,j,k]
-        err = np.linalg.norm(ψx.ravel() - ψx_k.ravel())
+                    ψx[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωxn[i,j,k] + dy**2*dz**2*(ψx[i+1,j,k]+ψx[i-1,j,k]) + dx**2*dz**2*(ψx[i,j+1,k]+ψx[i,j-1,k]) + dx**2*dy**2*(ψx[i,j,k+1] + ψx[i,j,k+1])) + (1 - β) * ψx[i,j,k]
+        errx = np.linalg.norm(ψx.ravel() - ψx_k.ravel())
         it = it + 1
-    ψx_sol.append(ψx)
+        print(f"X Iteration: {it}")
+        print(f"X Error: {errx}")
 
     # POISSON SOLVER FOR ψ_y
     it = 0
     ψy = ψy_sol[-1].copy()
-    Ωy = Ωy_sol[-1].copy()
-    while it < itmax and err > tol:
+    Ωyn = Ωy_sol[-1].copy()
+    while it < itmax and erry > tol:
         ψy_k = ψy.copy()
         for i in range(1,nx-1):
             for j in range(1,ny-1):
                 for k in range(1,nz-1):
-                    ψy[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωy[i,j,k] + dy**2*dz**2*(ψy[i+1,j,k]+ψy[i-1,j,k]) + dx**2*dz**2*(ψy[i,j+1,k]+ψy[i,j-1,k]) + dx**2*dy**2*(ψy[i,j,k+1] + ψy[i,j,k+1])) + (1 - β) * ψy[i,j,k]
-        err = np.linalg.norm(ψy.ravel() - ψy_k.ravel())
+                    ψy[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωyn[i,j,k] + dy**2*dz**2*(ψy[i+1,j,k]+ψy[i-1,j,k]) + dx**2*dz**2*(ψy[i,j+1,k]+ψy[i,j-1,k]) + dx**2*dy**2*(ψy[i,j,k+1] + ψy[i,j,k+1])) + (1 - β) * ψy[i,j,k]
+        erry = np.linalg.norm(ψy.ravel() - ψy_k.ravel())
         it = it + 1
-    ψy_sol.append(ψy)
+        print(f"Y Iteration: {it}")
+        print(f"Y Error: {erry}")
 
     # POISSON SOLVER FOR ψ_z
     it = 0 
     ψz = ψz_sol[-1].copy()
-    Ωz = Ωz_sol[-1].copy()
-    while it < itmax and err > tol:
+    Ωzn = Ωz_sol[-1].copy()
+    while it < itmax and errz > tol:
         ψz_k = ψz.copy()
         for i in range(1,nx-1):
             for j in range(1,ny-1):
                 for k in range(1,nz-1):
-                    ψz[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωz[i,j,k] + dy**2*dz**2*(ψz[i+1,j,k]+ψz[i-1,j,k]) + dx**2*dz**2*(ψz[i,j+1,k]+ψz[i,j-1,k]) + dx**2*dy**2*(ψz[i,j,k+1] + ψz[i,j,k+1])) + (1 - β) * ψz[i,j,k]
-        err = np.linalg.norm(ψz.ravel() - ψz_k.ravel())
+                    ψz[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωzn[i,j,k] + dy**2*dz**2*(ψz[i+1,j,k]+ψz[i-1,j,k]) + dx**2*dz**2*(ψz[i,j+1,k]+ψz[i,j-1,k]) + dx**2*dy**2*(ψz[i,j,k+1] + ψz[i,j,k+1])) + (1 - β) * ψz[i,j,k]
+        errz = np.linalg.norm(ψz.ravel() - ψz_k.ravel())
         it = it + 1
-    ψz_sol.append(ψz)
+        print(f"Z Iteration: {it}")
+        print(f"Z Error: {errz}")
 
 
     #------------------------
-    # Reapply boundary conditions to ψ
+    # Re-apply boundary conditions to ψ
     #--------------------------
     for j in range(1,ny-1):
         for k in range(1,nz-1):
@@ -606,6 +611,12 @@ while t < tend:
 
 
 
+    ψx_sol.append(ψx)
+    ψy_sol.append(ψy)
+    ψz_sol.append(ψz)
+
+
+
     #---------------------------------------
     # SOLVE FOR THE VELOCITY VECTOR FIELD
     #---------------------------------------
@@ -693,7 +704,39 @@ while t < tend:
     #---------------------------------------------------------------------------------
     # We solve three equations, one for each vorticity component
 
-    #Ω_sol.append(Ω)
+    #------------------------------
+    # Ω_X
+    #-------------------------------
+    Ωx = Ωxn.copy()
+    for i in range(1,nx-1):
+        for j in range(1,ny-1):
+            for k in range(1,nz-1):
+                Cx = (Ωxn[i+1,j,k] - Ωxn[i-1,j,k])/(2*dx)
+                Cy = (Ωyn[i,j+1,k] - Ωyn[i,j-1,k])/(2*dy)
+                Cz = (Ωzn[i,j,k+1] - Ωzn[i,j,k-1])/(2*dz)
+
+                Dx = (Ωxn[i+1,j,k] - Ωxn[i-1,j,k] + 2*Ωxn[i,j,k])/(dx**2)
+                Dy = (Ωyn[i,j+1,k] - Ωyn[i,j-1,k] + 2*Ωyn[i,j,k])/(dy**2)
+                Dz = (Ωzn[i,j,k+1] - Ωzn[i,j,k-1] + 2*Ωzn[i,j,k])/(dz**2)
+
+                Ux = (u[i+1,j,k] - u[i-1,j,k])/(2*dx)
+                Uy = (u[i,j+1,k] - u[i,j-1,k])/(2*dy)
+                Uz = (u[i,j,k+1] - u[i,j,k-1])/(2*dz)
+
+                # The equation
+                Ωx[i,j,k] = Ωxn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz) + Ωxn[i,j,k]*Ux + Ωyn[i,j,k]*Uy + Ωzn[i,j,k]*Uz - u[i,j,k]*Cx - v[i,j,k]*Cy - w[i,j,k]*Cz)
+
+    #-----------------------------------
+    # Ω_Y
+    #-------------------------------
+
+
+
+
+    # Re-apply the vorticity boundary conditions
+
+
+    Ωx_sol.append(Ωx.copy())
 
 
 
