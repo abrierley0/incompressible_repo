@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+np.set_printoptions(linewidth=1000, threshold=np.inf)  # Ensure full matrix prints
 
 # VECTOR-POTENTIAL VORTICITY FORMULATION
 #
@@ -74,7 +75,7 @@ for i in range(1,nx-1):
         ψz0[i,j,nz-1] = ψz0[i,j,nz-2]
 
 for i in range(1,nx-1):
-    for k in range(1,ny-1):
+    for k in range(1,nz-1):
         ψx0[i,0,k] = 0.0                # Bottom wall
         ψy0[i,0,k] = ψy0[i,1,k]   
         ψz0[i,0,k] = 0.0
@@ -164,17 +165,19 @@ for i in range(1,nx-1):
 ψy0[nx-1,ny-1,nz-1] = (ψy0[nx-2,ny-1,nz-1] + ψy0[nx-1,ny-1,nz-2] + ψy0[nx-1,ny-2,nz-1]) / 3.0
 ψz0[nx-1,ny-1,nz-1] = (ψz0[nx-2,ny-1,nz-1] + ψz0[nx-1,ny-1,nz-2] + ψz0[nx-1,ny-2,nz-1]) / 3.0
 
+print()
 print(f"ψx0 is : ")
 print()
 print(ψx0)
-
-print(f"Ωx0 is : ")
 print()
-print(Ωx0)
+
 
 #--------------------------------------------
 # VELOCITY VECTOR FIELD BOUNDARY CONDITIONS
 #--------------------------------------------
+# currently, just using no-slip and impermeability
+# conditions directly applied to u,v,w. But may need to use the
+# definition
 
 for j in range(1,ny-1):
     for k in range(1,nz-1):
@@ -199,9 +202,9 @@ for k in range(1,nz-1):
         u0[i,0,k] = 0.0          # Bottom wall
         v0[i,0,k] = 0.0
         w0[i,0,k] = 0.0
-        u0[i,0,k] = Ut          # Top wall
-        v0[i,0,k] = 0.0
-        w0[i,0,k] = 0.0
+        u0[i,ny-1,k] = Ut          # Top wall
+        v0[i,ny-1,k] = 0.0
+        w0[i,ny-1,k] = 0.0
 
 # Velocity edge points
 
@@ -280,9 +283,13 @@ u0[nx-1,ny-1,nz-1] = (u0[nx-2,ny-1,nz-1] + u0[nx-1,ny-1,nz-2] + u0[nx-1,ny-2,nz-
 v0[nx-1,ny-1,nz-1] = (v0[nx-2,ny-1,nz-1] + v0[nx-1,ny-1,nz-2] + v0[nx-1,ny-2,nz-1]) / 3.0
 w0[nx-1,ny-1,nz-1] = (w0[nx-2,ny-1,nz-1] + w0[nx-1,ny-1,nz-2] + w0[nx-1,ny-2,nz-1]) / 3.0
 
+print()
+print(f"u0 is : ")
+print()
+print(u0)
+print()
 
-# If vorticity boundary conditions are using vorticity, we also need the initial velocity field
-# and boundary conditions?
+
 
 #------------------------------------------------
 # VORTICITY VECTOR FIELD (Ω) BOUNDARY CONDITIONS
@@ -392,6 +399,12 @@ for i in range(1,nx-1):
 Ωy0[nx-1,ny-1,nz-1] = (Ωy0[nx-2,ny-1,nz-1] + Ωy0[nx-1,ny-1,nz-2] + Ωy0[nx-1,ny-2,nz-1]) / 3.0
 Ωz0[nx-1,ny-1,nz-1] = (Ωz0[nx-2,ny-1,nz-1] + Ωz0[nx-1,ny-1,nz-2] + Ωz0[nx-1,ny-2,nz-1]) / 3.0
 
+print()
+print(f"Ωx0 is : ")
+print()
+print(Ωx0)
+print()
+
 
 # Create solution storage
 ψx_sol = []
@@ -479,33 +492,196 @@ while t < tend:
     ψz_sol.append(ψz)
 
 
+    #------------------------
+    # Reapply boundary conditions to ψ
+    #--------------------------
+    for j in range(1,ny-1):
+        for k in range(1,nz-1):
+            ψx[0,j,k] = ψx[1,j,k]         # Left wall
+            ψy[0,j,k] = 0.0
+            ψz[0,j,k] = 0.0  
+            ψx[nx-1,j,k] = ψx[nx-2,j,k]   # Right wall
+            ψy[nx-1,j,k] = 0.0
+            ψz[nx-1,j,k] = 0.0
+
+    for i in range(1,nx-1):
+        for j in range(1,ny-1):
+            ψx[i,j,0] = 0.0                # Front wall
+            ψy[i,j,0] = 0.0
+            ψz[i,j,0] = ψz[i,j,1]       
+            ψx[i,j,nz-1] = 0.0             # Back wall
+            ψy[i,j,nz-1] = 0.0
+            ψz[i,j,nz-1] = ψz[i,j,nz-2]
+
+    for i in range(1,nx-1):
+        for k in range(1,ny-1):
+            ψx[i,0,k] = 0.0                # Bottom wall
+            ψy[i,0,k] = ψy[i,1,k]   
+            ψz[i,0,k] = 0.0
+            
+            #---------------------
+            # TOP WALL BOUNDARY CONDITION
+            #---------------------
+            # NOTE: Check top wall derivation
+            ψx[i,ny-1,k] = Ut                # Top wall
+            ψy[i,ny-1,k] = ψy[i,ny-2,k]   
+            ψz[i,ny-1,k] = 0.0
+
+
+    # Vector-potential edge points
+    for j in range(1,ny-1):
+        ψx[0,j,0] = (ψx[1,j,0] + ψx[0,j,1])/2.0                            # Front-left edge
+        ψy[0,j,0] = (ψy[1,j,0] + ψy[0,j,1])/2.0
+        ψz[0,j,0] = (ψz[1,j,0] + ψz[0,j,1])/2.0
+        ψx[nx-1,j,0] = (ψx[nx-2,j,0] + ψx[nx-1,j,1])/2.0                   # Front-right edge
+        ψy[nx-1,j,0] = (ψy[nx-2,j,0] + ψy[nx-1,j,1])/2.0
+        ψz[nx-1,j,0] = (ψz[nx-2,j,0] + ψz[nx-1,j,1])/2.0
+        ψx[nx-1,j,nz-1] = (ψx[nx-2,j,nz-1] + ψx[nx-1,j,nz-2])/2.0          # Back-right edge
+        ψy[nx-1,j,nz-1] = (ψy[nx-2,j,nz-1] + ψy[nx-1,j,nz-2])/2.0
+        ψz[nx-1,j,nz-1] = (ψz[nx-2,j,nz-1] + ψz[nx-1,j,nz-2])/2.0
+        ψx[0,j,nz-1] = (ψx[1,j,nz-1] + ψx[0,j,nz-2])/2.0                   # Back-left edge
+        ψy[0,j,nz-1] = (ψy[1,j,nz-1] + ψy[0,j,nz-2])/2.0
+        ψz[0,j,nz-1] = (ψz[1,j,nz-1] + ψz[0,j,nz-2])/2.0
+
+    for z in range(1,nz-1):
+        ψx[0,0,z] = (ψx[1,0,z] + ψx[0,1,z])/2.0                            # Bottom-left edge
+        ψy[0,0,z] = (ψy[1,0,z] + ψy[0,1,z])/2.0        
+        ψz[0,0,z] = (ψz[1,0,z] + ψz[0,1,z])/2.0
+        ψx[nx-1,0,z] = (ψx[nx-2,0,z] + ψx[0,1,z])/2.0                      # Bottom-right edge
+        ψy[nx-1,0,z] = (ψy[nx-2,0,z] + ψy[0,1,z])/2.0        
+        ψz[nx-1,0,z] = (ψz[nx-2,0,z] + ψz[0,1,z])/2.0
+        ψx[nx-1,ny-1,z] = (ψx[nx-2,ny-1,z] + ψx[nx-1,ny-2,z])/2.0          # Top-right edge
+        ψy[nx-1,ny-1,z] = (ψy[nx-2,ny-1,z] + ψy[nx-1,ny-2,z])/2.0        
+        ψz[nx-1,ny-1,z] = (ψz[nx-2,ny-1,z] + ψz[nx-1,ny-2,z])/2.0
+        ψx[0,ny-1,z] = (ψx[0,ny-2,z] + ψx[1,ny-1,z])/2.0                   # Top-left edge
+        ψy[0,ny-1,z] = (ψy[0,ny-2,z] + ψy[1,ny-1,z])/2.0        
+        ψz[0,ny-1,z] = (ψz[0,ny-2,z] + ψz[1,ny-1,z])/2.0
+
+    for i in range(1,nx-1):
+        ψx[i,0,0] = (ψx[i,1,0] + ψx[i,0,1])/2.0                            # Front-bottom edge
+        ψy[i,0,0] = (ψy[i,1,0] + ψy[i,0,1])/2.0        
+        ψz[i,0,0] = (ψz[i,1,0] + ψz[i,0,1])/2.0
+        ψx[i,0,nz-1] = (ψx[i,1,nz-1] + ψx[i,0,nz-2])/2.0                   # Back-bottom edge
+        ψy[i,0,nz-1] = (ψy[i,1,nz-1] + ψy[i,0,nz-2])/2.0         
+        ψz[i,0,nz-1] = (ψz[i,1,nz-1] + ψz[i,0,nz-2])/2.0 
+        ψx[i,ny-1,0] = (ψx[i,ny-1,1] + ψx[i,ny-2,0])/2.0                   # Front-top edge
+        ψy[i,ny-1,0] = (ψy[i,ny-1,1] + ψy[i,ny-2,0])/2.0         
+        ψz[i,ny-1,0] = (ψz[i,ny-1,1] + ψz[i,ny-2,0])/2.0 
+        ψx[i,ny-1,nz-1] = (ψx[i,ny-2,nz-1] + ψx[i,ny-1,nz-2])/2.0          # Back-top edge
+        ψy[i,ny-1,nz-1] = (ψy[0,ny-2,nz-1] + ψy[1,ny-1,nz-2])/2.0        
+        ψz[i,ny-1,nz-1] = (ψz[0,ny-2,nz-1] + ψz[1,ny-1,nz-2])/2.0
+
+    # Vector-potential corner points
+    ψx[0,0,0] = (ψx[1,0,0] + ψx[0,1,0] + ψx[0,0,1]) / 3.0                                           # Lower bottom left 
+    ψy[0,0,0] = (ψy[1,0,0] + ψy[0,1,0] + ψy[0,0,1]) / 3.0
+    ψz[0,0,0] = (ψz[1,0,0] + ψz[0,1,0] + ψz[0,0,1]) / 3.0
+
+    ψx[0,0,nz-1] = (ψx[0,0,nz-2] + ψx[1,0,nz-1] + ψx[0,1,nz-1]) / 3.0                               # Lower back left
+    ψy[0,0,nz-1] = (ψy[0,0,nz-2] + ψy[1,0,nz-1] + ψy[0,1,nz-1]) / 3.0
+    ψz[0,0,nz-1] = (ψz[0,0,nz-2] + ψz[1,0,nz-1] + ψz[0,1,nz-1]) / 3.0
+
+    ψx[nx-1,0,0] = (ψx[nx-2,0,0] + ψx[nx-1,1,0] + ψx[nx-1,0,1]) / 3.0                               # Lower front right 
+    ψy[nx-1,0,0] = (ψy[nx-2,0,0] + ψy[nx-1,1,0] + ψy[nx-1,0,1]) / 3.0
+    ψz[nx-1,0,0] = (ψz[nx-2,0,0] + ψz[nx-1,1,0] + ψz[nx-1,0,1]) / 3.0
+
+    ψx[nx-1,0,nz-1] = (ψx[nx-2,0,nz-1] + ψx[nx-1,0,nz-2] + ψx[nx-1,1,nz-1]) / 3.0                   # Lower back right
+    ψy[nx-1,0,nz-1] = (ψy[nx-2,0,nz-1] + ψy[nx-1,0,nz-2] + ψy[nx-1,1,nz-1]) / 3.0
+    ψz[nx-1,0,nz-1] = (ψz[nx-2,0,nz-1] + ψz[nx-1,0,nz-2] + ψz[nx-1,1,nz-1]) / 3.0
+
+    ψx[0,ny-1,0] = (ψx[1,ny-1,0] + ψx[0,ny-2,0] + ψx[0,ny-1,1]) / 3.0                               # Front top left
+    ψy[0,ny-1,0] = (ψy[1,ny-1,0] + ψy[0,ny-2,0] + ψy[0,ny-1,1]) / 3.0
+    ψz[0,ny-1,0] = (ψz[1,ny-1,0] + ψz[0,ny-2,0] + ψz[0,ny-1,1]) / 3.0
+
+    ψx[0,ny-1,nz-1] = (ψx[0,ny-1,nz-2] + ψx[1,ny-1,nz-1] + ψx[0,ny-2,nz-1]) / 3.0                   # Back top left
+    ψy[0,ny-1,nz-1] = (ψy[0,ny-1,nz-2] + ψy[1,ny-1,nz-1] + ψy[0,ny-2,nz-1]) / 3.0
+    ψz[0,ny-1,nz-1] = (ψz[0,ny-1,nz-2] + ψz[1,ny-1,nz-1] + ψz[0,ny-2,nz-1]) / 3.0
+
+    ψx[nx-1,ny-1,0] = (ψx[nx-2,ny-1,0] + ψx[nx-1,ny-2,0] + ψx[nx-1,ny-1,1]) / 3.0                   # Front top right
+    ψy[nx-1,ny-1,0] = (ψy[nx-2,ny-1,0] + ψy[nx-1,ny-2,0] + ψy[nx-1,ny-1,1]) / 3.0
+    ψz[nx-1,ny-1,0] = (ψz[nx-2,ny-1,0] + ψz[nx-1,ny-2,0] + ψz[nx-1,ny-1,1]) / 3.0
+
+    ψx[nx-1,ny-1,nz-1] = (ψx[nx-2,ny-1,nz-1] + ψx[nx-1,ny-1,nz-2] + ψx[nx-1,ny-2,nz-1]) / 3.0       # Back top right
+    ψy[nx-1,ny-1,nz-1] = (ψy[nx-2,ny-1,nz-1] + ψy[nx-1,ny-1,nz-2] + ψy[nx-1,ny-2,nz-1]) / 3.0
+    ψz[nx-1,ny-1,nz-1] = (ψz[nx-2,ny-1,nz-1] + ψz[nx-1,ny-1,nz-2] + ψz[nx-1,ny-2,nz-1]) / 3.0
+
 
 
     #---------------------------------------
     # SOLVE FOR THE VELOCITY VECTOR FIELD
     #---------------------------------------
-    # Use the above calculated ψ field in several finite differences for the velocity components
-    # And enforce velocity boundary conditions
-    # This is uses the definition of the 3D velocity vector field, which is the curl of the vector-potential field
-
+    # using the curl of the vector potential
     # Solve on the internal domain for the velocity field
-    # Try first-order central in the first instance
     for i in range(1,nx-1):
         for j in range(1,ny-1):
             for k in range(1,nz-1):
-                u[i,j,k] = (ψz[i,j+1,k] - ψz[i,j-1,k])/dy + (ψy[i,j,k-1] - ψy[i,j,k+1])/dz
+                u[i,j,k] = (ψz[i,j+1,k] - ψz[i,j-1,k])/dy + (ψy[i,j,k-1] - ψy[i,j,k+1])/dz  # First-order central
                 v[i,j,k] = (ψx[i,j,k+1] - ψx[i,j,k-1])/dz + (ψz[i-1,j,k] - ψz[i+1,j,k])/dx
                 w[i,j,k] = (ψy[i+1,j,k] - ψy[i-1,j,k])/dx + (ψx[i,j-1,k] - ψx[i,j+1,k])/dy
 
 
 
+    # # BOUNDARIES
+    # # Apply before or after?
+    # for j in range(1,ny-1):
+    #     for k in range(1,nz-1):
+    #         u[0,j,k] = 0.0                                      # Left wall
+    #         v[0,j,k] = -ψz[i+1,j,k]/dx
+    #         w[0,j,k] = ψy[i+1,j,k]/dx
+    #         u[nx-1,j,k] = ψz[nx-2,j,k]/dx                       # Right wall
+    #         v[nx-1,j,k] = -ψy[nx-2,j,k]/dx 
+    #         w[nx-1,j,k] = 0.0
+
+    # for i in range(1,nx-1):
+    #     for k in range(1,nz-1):
+    #         u[i,0,k] = ψz[i,1,k]/dy                             # Bottom wall
+    #         v[i,0,k] = 0.0
+    #         w[i,j+1,k] = -ψx[i,1,k]/dy
+    #         #------------
+    #         # TOP WALL
+    #         #------------
+
+    # for i in range(1,nx-1):
+    #     for j in range(1,ny-1):
+    #         u[i,j,0] = -ψy[i,j,1]/dz                            # Front wall
+    #         v[i,j,0] = ψx[i,j,1]/dz
+    #         w[i,j,0] = 0.0
+    #         u[i,j,nz-1] = ψy[i,j,nz-2]/dz                       # Back wall
+    #         v[i,j,nz-1] = -ψx[i,j,nz-2]/dz
+    #         w[i,j,nz-1] = 0.0
+
+    # OR,
+
+    for j in range(1,ny-1):
+        for k in range(1,nz-1):
+            u[0,j,k] = 0.0          # Left wall
+            v[0,j,k] = 0.0
+            w[0,j,k] = 0.0
+            u[nx-1,j,k] = 0.0       # Right wall
+            v[nx-1,j,k] = 0.0
+            w[nx-1,j,k] = 0.0
 
     for i in range(1,nx-1):
         for j in range(1,ny-1):
-            for k in range(1,nz-1):
-                u[0,j,k] = 0.0
-                v[0,j,k] = -ψz[i+1,j,k]/dx
-                w[0,j,k] = ψy[i+1,j,k]/dx
+            u[i,j,0] = 0.0          # Front wall
+            v[i,j,0] = 0.0
+            w[i,j,0] = 0.0
+            u[i,j,nz-1] = 0.0       # Back wall
+            v[i,j,nz-1] = 0.0
+            w[i,j,nz-1] = 0.0
+
+    for k in range(1,nz-1):
+        for i in range(1,nx-1):
+            u[i,0,k] = 0.0          # Bottom wall
+            v[i,0,k] = 0.0
+            w[i,0,k] = 0.0
+            u[i,0,k] = Ut          # Top wall
+            v[i,0,k] = 0.0
+            w[i,0,k] = 0.0
+
+    u_sol.append(u)
+    v_sol.append(v)
+    w_sol.append(w)
+
 
 
 
