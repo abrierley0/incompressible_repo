@@ -319,9 +319,9 @@ for i in range(1,nx-1):
         Ωx0[i,0,k] = w0[i,1,k]/dy                         # Bottom wall
         Ωy0[i,0,k] = 0.0
         Ωz0[i,0,k] = -u0[i,1,k]/dy
-        Ωx0[i,0,k] = -w0[i,ny-2,k]/dy                     # Top wall
-        Ωy0[i,0,k] = (u0[i,ny-1,k+1] - u0[i,ny-1,k])/dy
-        Ωz0[i,0,k] = -(u0[i,ny-1,k] - u0[i,ny-2,k])/dy
+        Ωx0[i,ny-1,k] = -w0[i,ny-2,k]/dy                     # Top wall
+        Ωy0[i,ny-1,k] = (u0[i,ny-1,k+1] - u0[i,ny-1,k])/dy
+        Ωz0[i,ny-1,k] = -(u0[i,ny-1,k] - u0[i,ny-2,k])/dy
 
 # Vorticity edge points
 for j in range(1,ny-1):
@@ -497,9 +497,9 @@ while t < tend:
         print(f"Z Error: {errz}")
 
 
-    #------------------------
+    #-------------------------------------------
     # Re-apply boundary conditions to ψ
-    #--------------------------
+    #-------------------------------------------
     for j in range(1,ny-1):
         for k in range(1,nz-1):
             ψx[0,j,k] = ψx[1,j,k]         # Left wall
@@ -524,9 +524,9 @@ while t < tend:
             ψy[i,0,k] = ψy[i,1,k]   
             ψz[i,0,k] = 0.0
             
-            #---------------------
+            #----------------------------
             # TOP WALL BOUNDARY CONDITION
-            #---------------------
+            #---------------------------
             # NOTE: Check top wall derivation
             ψx[i,ny-1,k] = Ut                # Top wall
             ψy[i,ny-1,k] = ψy[i,ny-2,k]   
@@ -797,9 +797,9 @@ while t < tend:
             Ωx[i,0,k] = w[i,1,k]/dy                         # Bottom wall
             Ωy[i,0,k] = 0.0
             Ωz[i,0,k] = -u[i,1,k]/dy
-            Ωx[i,0,k] = -w[i,ny-2,k]/dy                     # Top wall
-            Ωy[i,0,k] = (u[i,ny-1,k+1] - u[i,ny-1,k])/dy
-            Ωz[i,0,k] = -(u[i,ny-1,k] - u[i,ny-2,k])/dy
+            Ωx[i,ny-1,k] = -w[i,ny-2,k]/dy                     # Top wall
+            Ωy[i,ny-1,k] = (u[i,ny-1,k+1] - u[i,ny-1,k])/dy
+            Ωz[i,ny-1,k] = -(u[i,ny-1,k] - u[i,ny-2,k])/dy
 
     # Vorticity edge points
     for j in range(1,ny-1):
