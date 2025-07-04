@@ -774,6 +774,108 @@ while t < tend:
 
 
     # Re-apply the vorticity boundary conditions
+    for j in range(1,ny-1):
+        for k in range(1,nz-1):
+            Ωx[0,j,k] = 0.0                                 # Left wall
+            Ωy[0,j,k] = -w[1,j,k]/dx
+            Ωz[0,j,k] = v[1,j,k]/dx
+            Ωx[nx-1,j,k] = 0.0                              # Right wall
+            Ωy[nx-1,j,k] = -w[nx-2,j,k]/dx
+            Ωz[nx-1,j,k] =-v[nx-2,j,k]/dx
+
+    for i in range(1,nx-1):
+        for j in range(1,ny-1):
+            Ωx[i,j,0] = -v[i,j,1]/dz                        # Front wall
+            Ωy[i,j,0] = u[i,j,1]/dz
+            Ωz[i,j,0] = 0.0
+            Ωx[i,j,nz-1] = v[i,j,nz-2]/dz                   # Back wall
+            Ωy[i,j,nz-1] = -u[i,j,nz-2]/dz
+            Ωz[i,j,nz-1] = 0.0
+            
+    for i in range(1,nx-1):
+        for k in range(1,nz-1):
+            Ωx[i,0,k] = w[i,1,k]/dy                         # Bottom wall
+            Ωy[i,0,k] = 0.0
+            Ωz[i,0,k] = -u[i,1,k]/dy
+            Ωx[i,0,k] = -w[i,ny-2,k]/dy                     # Top wall
+            Ωy[i,0,k] = (u[i,ny-1,k+1] - u[i,ny-1,k])/dy
+            Ωz[i,0,k] = -(u[i,ny-1,k] - u[i,ny-2,k])/dy
+
+    # Vorticity edge points
+    for j in range(1,ny-1):
+        Ωx[0,j,0] = (Ωx[1,j,0] + Ωx[0,j,1])/2.0                            # Front-left edge
+        Ωy[0,j,0] = (Ωy[1,j,0] + Ωy[0,j,1])/2.0
+        Ωz[0,j,0] = (Ωz[1,j,0] + Ωz[0,j,1])/2.0
+        Ωx[nx-1,j,0] = (Ωx[nx-2,j,0] + Ωx[nx-1,j,1])/2.0                   # Front-right edge
+        Ωy[nx-1,j,0] = (Ωy[nx-2,j,0] + Ωy[nx-1,j,1])/2.0
+        Ωz[nx-1,j,0] = (Ωz[nx-2,j,0] + Ωz[nx-1,j,1])/2.0
+        Ωx[nx-1,j,nz-1] = (Ωx[nx-2,j,nz-1] + Ωx[nx-1,j,nz-2])/2.0          # Back-right edge
+        Ωy[nx-1,j,nz-1] = (Ωy[nx-2,j,nz-1] + Ωy[nx-1,j,nz-2])/2.0
+        Ωz[nx-1,j,nz-1] = (Ωz[nx-2,j,nz-1] + Ωz[nx-1,j,nz-2])/2.0
+        Ωx[0,j,nz-1] = (Ωx[1,j,nz-1] + Ωx[0,j,nz-2])/2.0                   # Back-left edge
+        Ωy[0,j,nz-1] = (Ωy[1,j,nz-1] + Ωy[0,j,nz-2])/2.0
+        Ωz[0,j,nz-1] = (Ωz[1,j,nz-1] + Ωz[0,j,nz-2])/2.0
+
+    for z in range(1,nz-1):
+        Ωx[0,0,z] = (Ωx[1,0,z] + Ωx[0,1,z])/2.0                            # Bottom-left edge
+        Ωy[0,0,z] = (Ωy[1,0,z] + Ωy[0,1,z])/2.0        
+        Ωz[0,0,z] = (Ωz[1,0,z] + Ωz[0,1,z])/2.0
+        Ωx[nx-1,0,z] = (Ωx[nx-2,0,z] + Ωx[0,1,z])/2.0                      # Bottom-right edge
+        Ωy[nx-1,0,z] = (Ωy[nx-2,0,z] + Ωy[0,1,z])/2.0        
+        Ωz[nx-1,0,z] = (Ωz[nx-2,0,z] + Ωz[0,1,z])/2.0
+        Ωx[nx-1,ny-1,z] = (Ωx[nx-2,ny-1,z] + Ωx[nx-1,ny-2,z])/2.0          # Top-right edge
+        Ωy[nx-1,ny-1,z] = (Ωy[nx-2,ny-1,z] + Ωy[nx-1,ny-2,z])/2.0        
+        Ωz[nx-1,ny-1,z] = (Ωz[nx-2,ny-1,z] + Ωz[nx-1,ny-2,z])/2.0
+        Ωx[0,ny-1,z] = (Ωx[0,ny-2,z] + Ωx[1,ny-1,z])/2.0                   # Top-left edge
+        Ωy[0,ny-1,z] = (Ωy[0,ny-2,z] + Ωy[1,ny-1,z])/2.0        
+        Ωz[0,ny-1,z] = (Ωz[0,ny-2,z] + Ωz[1,ny-1,z])/2.0
+
+    for i in range(1,nx-1):
+        Ωx[i,0,0] = (Ωx[i,1,0] + Ωx[i,0,1])/2.0                            # Front-bottom edge
+        Ωy[i,0,0] = (Ωy[i,1,0] + Ωy[i,0,1])/2.0        
+        Ωz[i,0,0] = (Ωz[i,1,0] + Ωz[i,0,1])/2.0
+        Ωx[i,0,nz-1] = (Ωx[i,1,nz-1] + Ωx[i,0,nz-2])/2.0                   # Back-bottom edge
+        Ωy[i,0,nz-1] = (Ωy[i,1,nz-1] + Ωy[i,0,nz-2])/2.0         
+        Ωz[i,0,nz-1] = (Ωz[i,1,nz-1] + Ωz[i,0,nz-2])/2.0 
+        Ωx[i,ny-1,0] = (Ωx[i,ny-1,1] + Ωx[i,ny-2,0])/2.0                   # Front-top edge
+        Ωy[i,ny-1,0] = (Ωy[i,ny-1,1] + Ωy[i,ny-2,0])/2.0         
+        Ωz[i,ny-1,0] = (Ωz[i,ny-1,1] + Ωz[i,ny-2,0])/2.0 
+        Ωx[i,ny-1,nz-1] = (Ωx[i,ny-2,nz-1] + Ωx[i,ny-1,nz-2])/2.0          # Back-top edge
+        Ωy[i,ny-1,nz-1] = (Ωy[0,ny-2,nz-1] + Ωy[1,ny-1,nz-2])/2.0        
+        Ωz[i,ny-1,nz-1] = (Ωz[0,ny-2,nz-1] + Ωz[1,ny-1,nz-2])/2.0
+
+    # Vorticity corner points
+    Ωx[0,0,0] = (Ωx[1,0,0] + Ωx[0,1,0] + Ωx[0,0,1]) / 3.0
+    Ωy[0,0,0] = (Ωy[1,0,0] + Ωy[0,1,0] + Ωy[0,0,1]) / 3.0
+    Ωz[0,0,0] = (Ωz[1,0,0] + Ωz[0,1,0] + Ωz[0,0,1]) / 3.0
+
+    Ωx[0,0,nz-1] = (Ωx[0,0,nz-2] + Ωx[1,0,nz-1] + Ωx[0,1,nz-1]) / 3.0
+    Ωy[0,0,nz-1] = (Ωy[0,0,nz-2] + Ωy[1,0,nz-1] + Ωy[0,1,nz-1]) / 3.0
+    Ωz[0,0,nz-1] = (Ωz[0,0,nz-2] + Ωz[1,0,nz-1] + Ωz[0,1,nz-1]) / 3.0
+
+    Ωx[nx-1,0,0] = (Ωx[nx-2,0,0] + Ωx[nx-1,1,0] + Ωx[nx-1,0,1]) / 3.0
+    Ωy[nx-1,0,0] = (Ωy[nx-2,0,0] + Ωy[nx-1,1,0] + Ωy[nx-1,0,1]) / 3.0
+    ψz[nx-1,0,0] = (ψz[nx-2,0,0] + ψz[nx-1,1,0] + ψz[nx-1,0,1]) / 3.0
+
+    Ωx[nx-1,0,nz-1] = (Ωx[nx-2,0,nz-1] + Ωx[nx-1,0,nz-2] + Ωx[nx-1,1,nz-1]) / 3.0
+    Ωy[nx-1,0,nz-1] = (Ωy[nx-2,0,nz-1] + Ωy[nx-1,0,nz-2] + Ωy[nx-1,1,nz-1]) / 3.0
+    Ωz[nx-1,0,nz-1] = (Ωz[nx-2,0,nz-1] + Ωz[nx-1,0,nz-2] + Ωz[nx-1,1,nz-1]) / 3.0
+
+    Ωx[0,ny-1,0] = (Ωx[1,ny-1,0] + Ωx[0,ny-2,0] + Ωx[0,ny-1,1]) / 3.0
+    Ωy[0,ny-1,0] = (Ωy[1,ny-1,0] + Ωy[0,ny-2,0] + Ωy[0,ny-1,1]) / 3.0
+    Ωz[0,ny-1,0] = (Ωz[1,ny-1,0] + Ωz[0,ny-2,0] + Ωz[0,ny-1,1]) / 3.0
+
+    Ωx[0,ny-1,nz-1] = (Ωx[0,ny-1,nz-2] + Ωx[1,ny-1,nz-1] + Ωx[0,ny-2,nz-1]) / 3.0
+    Ωy[0,ny-1,nz-1] = (Ωy[0,ny-1,nz-2] + Ωy[1,ny-1,nz-1] + Ωy[0,ny-2,nz-1]) / 3.0
+    Ωz[0,ny-1,nz-1] = (Ωz[0,ny-1,nz-2] + Ωz[1,ny-1,nz-1] + Ωz[0,ny-2,nz-1]) / 3.0
+
+    Ωx[nx-1,ny-1,0] = (Ωx[nx-2,ny-1,0] + Ωx[nx-1,ny-2,0] + Ωx[nx-1,ny-1,1]) / 3.0
+    Ωy[nx-1,ny-1,0] = (Ωy[nx-2,ny-1,0] + Ωy[nx-1,ny-2,0] + Ωy[nx-1,ny-1,1]) / 3.0
+    Ωz[nx-1,ny-1,0] = (Ωz[nx-2,ny-1,0] + Ωz[nx-1,ny-2,0] + Ωz[nx-1,ny-1,1]) / 3.0
+
+    Ωx[nx-1,ny-1,nz-1] = (Ωx[nx-2,ny-1,nz-1] + Ωx[nx-1,ny-1,nz-2] + Ωx[nx-1,ny-2,nz-1]) / 3.0
+    Ωy[nx-1,ny-1,nz-1] = (Ωy[nx-2,ny-1,nz-1] + Ωy[nx-1,ny-1,nz-2] + Ωy[nx-1,ny-2,nz-1]) / 3.0
+    Ωz[nx-1,ny-1,nz-1] = (Ωz[nx-2,ny-1,nz-1] + Ωz[nx-1,ny-1,nz-2] + Ωz[nx-1,ny-2,nz-1]) / 3.0
 
 
     # Store the solution
