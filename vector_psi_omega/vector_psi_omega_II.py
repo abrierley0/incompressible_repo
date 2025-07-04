@@ -27,9 +27,9 @@ dz = Lz/(nz-1)
 
 
 # Physical parameters
-Ϟ = 0.05
+nu = 0.05
 Ut = 3.2
-Re = Ut*Lx/Ϟ
+Re = Ut*Lx/nu
 print()
 print(f"REYNOLDS' NUMBER IS {Re}")
 print()
@@ -438,7 +438,7 @@ erry = 1e5
 errz = 1e5
 itmax = 100
 β = 1.7
-dt = min(0.25*dx*dx/Ϟ, 4*Ϟ/Ut/Ut)
+dt = min(0.25*dx*dx/nu, 4*nu/Ut/Ut)
 
 # Start main time loop
 t = 0
@@ -724,7 +724,7 @@ while t < tend:
                 Uz = Ωzn[i,j,k] * (u[i,j,k+1] - u[i,j,k-1])/(2*dz)
 
                 # The equation
-                Ωx[i,j,k] = Ωxn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz) + Ux + Uy + Uz - (Cx + Cy + Cz))
+                Ωx[i,j,k] = Ωxn[i,j,k] + dt * (nu * (Dx + Dy + Dz) + Ux + Uy + Uz - (Cx + Cy + Cz))
 
     #-------------------------------
     # Ω_Y
@@ -746,7 +746,7 @@ while t < tend:
                 Uz = Ωzn[i,j,k] * (v[i,j,k+1] - v[i,j,k-1])/(2*dz)
 
                 # The equation
-                Ωy[i,j,k] = Ωyn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz) + Ux + Uy + Uz - (Cx + Cy + Cz))
+                Ωy[i,j,k] = Ωyn[i,j,k] + dt * (nu * (Dx + Dy + Dz) + Ux + Uy + Uz - (Cx + Cy + Cz))
 
     
     #-------------------------------
@@ -769,7 +769,7 @@ while t < tend:
                 Uz = Ωzn[i,j,k] * (w[i,j,k+1] - w[i,j,k-1])/(2*dz)
 
                 # The equation
-                Ωz[i,j,k] = Ωzn[i,j,k] + dt * (Ϟ * (Dx + Dy + Dz) + Ux + Uy + Uz - (Cx + Cy + Cz))
+                Ωz[i,j,k] = Ωzn[i,j,k] + dt * (nu * (Dx + Dy + Dz) + Ux + Uy + Uz - (Cx + Cy + Cz))
 
 
 
