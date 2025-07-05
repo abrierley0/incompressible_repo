@@ -83,10 +83,13 @@ for i in range(1,nx-1):
         #---------------------
         # TOP WALL BOUNDARY CONDITION
         #---------------------
-        # NOTE: Check top wall derivation
-        ψx0[i,ny-1,k] = Ut                # Top wall
-        ψy0[i,ny-1,k] = ψy0[i,ny-2,k]   
-        ψz0[i,ny-1,k] = 0.0
+        # # NOTE: Check top wall derivation
+        # ψx0[i,ny-1,k] = Ut                # Top wall
+        # ψy0[i,ny-1,k] = ψy0[i,ny-2,k]   
+        # ψz0[i,ny-1,k] = 0.0
+        ψx0[i,ny-1,k] = -ψz0[i,ny-2,k]/dy                # Top wall
+        ψy0[i,ny-1,k] = 0.0  
+        ψz0[i,ny-1,k] = ψx0[i,ny-2,k]/dy
 
 
 # Vector-potential edge points
@@ -529,9 +532,12 @@ while t < tend:
             # TOP WALL BOUNDARY CONDITION
             #---------------------------
             # NOTE: Check top wall derivation
-            ψx[i,ny-1,k] = Ut                # Top wall
-            ψy[i,ny-1,k] = ψy[i,ny-2,k]   
-            ψz[i,ny-1,k] = 0.0
+            # ψx[i,ny-1,k] = Ut                # Top wall
+            # ψy[i,ny-1,k] = ψy[i,ny-2,k]   
+            # ψz[i,ny-1,k] = 0.0
+            ψx0[i,ny-1,k] = -ψz0[i,ny-2,k]/dy                # Top wall
+            ψy0[i,ny-1,k] = 0.0  
+            ψz0[i,ny-1,k] = ψx0[i,ny-2,k]/dy
 
 
     # Vector-potential edge points
