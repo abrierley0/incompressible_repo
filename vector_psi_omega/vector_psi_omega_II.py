@@ -444,7 +444,7 @@ erry = 1e5
 errz = 1e5
 itmax = 100
 β = 1.7
-dt = min(0.25*dx*dx/nu, 4*nu/Ut/Ut)
+dt = 0.25*dx*dx/nu if Ut == 0 else min(0.25*dx*dx/nu, 4*nu/(Ut**2))
 
 # Start main time loop
 t = 0
