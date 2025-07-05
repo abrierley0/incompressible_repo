@@ -363,8 +363,8 @@ for i in range(1,nx-1):
     Ωy0[i,ny-1,0] = (Ωy0[i,ny-1,1] + Ωy0[i,ny-2,0])/2.0         
     Ωz0[i,ny-1,0] = (Ωz0[i,ny-1,1] + Ωz0[i,ny-2,0])/2.0 
     Ωx0[i,ny-1,nz-1] = (Ωx0[i,ny-2,nz-1] + Ωx0[i,ny-1,nz-2])/2.0          # Back-top edge
-    Ωy0[i,ny-1,nz-1] = (Ωy0[0,ny-2,nz-1] + Ωy0[1,ny-1,nz-2])/2.0        
-    Ωz0[i,ny-1,nz-1] = (Ωz0[0,ny-2,nz-1] + Ωz0[1,ny-1,nz-2])/2.0
+    Ωy0[i,ny-1,nz-1] = (Ωy0[i,ny-2,nz-1] + Ωy0[i,ny-1,nz-2])/2.0        
+    Ωz0[i,ny-1,nz-1] = (Ωz0[i,ny-2,nz-1] + Ωz0[i,ny-1,nz-2])/2.0
 
 # Vorticity corner points
 Ωx0[0,0,0] = (Ωx0[1,0,0] + Ωx0[0,1,0] + Ωx0[0,0,1]) / 3.0
