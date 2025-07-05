@@ -182,6 +182,8 @@ print()
 # conditions directly applied to u,v,w. But may need to use the
 # definition
 
+
+# MAIN VELOCITY BOUNDARY CONDITIONS
 for j in range(1,ny-1):
     for k in range(1,nz-1):
         u0[0,j,k] = 0.0          # Left wall
@@ -670,40 +672,8 @@ while t < tend:
     # OR,
 
     # RE-APPLY VELOCITY BOUNDARY CONDITIONS
-    for j in range(1,ny-1):
-        for k in range(1,nz-1):
-            u[0,j,k] = 0.0          # Left wall
-            v[0,j,k] = 0.0
-            w[0,j,k] = 0.0
-            u[nx-1,j,k] = 0.0       # Right wall
-            v[nx-1,j,k] = 0.0
-            w[nx-1,j,k] = 0.0
 
-    for i in range(1,nx-1):
-        for j in range(1,ny-1):
-            u[i,j,0] = 0.0          # Front wall
-            v[i,j,0] = 0.0
-            w[i,j,0] = 0.0
-            u[i,j,nz-1] = 0.0       # Back wall
-            v[i,j,nz-1] = 0.0
-            w[i,j,nz-1] = 0.0
-
-    for k in range(1,nz-1):
-        for i in range(1,nx-1):
-            u[i,0,k] = 0.0          # Bottom wall
-            v[i,0,k] = 0.0
-            w[i,0,k] = 0.0
-            u[i,ny-1,k] = Ut        # Top wall
-            v[i,ny-1,k] = 0.0
-            w[i,ny-1,k] = 0.0
-
-    u_sol.append(u)
-    v_sol.append(v)
-    w_sol.append(w)
-
-
-        # Velocity edge points
-
+    # Velocity edge points
     for j in range(1,ny-1):
         u[0,j,0] = (u[1,j,0] + u[0,j,1])/2.0                                # Front left edge
         v[0,j,0] = (v[1,j,0] + v[0,j,1])/2.0
@@ -778,6 +748,40 @@ while t < tend:
     u[nx-1,ny-1,nz-1] = (u[nx-2,ny-1,nz-1] + u[nx-1,ny-1,nz-2] + u[nx-1,ny-2,nz-1]) / 3.0       # Back top right
     v[nx-1,ny-1,nz-1] = (v[nx-2,ny-1,nz-1] + v[nx-1,ny-1,nz-2] + v[nx-1,ny-2,nz-1]) / 3.0
     w[nx-1,ny-1,nz-1] = (w[nx-2,ny-1,nz-1] + w[nx-1,ny-1,nz-2] + w[nx-1,ny-2,nz-1]) / 3.0
+
+
+
+    # MAIN VELOCITY BOUNDARY CONDITIONS
+    for j in range(1,ny-1):
+        for k in range(1,nz-1):
+            u[0,j,k] = 0.0          # Left wall
+            v[0,j,k] = 0.0
+            w[0,j,k] = 0.0
+            u[nx-1,j,k] = 0.0       # Right wall
+            v[nx-1,j,k] = 0.0
+            w[nx-1,j,k] = 0.0
+
+    for i in range(1,nx-1):
+        for j in range(1,ny-1):
+            u[i,j,0] = 0.0          # Front wall
+            v[i,j,0] = 0.0
+            w[i,j,0] = 0.0
+            u[i,j,nz-1] = 0.0       # Back wall
+            v[i,j,nz-1] = 0.0
+            w[i,j,nz-1] = 0.0
+
+    for k in range(1,nz-1):
+        for i in range(1,nx-1):
+            u[i,0,k] = 0.0          # Bottom wall
+            v[i,0,k] = 0.0
+            w[i,0,k] = 0.0
+            u[i,ny-1,k] = Ut        # Top wall
+            v[i,ny-1,k] = 0.0
+            w[i,ny-1,k] = 0.0
+
+    u_sol.append(u)
+    v_sol.append(v)
+    w_sol.append(w)
 
 
 
