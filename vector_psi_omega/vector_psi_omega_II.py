@@ -108,9 +108,9 @@ for z in range(1,nz-1):
     ψx0[0,0,z] = (ψx0[1,0,z] + ψx0[0,1,z])/2.0                            # Bottom-left edge
     ψy0[0,0,z] = (ψy0[1,0,z] + ψy0[0,1,z])/2.0        
     ψz0[0,0,z] = (ψz0[1,0,z] + ψz0[0,1,z])/2.0
-    ψx0[nx-1,0,z] = (ψx0[nx-2,0,z] + ψx0[0,1,z])/2.0                      # Bottom-right edge
-    ψy0[nx-1,0,z] = (ψy0[nx-2,0,z] + ψy0[0,1,z])/2.0        
-    ψz0[nx-1,0,z] = (ψz0[nx-2,0,z] + ψz0[0,1,z])/2.0
+    ψx0[nx-1,0,z] = (ψx0[nx-2,0,z] + ψx0[nx-1,1,z])/2.0                      # Bottom-right edge
+    ψy0[nx-1,0,z] = (ψy0[nx-2,0,z] + ψy0[nx-1,1,z])/2.0        
+    ψz0[nx-1,0,z] = (ψz0[nx-2,0,z] + ψz0[nx-1,1,z])/2.0
     ψx0[nx-1,ny-1,z] = (ψx0[nx-2,ny-1,z] + ψx0[nx-1,ny-2,z])/2.0          # Top-right edge
     ψy0[nx-1,ny-1,z] = (ψy0[nx-2,ny-1,z] + ψy0[nx-1,ny-2,z])/2.0        
     ψz0[nx-1,ny-1,z] = (ψz0[nx-2,ny-1,z] + ψz0[nx-1,ny-2,z])/2.0
