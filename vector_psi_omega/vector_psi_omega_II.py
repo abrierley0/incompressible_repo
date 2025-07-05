@@ -108,7 +108,7 @@ for z in range(1,nz-1):
     ψx0[0,0,z] = (ψx0[1,0,z] + ψx0[0,1,z])/2.0                            # Bottom-left edge
     ψy0[0,0,z] = (ψy0[1,0,z] + ψy0[0,1,z])/2.0        
     ψz0[0,0,z] = (ψz0[1,0,z] + ψz0[0,1,z])/2.0
-    ψx0[nx-1,0,z] = (ψx0[nx-2,0,z] + ψx0[nx-1,1,z])/2.0                      # Bottom-right edge
+    ψx0[nx-1,0,z] = (ψx0[nx-2,0,z] + ψx0[nx-1,1,z])/2.0                   # Bottom-right edge
     ψy0[nx-1,0,z] = (ψy0[nx-2,0,z] + ψy0[nx-1,1,z])/2.0        
     ψz0[nx-1,0,z] = (ψz0[nx-2,0,z] + ψz0[nx-1,1,z])/2.0
     ψx0[nx-1,ny-1,z] = (ψx0[nx-2,ny-1,z] + ψx0[nx-1,ny-2,z])/2.0          # Top-right edge
@@ -129,8 +129,8 @@ for i in range(1,nx-1):
     ψy0[i,ny-1,0] = (ψy0[i,ny-1,1] + ψy0[i,ny-2,0])/2.0         
     ψz0[i,ny-1,0] = (ψz0[i,ny-1,1] + ψz0[i,ny-2,0])/2.0 
     ψx0[i,ny-1,nz-1] = (ψx0[i,ny-2,nz-1] + ψx0[i,ny-1,nz-2])/2.0          # Back-top edge
-    ψy0[i,ny-1,nz-1] = (ψy0[0,ny-2,nz-1] + ψy0[1,ny-1,nz-2])/2.0        
-    ψz0[i,ny-1,nz-1] = (ψz0[0,ny-2,nz-1] + ψz0[1,ny-1,nz-2])/2.0
+    ψy0[i,ny-1,nz-1] = (ψy0[i,ny-2,nz-1] + ψy0[i,ny-1,nz-2])/2.0        
+    ψz0[i,ny-1,nz-1] = (ψz0[i,ny-2,nz-1] + ψz0[i,ny-1,nz-2])/2.0
 
 # Vector-potential corner points
 ψx0[0,0,0] = (ψx0[1,0,0] + ψx0[0,1,0] + ψx0[0,0,1]) / 3.0                                           # Lower bottom left 
