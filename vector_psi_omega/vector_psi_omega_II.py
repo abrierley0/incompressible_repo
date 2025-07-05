@@ -662,6 +662,7 @@ while t < tend:
 
     # OR,
 
+    # RE-APPLY VELOCITY BOUNDARY CONDITIONS
     for j in range(1,ny-1):
         for k in range(1,nz-1):
             u[0,j,k] = 0.0          # Left wall
@@ -692,6 +693,84 @@ while t < tend:
     u_sol.append(u)
     v_sol.append(v)
     w_sol.append(w)
+
+
+        # Velocity edge points
+
+    for j in range(1,ny-1):
+        u[0,j,0] = (u[1,j,0] + u[0,j,1])/2.0                                # Front left edge
+        v[0,j,0] = (v[1,j,0] + v[0,j,1])/2.0
+        w[0,j,0] = (w[1,j,0] + w[0,j,1])/2.0
+        u[nx-1,j,0] = (u[nx-2,j,0] + u[nx-1,j,1])/2.0                       # Front right edge
+        v[nx-1,j,0] = (v[nx-2,j,0] + v[nx-1,j,1])/2.0
+        w[nx-1,j,0] = (w[nx-2,j,0] + w[nx-1,j,1])/2.0
+        u[nx-1,j,nz-1] = (u[nx-2,j,nz-1] + u[nx-1,j,nz-2])/2.0              # Back right edge
+        v[nx-1,j,nz-1] = (v[nx-2,j,nz-1] + v[nx-1,j,nz-2])/2.0
+        w[nx-1,j,nz-1] = (w[nx-2,j,nz-1] + w[nx-1,j,nz-2])/2.0
+        u[0,j,nz-1] = (u[1,j,nz-1] + u[0,j,nz-2])/2.0                       # Back left edge
+        v[0,j,nz-1] = (v[1,j,nz-1] + v[0,j,nz-2])/2.0
+        w[0,j,nz-1] = (w[1,j,nz-1] + w[0,j,nz-2])/2.0
+
+    for z in range(1,nz-1):
+        u[0,0,z] = (u[1,0,z] + u[0,1,z])/2.0                                # Bottom left edge
+        v[0,0,z] = (v[1,0,z] + v[0,1,z])/2.0        
+        w[0,0,z] = (w[1,0,z] + w[0,1,z])/2.0
+        u[nx-1,0,z] = (u[nx-2,0,z] + u[0,1,z])/2.0                          # Bottom right edge
+        v[nx-1,0,z] = (v[nx-2,0,z] + v[0,1,z])/2.0        
+        w[nx-1,0,z] = (w[nx-2,0,z] + w[0,1,z])/2.0
+        u[nx-1,ny-1,z] = (u[nx-2,ny-1,z] + u[nx-1,ny-2,z])/2.0              # Top right edge
+        v[nx-1,ny-1,z] = (v[nx-2,ny-1,z] + v[nx-1,ny-2,z])/2.0        
+        w[nx-1,ny-1,z] = (w[nx-2,ny-1,z] + w[nx-1,ny-2,z])/2.0
+        u[0,ny-1,z] = (u[0,ny-2,z] + u[1,ny-1,z])/2.0                       # Top left edge
+        v[0,ny-1,z] = (v[0,ny-2,z] + v[1,ny-1,z])/2.0        
+        w[0,ny-1,z] = (w[0,ny-2,z] + w[1,ny-1,z])/2.0
+
+    for i in range(1,nx-1):
+        u[i,0,0] = (u[i,1,0] + u[i,0,1])/2.0                                # Front bottom edge
+        v[i,0,0] = (v[i,1,0] + v[i,0,1])/2.0        
+        w[i,0,0] = (w[i,1,0] + w[i,0,1])/2.0
+        u[i,0,nz-1] = (u[i,1,nz-1] + u[i,0,nz-2])/2.0                       # Back bottom edge
+        v[i,0,nz-1] = (v[i,1,nz-1] + v[i,0,nz-2])/2.0         
+        w[i,0,nz-1] = (w[i,1,nz-1] + w[i,0,nz-2])/2.0 
+        u[i,ny-1,0] = (u[i,ny-1,1] + u[i,ny-2,0])/2.0                   # Front top edge
+        v[i,ny-1,0] = (v[i,ny-1,1] + v[i,ny-2,0])/2.0         
+        w[i,ny-1,0] = (w[i,ny-1,1] + w[i,ny-2,0])/2.0 
+        u[i,ny-1,nz-1] = (u[i,ny-2,nz-1] + u[i,ny-1,nz-2])/2.0          # Back top edge
+        v[i,ny-1,nz-1] = (v[0,ny-2,nz-1] + v[1,ny-1,nz-2])/2.0        
+        w[i,ny-1,nz-1] = (w[0,ny-2,nz-1] + w[1,ny-1,nz-2])/2.0
+
+    # Velocity corner points
+    u[0,0,0] = (u[1,0,0] + u[0,1,0] + u[0,0,1]) / 3.0                                           # Lower bottom left 
+    v[0,0,0] = (v[1,0,0] + v[0,1,0] + v[0,0,1]) / 3.0
+    w[0,0,0] = (w[1,0,0] + w[0,1,0] + w[0,0,1]) / 3.0
+
+    u[0,0,nz-1] = (u[0,0,nz-2] + u[1,0,nz-1] + u[0,1,nz-1]) / 3.0                               # Lower back left
+    v[0,0,nz-1] = (v[0,0,nz-2] + v[1,0,nz-1] + v[0,1,nz-1]) / 3.0
+    w[0,0,nz-1] = (w[0,0,nz-2] + w[1,0,nz-1] + w[0,1,nz-1]) / 3.0
+
+    u[nx-1,0,0] = (u[nx-2,0,0] + u[nx-1,1,0] + u[nx-1,0,1]) / 3.0                               # Lower front right 
+    v[nx-1,0,0] = (v[nx-2,0,0] + v[nx-1,1,0] + v[nx-1,0,1]) / 3.0
+    w[nx-1,0,0] = (w[nx-2,0,0] + w[nx-1,1,0] + w[nx-1,0,1]) / 3.0
+
+    u[nx-1,0,nz-1] = (u[nx-2,0,nz-1] + u[nx-1,0,nz-2] + u[nx-1,1,nz-1]) / 3.0                   # Lower back right
+    v[nx-1,0,nz-1] = (v[nx-2,0,nz-1] + v[nx-1,0,nz-2] + v[nx-1,1,nz-1]) / 3.0
+    w[nx-1,0,nz-1] = (w[nx-2,0,nz-1] + w[nx-1,0,nz-2] + w[nx-1,1,nz-1]) / 3.0
+
+    u[0,ny-1,0] = (u[1,ny-1,0] + u[0,ny-2,0] + u[0,ny-1,1]) / 3.0                               # Front top left
+    v[0,ny-1,0] = (v[1,ny-1,0] + v[0,ny-2,0] + v[0,ny-1,1]) / 3.0
+    w[0,ny-1,0] = (w[1,ny-1,0] + w[0,ny-2,0] + w[0,ny-1,1]) / 3.0
+
+    u[0,ny-1,nz-1] = (u[0,ny-1,nz-2] + u[1,ny-1,nz-1] + u[0,ny-2,nz-1]) / 3.0                   # Back top left
+    v[0,ny-1,nz-1] = (v[0,ny-1,nz-2] + v[1,ny-1,nz-1] + v[0,ny-2,nz-1]) / 3.0
+    w[0,ny-1,nz-1] = (w[0,ny-1,nz-2] + w[1,ny-1,nz-1] + w[0,ny-2,nz-1]) / 3.0
+
+    u[nx-1,ny-1,0] = (u[nx-2,ny-1,0] + u[nx-1,ny-2,0] + u[nx-1,ny-1,1]) / 3.0                   # Front top right
+    v[nx-1,ny-1,0] = (v[nx-2,ny-1,0] + v[nx-1,ny-2,0] + v[nx-1,ny-1,1]) / 3.0
+    w[nx-1,ny-1,0] = (w[nx-2,ny-1,0] + w[nx-1,ny-2,0] + w[nx-1,ny-1,1]) / 3.0
+
+    u[nx-1,ny-1,nz-1] = (u[nx-2,ny-1,nz-1] + u[nx-1,ny-1,nz-2] + u[nx-1,ny-2,nz-1]) / 3.0       # Back top right
+    v[nx-1,ny-1,nz-1] = (v[nx-2,ny-1,nz-1] + v[nx-1,ny-1,nz-2] + v[nx-1,ny-2,nz-1]) / 3.0
+    w[nx-1,ny-1,nz-1] = (w[nx-2,ny-1,nz-1] + w[nx-1,ny-1,nz-2] + w[nx-1,ny-2,nz-1]) / 3.0
 
 
 
