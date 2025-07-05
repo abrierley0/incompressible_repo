@@ -367,35 +367,35 @@ for i in range(1,nx-1):
     Ωz0[i,ny-1,nz-1] = (Ωz0[i,ny-2,nz-1] + Ωz0[i,ny-1,nz-2])/2.0
 
 # Vorticity corner points
-Ωx0[0,0,0] = (Ωx0[1,0,0] + Ωx0[0,1,0] + Ωx0[0,0,1]) / 3.0
+Ωx0[0,0,0] = (Ωx0[1,0,0] + Ωx0[0,1,0] + Ωx0[0,0,1]) / 3.0                                       # Front bottom left 
 Ωy0[0,0,0] = (Ωy0[1,0,0] + Ωy0[0,1,0] + Ωy0[0,0,1]) / 3.0
 Ωz0[0,0,0] = (Ωz0[1,0,0] + Ωz0[0,1,0] + Ωz0[0,0,1]) / 3.0
 
-Ωx0[0,0,nz-1] = (Ωx0[0,0,nz-2] + Ωx0[1,0,nz-1] + Ωx0[0,1,nz-1]) / 3.0
+Ωx0[0,0,nz-1] = (Ωx0[0,0,nz-2] + Ωx0[1,0,nz-1] + Ωx0[0,1,nz-1]) / 3.0                           # Back bottom left
 Ωy0[0,0,nz-1] = (Ωy0[0,0,nz-2] + Ωy0[1,0,nz-1] + Ωy0[0,1,nz-1]) / 3.0
 Ωz0[0,0,nz-1] = (Ωz0[0,0,nz-2] + Ωz0[1,0,nz-1] + Ωz0[0,1,nz-1]) / 3.0
 
-Ωx0[nx-1,0,0] = (Ωx0[nx-2,0,0] + Ωx0[nx-1,1,0] + Ωx0[nx-1,0,1]) / 3.0
+Ωx0[nx-1,0,0] = (Ωx0[nx-2,0,0] + Ωx0[nx-1,1,0] + Ωx0[nx-1,0,1]) / 3.0                           # Front bottom right
 Ωy0[nx-1,0,0] = (Ωy0[nx-2,0,0] + Ωy0[nx-1,1,0] + Ωy0[nx-1,0,1]) / 3.0
 Ωz0[nx-1,0,0] = (Ωz0[nx-2,0,0] + Ωz0[nx-1,1,0] + Ωz0[nx-1,0,1]) / 3.0
 
-Ωx0[nx-1,0,nz-1] = (Ωx0[nx-2,0,nz-1] + Ωx0[nx-1,0,nz-2] + Ωx0[nx-1,1,nz-1]) / 3.0
+Ωx0[nx-1,0,nz-1] = (Ωx0[nx-2,0,nz-1] + Ωx0[nx-1,0,nz-2] + Ωx0[nx-1,1,nz-1]) / 3.0               # Back bottom right
 Ωy0[nx-1,0,nz-1] = (Ωy0[nx-2,0,nz-1] + Ωy0[nx-1,0,nz-2] + Ωy0[nx-1,1,nz-1]) / 3.0
 Ωz0[nx-1,0,nz-1] = (Ωz0[nx-2,0,nz-1] + Ωz0[nx-1,0,nz-2] + Ωz0[nx-1,1,nz-1]) / 3.0
 
-Ωx0[0,ny-1,0] = (Ωx0[1,ny-1,0] + Ωx0[0,ny-2,0] + Ωx0[0,ny-1,1]) / 3.0
+Ωx0[0,ny-1,0] = (Ωx0[1,ny-1,0] + Ωx0[0,ny-2,0] + Ωx0[0,ny-1,1]) / 3.0                           # Front top left
 Ωy0[0,ny-1,0] = (Ωy0[1,ny-1,0] + Ωy0[0,ny-2,0] + Ωy0[0,ny-1,1]) / 3.0
 Ωz0[0,ny-1,0] = (Ωz0[1,ny-1,0] + Ωz0[0,ny-2,0] + Ωz0[0,ny-1,1]) / 3.0
 
-Ωx0[0,ny-1,nz-1] = (Ωx0[0,ny-1,nz-2] + Ωx0[1,ny-1,nz-1] + Ωx0[0,ny-2,nz-1]) / 3.0
+Ωx0[0,ny-1,nz-1] = (Ωx0[0,ny-1,nz-2] + Ωx0[1,ny-1,nz-1] + Ωx0[0,ny-2,nz-1]) / 3.0               # Back top left
 Ωy0[0,ny-1,nz-1] = (Ωy0[0,ny-1,nz-2] + Ωy0[1,ny-1,nz-1] + Ωy0[0,ny-2,nz-1]) / 3.0
 Ωz0[0,ny-1,nz-1] = (Ωz0[0,ny-1,nz-2] + Ωz0[1,ny-1,nz-1] + Ωz0[0,ny-2,nz-1]) / 3.0
 
-Ωx0[nx-1,ny-1,0] = (Ωx0[nx-2,ny-1,0] + Ωx0[nx-1,ny-2,0] + Ωx0[nx-1,ny-1,1]) / 3.0
+Ωx0[nx-1,ny-1,0] = (Ωx0[nx-2,ny-1,0] + Ωx0[nx-1,ny-2,0] + Ωx0[nx-1,ny-1,1]) / 3.0               # Front top right
 Ωy0[nx-1,ny-1,0] = (Ωy0[nx-2,ny-1,0] + Ωy0[nx-1,ny-2,0] + Ωy0[nx-1,ny-1,1]) / 3.0
 Ωz0[nx-1,ny-1,0] = (Ωz0[nx-2,ny-1,0] + Ωz0[nx-1,ny-2,0] + Ωz0[nx-1,ny-1,1]) / 3.0
 
-Ωx0[nx-1,ny-1,nz-1] = (Ωx0[nx-2,ny-1,nz-1] + Ωx0[nx-1,ny-1,nz-2] + Ωx0[nx-1,ny-2,nz-1]) / 3.0
+Ωx0[nx-1,ny-1,nz-1] = (Ωx0[nx-2,ny-1,nz-1] + Ωx0[nx-1,ny-1,nz-2] + Ωx0[nx-1,ny-2,nz-1]) / 3.0   # Back top right
 Ωy0[nx-1,ny-1,nz-1] = (Ωy0[nx-2,ny-1,nz-1] + Ωy0[nx-1,ny-1,nz-2] + Ωy0[nx-1,ny-2,nz-1]) / 3.0
 Ωz0[nx-1,ny-1,nz-1] = (Ωz0[nx-2,ny-1,nz-1] + Ωz0[nx-1,ny-1,nz-2] + Ωz0[nx-1,ny-2,nz-1]) / 3.0
 
@@ -535,30 +535,30 @@ while t < tend:
 
     # Vector-potential edge points
     for j in range(1,ny-1):
-        ψx[0,j,0] = (ψx[1,j,0] + ψx[0,j,1])/2.0                            # Front-left edge
+        ψx[0,j,0] = (ψx[1,j,0] + ψx[0,j,1])/2.0                            # Front left edge
         ψy[0,j,0] = (ψy[1,j,0] + ψy[0,j,1])/2.0
         ψz[0,j,0] = (ψz[1,j,0] + ψz[0,j,1])/2.0
-        ψx[nx-1,j,0] = (ψx[nx-2,j,0] + ψx[nx-1,j,1])/2.0                   # Front-right edge
+        ψx[nx-1,j,0] = (ψx[nx-2,j,0] + ψx[nx-1,j,1])/2.0                   # Front right edge
         ψy[nx-1,j,0] = (ψy[nx-2,j,0] + ψy[nx-1,j,1])/2.0
         ψz[nx-1,j,0] = (ψz[nx-2,j,0] + ψz[nx-1,j,1])/2.0
-        ψx[nx-1,j,nz-1] = (ψx[nx-2,j,nz-1] + ψx[nx-1,j,nz-2])/2.0          # Back-right edge
+        ψx[nx-1,j,nz-1] = (ψx[nx-2,j,nz-1] + ψx[nx-1,j,nz-2])/2.0          # Back right edge
         ψy[nx-1,j,nz-1] = (ψy[nx-2,j,nz-1] + ψy[nx-1,j,nz-2])/2.0
         ψz[nx-1,j,nz-1] = (ψz[nx-2,j,nz-1] + ψz[nx-1,j,nz-2])/2.0
-        ψx[0,j,nz-1] = (ψx[1,j,nz-1] + ψx[0,j,nz-2])/2.0                   # Back-left edge
+        ψx[0,j,nz-1] = (ψx[1,j,nz-1] + ψx[0,j,nz-2])/2.0                   # Back left edge
         ψy[0,j,nz-1] = (ψy[1,j,nz-1] + ψy[0,j,nz-2])/2.0
         ψz[0,j,nz-1] = (ψz[1,j,nz-1] + ψz[0,j,nz-2])/2.0
 
     for z in range(1,nz-1):
-        ψx[0,0,z] = (ψx[1,0,z] + ψx[0,1,z])/2.0                            # Bottom-left edge
+        ψx[0,0,z] = (ψx[1,0,z] + ψx[0,1,z])/2.0                            # Bottom left edge
         ψy[0,0,z] = (ψy[1,0,z] + ψy[0,1,z])/2.0        
         ψz[0,0,z] = (ψz[1,0,z] + ψz[0,1,z])/2.0
-        ψx[nx-1,0,z] = (ψx[nx-2,0,z] + ψx[0,1,z])/2.0                      # Bottom-right edge
-        ψy[nx-1,0,z] = (ψy[nx-2,0,z] + ψy[0,1,z])/2.0        
-        ψz[nx-1,0,z] = (ψz[nx-2,0,z] + ψz[0,1,z])/2.0
-        ψx[nx-1,ny-1,z] = (ψx[nx-2,ny-1,z] + ψx[nx-1,ny-2,z])/2.0          # Top-right edge
+        ψx[nx-1,0,z] = (ψx[nx-2,0,z] + ψx[nx-1,1,z])/2.0                   # Bottom right edge
+        ψy[nx-1,0,z] = (ψy[nx-2,0,z] + ψy[nx-1,1,z])/2.0        
+        ψz[nx-1,0,z] = (ψz[nx-2,0,z] + ψz[nx-1,1,z])/2.0
+        ψx[nx-1,ny-1,z] = (ψx[nx-2,ny-1,z] + ψx[nx-1,ny-2,z])/2.0          # Top right edge
         ψy[nx-1,ny-1,z] = (ψy[nx-2,ny-1,z] + ψy[nx-1,ny-2,z])/2.0        
         ψz[nx-1,ny-1,z] = (ψz[nx-2,ny-1,z] + ψz[nx-1,ny-2,z])/2.0
-        ψx[0,ny-1,z] = (ψx[0,ny-2,z] + ψx[1,ny-1,z])/2.0                   # Top-left edge
+        ψx[0,ny-1,z] = (ψx[0,ny-2,z] + ψx[1,ny-1,z])/2.0                   # Top left edge
         ψy[0,ny-1,z] = (ψy[0,ny-2,z] + ψy[1,ny-1,z])/2.0        
         ψz[0,ny-1,z] = (ψz[0,ny-2,z] + ψz[1,ny-1,z])/2.0
 
