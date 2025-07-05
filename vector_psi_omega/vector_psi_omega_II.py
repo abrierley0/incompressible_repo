@@ -563,18 +563,18 @@ while t < tend:
         ψz[0,ny-1,z] = (ψz[0,ny-2,z] + ψz[1,ny-1,z])/2.0
 
     for i in range(1,nx-1):
-        ψx[i,0,0] = (ψx[i,1,0] + ψx[i,0,1])/2.0                            # Front-bottom edge
+        ψx[i,0,0] = (ψx[i,1,0] + ψx[i,0,1])/2.0                            # Front bottom edge
         ψy[i,0,0] = (ψy[i,1,0] + ψy[i,0,1])/2.0        
         ψz[i,0,0] = (ψz[i,1,0] + ψz[i,0,1])/2.0
-        ψx[i,0,nz-1] = (ψx[i,1,nz-1] + ψx[i,0,nz-2])/2.0                   # Back-bottom edge
+        ψx[i,0,nz-1] = (ψx[i,1,nz-1] + ψx[i,0,nz-2])/2.0                   # Back bottom edge
         ψy[i,0,nz-1] = (ψy[i,1,nz-1] + ψy[i,0,nz-2])/2.0         
         ψz[i,0,nz-1] = (ψz[i,1,nz-1] + ψz[i,0,nz-2])/2.0 
-        ψx[i,ny-1,0] = (ψx[i,ny-1,1] + ψx[i,ny-2,0])/2.0                   # Front-top edge
+        ψx[i,ny-1,0] = (ψx[i,ny-1,1] + ψx[i,ny-2,0])/2.0                   # Front top edge
         ψy[i,ny-1,0] = (ψy[i,ny-1,1] + ψy[i,ny-2,0])/2.0         
         ψz[i,ny-1,0] = (ψz[i,ny-1,1] + ψz[i,ny-2,0])/2.0 
-        ψx[i,ny-1,nz-1] = (ψx[i,ny-2,nz-1] + ψx[i,ny-1,nz-2])/2.0          # Back-top edge
-        ψy[i,ny-1,nz-1] = (ψy[0,ny-2,nz-1] + ψy[1,ny-1,nz-2])/2.0        
-        ψz[i,ny-1,nz-1] = (ψz[0,ny-2,nz-1] + ψz[1,ny-1,nz-2])/2.0
+        ψx[i,ny-1,nz-1] = (ψx[i,ny-2,nz-1] + ψx[i,ny-1,nz-2])/2.0          # Back top edge
+        ψy[i,ny-1,nz-1] = (ψy[i,ny-2,nz-1] + ψy[i,ny-1,nz-2])/2.0        
+        ψz[i,ny-1,nz-1] = (ψz[i,ny-2,nz-1] + ψz[i,ny-1,nz-2])/2.0
 
     # Vector-potential corner points
     ψx[0,0,0] = (ψx[1,0,0] + ψx[0,1,0] + ψx[0,0,1]) / 3.0                                           # Lower bottom left 
