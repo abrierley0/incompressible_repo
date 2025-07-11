@@ -15,9 +15,9 @@ np.set_printoptions(linewidth=1000, threshold=np.inf)  # Ensure full matrix prin
 #
 # 2nd July 2025
 
-nx = 7
-ny = 7
-nz = 7
+nx = 64
+ny = 64
+nz = 64
 Lx = 1.0
 Ly = 1.0
 Lz = 1.0
@@ -87,9 +87,15 @@ for i in range(1,nx-1):
         # ψx0[i,ny-1,k] = Ut                # Top wall
         # ψy0[i,ny-1,k] = ψy0[i,ny-2,k]   
         # ψz0[i,ny-1,k] = 0.0
-        ψx0[i,ny-1,k] = -ψz0[i,ny-2,k]/dy                # Top wall
-        ψy0[i,ny-1,k] = 0.0  
-        ψz0[i,ny-1,k] = ψx0[i,ny-2,k]/dy
+        # ψx0[i,ny-1,k] = -ψz0[i,ny-2,k]/dy                # Top wall
+        # ψy0[i,ny-1,k] = 0.0  
+        # ψz0[i,ny-1,k] = ψx0[i,ny-2,k]/dy
+        # ψx0[i,ny-1,k] = ψx0[i,ny-2,k]               # Top wall
+        # ψy0[i,ny-1,k] = 0.0  
+        # ψz0[i,ny-1,k] = Ut*dy + ψz0[i,ny-2,k]
+        ψx0[i,ny-1,k] = 0.0
+        ψy0[i,ny-1,k] = ψy0[i,ny-2,k]
+        ψz0[i,ny-1,k] = 0.0
 
 
 # Vector-potential edge points
@@ -537,9 +543,15 @@ while t < tend:
             # ψx[i,ny-1,k] = Ut                # Top wall
             # ψy[i,ny-1,k] = ψy[i,ny-2,k]   
             # ψz[i,ny-1,k] = 0.0
-            ψx0[i,ny-1,k] = -ψz0[i,ny-2,k]/dy                # Top wall
-            ψy0[i,ny-1,k] = 0.0  
-            ψz0[i,ny-1,k] = ψx0[i,ny-2,k]/dy
+            # ψx[i,ny-1,k] = -ψz[i,ny-2,k]/dy                # Top wall
+            # ψy[i,ny-1,k] = 0.0  
+            # ψz[i,ny-1,k] = ψx[i,ny-2,k]/dy
+            # ψx[i,ny-1,k] = ψx[i,ny-2,k]               # Top wall
+            # ψy[i,ny-1,k] = 0.0  
+            # ψz[i,ny-1,k] = Ut*dy + ψz[i,ny-2,k]
+            ψx[i,ny-1,k] = 0.0
+            ψy[i,ny-1,k] = ψy[i,ny-2,k]
+            ψz[i,ny-1,k] = 0.0
 
 
     # Vector-potential edge points
@@ -673,6 +685,38 @@ while t < tend:
 
     # RE-APPLY VELOCITY BOUNDARY CONDITIONS
 
+    
+
+
+
+    # MAIN VELOCITY BOUNDARY CONDITIONS
+    for j in range(1,ny-1):
+        for k in range(1,nz-1):
+            u[0,j,k] = 0.0          # Left wall
+            v[0,j,k] = 0.0
+            w[0,j,k] = 0.0
+            u[nx-1,j,k] = 0.0       # Right wall
+            v[nx-1,j,k] = 0.0
+            w[nx-1,j,k] = 0.0
+
+    for i in range(1,nx-1):
+        for j in range(1,ny-1):
+            u[i,j,0] = 0.0          # Front wall
+            v[i,j,0] = 0.0
+            w[i,j,0] = 0.0
+            u[i,j,nz-1] = 0.0       # Back wall
+            v[i,j,nz-1] = 0.0
+            w[i,j,nz-1] = 0.0
+
+    for k in range(1,nz-1):
+        for i in range(1,nx-1):
+            u[i,0,k] = 0.0          # Bottom wall
+            v[i,0,k] = 0.0
+            w[i,0,k] = 0.0
+            u[i,ny-1,k] = Ut        # Top wall
+            v[i,ny-1,k] = 0.0
+            w[i,ny-1,k] = 0.0
+
     # Velocity edge points
     for j in range(1,ny-1):
         u[0,j,0] = (u[1,j,0] + u[0,j,1])/2.0                                # Front left edge
@@ -692,9 +736,9 @@ while t < tend:
         u[0,0,z] = (u[1,0,z] + u[0,1,z])/2.0                                # Bottom left edge
         v[0,0,z] = (v[1,0,z] + v[0,1,z])/2.0        
         w[0,0,z] = (w[1,0,z] + w[0,1,z])/2.0
-        u[nx-1,0,z] = (u[nx-2,0,z] + u[0,1,z])/2.0                          # Bottom right edge
-        v[nx-1,0,z] = (v[nx-2,0,z] + v[0,1,z])/2.0        
-        w[nx-1,0,z] = (w[nx-2,0,z] + w[0,1,z])/2.0
+        u[nx-1,0,z] = (u[nx-2,0,z] + u[nx-1,1,z])/2.0                          # Bottom right edge
+        v[nx-1,0,z] = (v[nx-2,0,z] + v[nx-1,1,z])/2.0        
+        w[nx-1,0,z] = (w[nx-2,0,z] + w[nx-1,1,z])/2.0
         u[nx-1,ny-1,z] = (u[nx-2,ny-1,z] + u[nx-1,ny-2,z])/2.0              # Top right edge
         v[nx-1,ny-1,z] = (v[nx-2,ny-1,z] + v[nx-1,ny-2,z])/2.0        
         w[nx-1,ny-1,z] = (w[nx-2,ny-1,z] + w[nx-1,ny-2,z])/2.0
@@ -748,36 +792,6 @@ while t < tend:
     u[nx-1,ny-1,nz-1] = (u[nx-2,ny-1,nz-1] + u[nx-1,ny-1,nz-2] + u[nx-1,ny-2,nz-1]) / 3.0       # Back top right
     v[nx-1,ny-1,nz-1] = (v[nx-2,ny-1,nz-1] + v[nx-1,ny-1,nz-2] + v[nx-1,ny-2,nz-1]) / 3.0
     w[nx-1,ny-1,nz-1] = (w[nx-2,ny-1,nz-1] + w[nx-1,ny-1,nz-2] + w[nx-1,ny-2,nz-1]) / 3.0
-
-
-
-    # MAIN VELOCITY BOUNDARY CONDITIONS
-    for j in range(1,ny-1):
-        for k in range(1,nz-1):
-            u[0,j,k] = 0.0          # Left wall
-            v[0,j,k] = 0.0
-            w[0,j,k] = 0.0
-            u[nx-1,j,k] = 0.0       # Right wall
-            v[nx-1,j,k] = 0.0
-            w[nx-1,j,k] = 0.0
-
-    for i in range(1,nx-1):
-        for j in range(1,ny-1):
-            u[i,j,0] = 0.0          # Front wall
-            v[i,j,0] = 0.0
-            w[i,j,0] = 0.0
-            u[i,j,nz-1] = 0.0       # Back wall
-            v[i,j,nz-1] = 0.0
-            w[i,j,nz-1] = 0.0
-
-    for k in range(1,nz-1):
-        for i in range(1,nx-1):
-            u[i,0,k] = 0.0          # Bottom wall
-            v[i,0,k] = 0.0
-            w[i,0,k] = 0.0
-            u[i,ny-1,k] = Ut        # Top wall
-            v[i,ny-1,k] = 0.0
-            w[i,ny-1,k] = 0.0
 
     u_sol.append(u)
     v_sol.append(v)
@@ -907,9 +921,9 @@ while t < tend:
         Ωx[0,0,z] = (Ωx[1,0,z] + Ωx[0,1,z])/2.0                            # Bottom left edge
         Ωy[0,0,z] = (Ωy[1,0,z] + Ωy[0,1,z])/2.0        
         Ωz[0,0,z] = (Ωz[1,0,z] + Ωz[0,1,z])/2.0
-        Ωx[nx-1,0,z] = (Ωx[nx-2,0,z] + Ωx[0,1,z])/2.0                      # Bottom right edge
-        Ωy[nx-1,0,z] = (Ωy[nx-2,0,z] + Ωy[0,1,z])/2.0        
-        Ωz[nx-1,0,z] = (Ωz[nx-2,0,z] + Ωz[0,1,z])/2.0
+        Ωx[nx-1,0,z] = (Ωx[nx-2,0,z] + Ωx[nx-1,1,z])/2.0                      # Bottom right edge
+        Ωy[nx-1,0,z] = (Ωy[nx-2,0,z] + Ωy[nx-1,1,z])/2.0        
+        Ωz[nx-1,0,z] = (Ωz[nx-2,0,z] + Ωz[nx-1,1,z])/2.0
         Ωx[nx-1,ny-1,z] = (Ωx[nx-2,ny-1,z] + Ωx[nx-1,ny-2,z])/2.0          # Top right edge
         Ωy[nx-1,ny-1,z] = (Ωy[nx-2,ny-1,z] + Ωy[nx-1,ny-2,z])/2.0        
         Ωz[nx-1,ny-1,z] = (Ωz[nx-2,ny-1,z] + Ωz[nx-1,ny-2,z])/2.0
@@ -978,3 +992,54 @@ while t < tend:
     print(f"t = {t}")
 
 
+import vtk
+from vtk.util.numpy_support import numpy_to_vtk
+
+def save_to_vtk(u, v, w, Ωx, Ωy, Ωz, filename, nx, ny, nz, dx, dy, dz):
+    # Create a structured grid
+    grid = vtk.vtkStructuredGrid()
+    grid.SetDimensions(nx, ny, nz)
+
+    # Define points
+    points = vtk.vtkPoints()
+    for k in range(nz):
+        for j in range(ny):
+            for i in range(nx):
+                points.InsertNextPoint(i * dx, j * dy, k * dz)
+    grid.SetPoints(points)
+
+    # Add velocity vector field
+    velocity = np.stack((u, v, w), axis=-1).reshape(-1, 3)
+    vtk_velocity = numpy_to_vtk(velocity, deep=True)
+    vtk_velocity.SetName("Velocity")
+    grid.GetPointData().AddArray(vtk_velocity)
+
+    # Add vorticity vector field
+    vorticity = np.stack((Ωx, Ωy, Ωz), axis=-1).reshape(-1, 3)
+    vtk_vorticity = numpy_to_vtk(vorticity, deep=True)
+    vtk_vorticity.SetName("Vorticity")
+    grid.GetPointData().AddArray(vtk_vorticity)
+
+    # Add scalar fields (e.g., u component, vorticity magnitude)
+    u_scalar = numpy_to_vtk(u.ravel(), deep=True)
+    u_scalar.SetName("u_velocity")
+    grid.GetPointData().AddArray(u_scalar)
+
+    vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
+    vort_mag_scalar = numpy_to_vtk(vort_mag.ravel(), deep=True)
+    vort_mag_scalar.SetName("Vorticity_Magnitude")
+    grid.GetPointData().AddArray(vort_mag_scalar)
+
+    # Write to VTK file
+    writer = vtk.vtkStructuredGridWriter()
+    writer.SetFileName(filename)
+    writer.SetInputData(grid)
+    writer.Write()
+
+# After the time loop, save the final state
+save_to_vtk(u, v, w, Ωx, Ωy, Ωz, "output.vtk", nx, ny, nz, dx, dy, dz)
+
+# Optionally, save at multiple time steps
+# Inside the time loop, after storing solutions
+if int(t/dt) % 10 == 0:  # Save every 10th step
+    save_to_vtk(u, v, w, Ωx, Ωy, Ωz, f"output_t{t:.2f}.vtk", nx, ny, nz, dx, dy, dz)
