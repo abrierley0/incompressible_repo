@@ -54,8 +54,36 @@ w0 = np.zeros([nx,ny,nz])
 #---------------------------------------------
 # VECTOR-POTENTIAL (ψ) BOUNDARY CONDITIONS
 #---------------------------------------------
-# according to Tokunaga (1992),
+# # according to Tokunaga (1992),
 
+# for j in range(1,ny-1):
+#     for k in range(1,nz-1):
+#         ψx0[0,j,k] = ψx0[1,j,k]         # Left wall
+#         ψy0[0,j,k] = 0.0
+#         ψz0[0,j,k] = 0.0  
+#         ψx0[nx-1,j,k] = ψx0[nx-2,j,k]   # Right wall
+#         ψy0[nx-1,j,k] = 0.0
+#         ψz0[nx-1,j,k] = 0.0
+
+# for i in range(1,nx-1):
+#     for j in range(1,ny-1):
+#         ψx0[i,j,0] = 0.0                # Front wall
+#         ψy0[i,j,0] = 0.0
+#         ψz0[i,j,0] = ψz0[i,j,1]       
+#         ψx0[i,j,nz-1] = 0.0             # Back wall
+#         ψy0[i,j,nz-1] = 0.0
+#         ψz0[i,j,nz-1] = ψz0[i,j,nz-2]
+
+# for i in range(1,nx-1):
+#     for k in range(1,nz-1):
+#         ψx0[i,0,k] = 0.0                # Bottom wall
+#         ψy0[i,0,k] = ψy0[i,1,k]   
+#         ψz0[i,0,k] = 0.0
+#         ψx0[i,ny-1,k] = 0.0
+#         ψy0[i,ny-1,k] = ψy0[i,ny-2,k]
+#         ψz0[i,ny-1,k] = 0.0
+
+# GROK 4 SUGGESTION
 for j in range(1,ny-1):
     for k in range(1,nz-1):
         ψx0[0,j,k] = ψx0[1,j,k]         # Left wall
@@ -79,23 +107,9 @@ for i in range(1,nx-1):
         ψx0[i,0,k] = 0.0                # Bottom wall
         ψy0[i,0,k] = ψy0[i,1,k]   
         ψz0[i,0,k] = 0.0
-        
-        #---------------------
-        # TOP WALL BOUNDARY CONDITION
-        #---------------------
-        # # NOTE: Check top wall derivation
-        # ψx0[i,ny-1,k] = Ut                # Top wall
-        # ψy0[i,ny-1,k] = ψy0[i,ny-2,k]   
-        # ψz0[i,ny-1,k] = 0.0
-        # ψx0[i,ny-1,k] = -ψz0[i,ny-2,k]/dy                # Top wall
-        # ψy0[i,ny-1,k] = 0.0  
-        # ψz0[i,ny-1,k] = ψx0[i,ny-2,k]/dy
-        # ψx0[i,ny-1,k] = ψx0[i,ny-2,k]               # Top wall
-        # ψy0[i,ny-1,k] = 0.0  
-        # ψz0[i,ny-1,k] = Ut*dy + ψz0[i,ny-2,k]
-        ψx0[i,ny-1,k] = 0.0
-        ψy0[i,ny-1,k] = ψy0[i,ny-2,k]
-        ψz0[i,ny-1,k] = 0.0
+        ψx0[i,ny-1,k] = ψx0[i,ny-2,k]            # Top wall
+        ψy0[i,ny-1,k] = 0.0
+        ψz0[i,ny-1,k] = Ut*dy + ψz0[i,ny-2,k]
 
 
 # Vector-potential edge points
@@ -190,32 +204,62 @@ print()
 
 
 # MAIN VELOCITY BOUNDARY CONDITIONS
+# for j in range(1,ny-1):
+#     for k in range(1,nz-1):
+#         u0[0,j,k] = 0.0          # Left wall
+#         v0[0,j,k] = 0.0
+#         w0[0,j,k] = 0.0
+#         u0[nx-1,j,k] = 0.0       # Right wall
+#         v0[nx-1,j,k] = 0.0
+#         w0[nx-1,j,k] = 0.0
+
+# for i in range(1,nx-1):
+#     for j in range(1,ny-1):
+#         u0[i,j,0] = 0.0          # Front wall
+#         v0[i,j,0] = 0.0
+#         w0[i,j,0] = 0.0
+#         u0[i,j,nz-1] = 0.0       # Back wall
+#         v0[i,j,nz-1] = 0.0
+#         w0[i,j,nz-1] = 0.0
+
+# for k in range(1,nz-1):
+#     for i in range(1,nx-1):
+#         u0[i,0,k] = 0.0          # Bottom wall
+#         v0[i,0,k] = 0.0
+#         w0[i,0,k] = 0.0
+#         u0[i,ny-1,k] = Ut        # Top wall
+#         v0[i,ny-1,k] = 0.0
+#         w0[i,ny-1,k] = 0.0
+
+# GROK 4 SUGGESTION
+# Normal components zero
+# Central for tangential components
 for j in range(1,ny-1):
     for k in range(1,nz-1):
-        u0[0,j,k] = 0.0          # Left wall
-        v0[0,j,k] = 0.0
-        w0[0,j,k] = 0.0
-        u0[nx-1,j,k] = 0.0       # Right wall
-        v0[nx-1,j,k] = 0.0
-        w0[nx-1,j,k] = 0.0
+        u[0,j,k] = 0.0                                                                                  # Left wall
+        v[0,j,k] = (ψx[0,j,k+1] - ψx[0,j,k-1])/(2*dz) - (ψz[1,j,k] - ψz[0,j,k])/dx
+        w[0,j,k] = (ψy[1,j,k] - ψy[0,j,k])/dx - (ψx[0,j+1,k] - ψx[0,j-1,k])/(2*dy)
+        u[nx-1,j,k] = 0.0                                                                               # Right wall
+        v[nx-1,j,k] = (ψx[nx-1,j,k+1] - ψx[nx-1,j,k-1])/(2*dz) - (ψz[nx-1,j,k] - ψz[nx-2,j,k])/dx
+        w[nx-1,j,k] = (ψy[nx-1,j,k] - ψy[nx-2,j,k])/dx - (ψx[nx-1,j+1,k] - ψx[nx-1,j-1,k])/(2*dy)
+
+for i in range(1,nx-1):
+    for k in range(1,nz-1):
+        u[i,0,k] = (ψz[i,1,k] - ψz[i,0,k])/dy - (ψy[i,0,k+1] - ψy[i,0,k-1])/(2*dz)                      # Bottom wall
+        v[i,0,k] = 0.0
+        w[i,0,k] = (ψy[i+1,0,k] - ψy[i-1,0,k])/(2*dx) - (ψx[i,1,k] - ψx[i,0,k])/dy
+        u[i,ny-1,k] = (ψz[i,ny-1,k] - ψz[i,ny-2,k])/dy - (ψy[i,ny-1,k+1] - ψy[i,ny-1,k-1])/(2*dz)       # Top wall
+        v[i,ny-1,k] = 0.0
+        w[i,ny-1,k] = (ψy[i+1,ny-1,k] - ψy[i-1,ny-1,k])/(2*dx) - (ψx[i,ny-1,k] - ψx[i,ny-2,k])/dy
 
 for i in range(1,nx-1):
     for j in range(1,ny-1):
-        u0[i,j,0] = 0.0          # Front wall
-        v0[i,j,0] = 0.0
-        w0[i,j,0] = 0.0
-        u0[i,j,nz-1] = 0.0       # Back wall
-        v0[i,j,nz-1] = 0.0
-        w0[i,j,nz-1] = 0.0
-
-for k in range(1,nz-1):
-    for i in range(1,nx-1):
-        u0[i,0,k] = 0.0          # Bottom wall
-        v0[i,0,k] = 0.0
-        w0[i,0,k] = 0.0
-        u0[i,ny-1,k] = Ut        # Top wall
-        v0[i,ny-1,k] = 0.0
-        w0[i,ny-1,k] = 0.0
+        u[i,j,0] = (ψz[i,j+1,0] - ψz[i,j-1,0])/(2*dy) - (ψy[i,j,1] - ψy[i,j,0])/dz                      # Front wall
+        v[i,j,0] = (ψx[i,j,1] - ψx[i,j,0])/dz - (ψz[i+1,j,0] - ψz[i-1,j,0])/(2*dx)                                           
+        w[i,j,0] = 0.0
+        u[i,j,nz-1] = (ψz[i,j+1,nz-1] - ψz[i,j-1,nz-1])/(2*dy) - (ψy[i,j,nz-1] - ψy[i,j,nz-2])/dz       # Back wall
+        v[i,j,nz-1] = (ψx[i,j,nz-1] - ψx[i,j,nz-2])/dz - (ψz[i+1,j,nz-1] - ψz[i-1,j,nz-1])/(2*dx)
+        w[i,j,nz-1] = 0.0
 
 # Velocity edge points
 
@@ -509,9 +553,37 @@ while t < tend:
         print(f"Z Error: {errz}")
 
 
-    #-------------------------------------------
-    # Re-apply boundary conditions to ψ
-    #-------------------------------------------
+    # #-------------------------------------------
+    # # Re-apply boundary conditions to ψ
+    # #-------------------------------------------
+    # for j in range(1,ny-1):
+    #     for k in range(1,nz-1):
+    #         ψx[0,j,k] = ψx[1,j,k]         # Left wall
+    #         ψy[0,j,k] = 0.0
+    #         ψz[0,j,k] = 0.0  
+    #         ψx[nx-1,j,k] = ψx[nx-2,j,k]   # Right wall
+    #         ψy[nx-1,j,k] = 0.0
+    #         ψz[nx-1,j,k] = 0.0
+
+    # for i in range(1,nx-1):
+    #     for j in range(1,ny-1):
+    #         ψx[i,j,0] = 0.0                # Front wall
+    #         ψy[i,j,0] = 0.0
+    #         ψz[i,j,0] = ψz[i,j,1]       
+    #         ψx[i,j,nz-1] = 0.0             # Back wall
+    #         ψy[i,j,nz-1] = 0.0
+    #         ψz[i,j,nz-1] = ψz[i,j,nz-2]
+
+    # for i in range(1,nx-1):
+    #     for k in range(1,ny-1):
+    #         ψx[i,0,k] = 0.0                # Bottom wall
+    #         ψy[i,0,k] = ψy[i,1,k]   
+    #         ψz[i,0,k] = 0.0
+    #         ψx[i,ny-1,k] = 0.0
+    #         ψy[i,ny-1,k] = ψy[i,ny-2,k]
+    #         ψz[i,ny-1,k] = 0.0
+
+    # GROK 4 SUGGESTION
     for j in range(1,ny-1):
         for k in range(1,nz-1):
             ψx[0,j,k] = ψx[1,j,k]         # Left wall
@@ -531,27 +603,13 @@ while t < tend:
             ψz[i,j,nz-1] = ψz[i,j,nz-2]
 
     for i in range(1,nx-1):
-        for k in range(1,ny-1):
+        for k in range(1,nz-1):
             ψx[i,0,k] = 0.0                # Bottom wall
             ψy[i,0,k] = ψy[i,1,k]   
             ψz[i,0,k] = 0.0
-            
-            #----------------------------
-            # TOP WALL BOUNDARY CONDITION
-            #---------------------------
-            # NOTE: Check top wall derivation
-            # ψx[i,ny-1,k] = Ut                # Top wall
-            # ψy[i,ny-1,k] = ψy[i,ny-2,k]   
-            # ψz[i,ny-1,k] = 0.0
-            # ψx[i,ny-1,k] = -ψz[i,ny-2,k]/dy                # Top wall
-            # ψy[i,ny-1,k] = 0.0  
-            # ψz[i,ny-1,k] = ψx[i,ny-2,k]/dy
-            # ψx[i,ny-1,k] = ψx[i,ny-2,k]               # Top wall
-            # ψy[i,ny-1,k] = 0.0  
-            # ψz[i,ny-1,k] = Ut*dy + ψz[i,ny-2,k]
-            ψx[i,ny-1,k] = 0.0
-            ψy[i,ny-1,k] = ψy[i,ny-2,k]
-            ψz[i,ny-1,k] = 0.0
+            ψx[i,ny-1,k] = ψx[i,ny-2,k]            # Top wall
+            ψy[i,ny-1,k] = 0.0
+            ψz[i,ny-1,k] = Ut*dy + ψz[i,ny-2,k]
 
 
     # Vector-potential edge points
@@ -650,15 +708,12 @@ while t < tend:
                 v[i,j,k] = (ψx[i,j,k+1] - ψx[i,j,k-1])/dz + (ψz[i-1,j,k] - ψz[i+1,j,k])/dx
                 w[i,j,k] = (ψy[i+1,j,k] - ψy[i-1,j,k])/dx + (ψx[i,j-1,k] - ψx[i,j+1,k])/dy
 
-
-
     # # BOUNDARIES
-    # # Apply before or after?
     # for j in range(1,ny-1):
     #     for k in range(1,nz-1):
     #         u[0,j,k] = 0.0                                      # Left wall
-    #         v[0,j,k] = -ψz[i+1,j,k]/dx
-    #         w[0,j,k] = ψy[i+1,j,k]/dx
+    #         v[0,j,k] = -ψz[1,j,k]/dx
+    #         w[0,j,k] = ψy[1,j,k]/dx
     #         u[nx-1,j,k] = ψz[nx-2,j,k]/dx                       # Right wall
     #         v[nx-1,j,k] = -ψy[nx-2,j,k]/dx 
     #         w[nx-1,j,k] = 0.0
@@ -667,10 +722,13 @@ while t < tend:
     #     for k in range(1,nz-1):
     #         u[i,0,k] = ψz[i,1,k]/dy                             # Bottom wall
     #         v[i,0,k] = 0.0
-    #         w[i,j+1,k] = -ψx[i,1,k]/dy
+    #         w[i,0,k] = -ψx[i,1,k]/dy
     #         #------------
     #         # TOP WALL
     #         #------------
+    #         u[i,ny-1,k] = (ψz[i,ny-1,k] - ψz[i,ny-2,k])/dy - (ψy[i,ny-1,k+1]-ψx[i,ny-1,k])/dz
+    #         v[i,ny-1,k] = (ψx[i,ny-1,k+1] - ψx[i,ny-1,k])/dz - (ψz[i+1,ny-1,k]-ψz[i,ny-1,k])/dx
+    #         w[i,ny-1,k] = (ψy[i+1,ny-1,k] - ψy[i,ny-1,k])/dx - (ψx[i,ny-1,k] - ψx[i,ny-2,k])/dy
 
     # for i in range(1,nx-1):
     #     for j in range(1,ny-1):
@@ -685,37 +743,64 @@ while t < tend:
 
     # RE-APPLY VELOCITY BOUNDARY CONDITIONS
 
-    
+    # # MAIN VELOCITY BOUNDARY CONDITIONS
+    # for j in range(1,ny-1):
+    #     for k in range(1,nz-1):
+    #         u[0,j,k] = 0.0          # Left wall
+    #         v[0,j,k] = 0.0
+    #         w[0,j,k] = 0.0
+    #         u[nx-1,j,k] = 0.0       # Right wall
+    #         v[nx-1,j,k] = 0.0
+    #         w[nx-1,j,k] = 0.0
 
+    # for i in range(1,nx-1):
+    #     for j in range(1,ny-1):
+    #         u[i,j,0] = 0.0          # Front wall
+    #         v[i,j,0] = 0.0
+    #         w[i,j,0] = 0.0
+    #         u[i,j,nz-1] = 0.0       # Back wall
+    #         v[i,j,nz-1] = 0.0
+    #         w[i,j,nz-1] = 0.0
 
+    # for k in range(1,nz-1):
+    #     for i in range(1,nx-1):
+    #         u[i,0,k] = 0.0          # Bottom wall
+    #         v[i,0,k] = 0.0
+    #         w[i,0,k] = 0.0
+    #         u[i,ny-1,k] = Ut        # Top wall
+    #         v[i,ny-1,k] = 0.0
+    #         w[i,ny-1,k] = 0.0
 
-    # MAIN VELOCITY BOUNDARY CONDITIONS
+    # GROK 4 SUGGESTION
+    # Normal components zero
+    # Central for tangential components
     for j in range(1,ny-1):
         for k in range(1,nz-1):
-            u[0,j,k] = 0.0          # Left wall
-            v[0,j,k] = 0.0
-            w[0,j,k] = 0.0
-            u[nx-1,j,k] = 0.0       # Right wall
-            v[nx-1,j,k] = 0.0
-            w[nx-1,j,k] = 0.0
+            u[0,j,k] = 0.0                                                                                  # Left wall
+            v[0,j,k] = (ψx[0,j,k+1] - ψx[0,j,k-1])/(2*dz) - (ψz[1,j,k] - ψz[0,j,k])/dx
+            w[0,j,k] = (ψy[1,j,k] - ψy[0,j,k])/dx - (ψx[0,j+1,k] - ψx[0,j-1,k])/(2*dy)
+            u[nx-1,j,k] = 0.0                                                                               # Right wall
+            v[nx-1,j,k] = (ψx[nx-1,j,k+1] - ψx[nx-1,j,k-1])/(2*dz) - (ψz[nx-1,j,k] - ψz[nx-2,j,k])/dx
+            w[nx-1,j,k] = (ψy[nx-1,j,k] - ψy[nx-2,j,k])/dx - (ψx[nx-1,j+1,k] - ψx[nx-1,j-1,k])/(2*dy)
+
+    for i in range(1,nx-1):
+        for k in range(1,nz-1):
+            u[i,0,k] = (ψz[i,1,k] - ψz[i,0,k])/dy - (ψy[i,0,k+1] - ψy[i,0,k-1])/(2*dz)                      # Bottom wall
+            v[i,0,k] = 0.0
+            w[i,0,k] = (ψy[i+1,0,k] - ψy[i-1,0,k])/(2*dx) - (ψx[i,1,k] - ψx[i,0,k])/dy
+            u[i,ny-1,k] = (ψz[i,ny-1,k] - ψz[i,ny-2,k])/dy - (ψy[i,ny-1,k+1] - ψy[i,ny-1,k-1])/(2*dz)       # Top wall
+            v[i,ny-1,k] = 0.0
+            w[i,ny-1,k] = (ψy[i+1,ny-1,k] - ψy[i-1,ny-1,k])/(2*dx) - (ψx[i,ny-1,k] - ψx[i,ny-2,k])/dy
 
     for i in range(1,nx-1):
         for j in range(1,ny-1):
-            u[i,j,0] = 0.0          # Front wall
-            v[i,j,0] = 0.0
+            u[i,j,0] = (ψz[i,j+1,0] - ψz[i,j-1,0])/(2*dy) - (ψy[i,j,1] - ψy[i,j,0])/dz                      # Front wall
+            v[i,j,0] = (ψx[i,j,1] - ψx[i,j,0])/dz - (ψz[i+1,j,0] - ψz[i-1,j,0])/(2*dx)                                           
             w[i,j,0] = 0.0
-            u[i,j,nz-1] = 0.0       # Back wall
-            v[i,j,nz-1] = 0.0
+            u[i,j,nz-1] = (ψz[i,j+1,nz-1] - ψz[i,j-1,nz-1])/(2*dy) - (ψy[i,j,nz-1] - ψy[i,j,nz-2])/dz       # Back wall
+            v[i,j,nz-1] = (ψx[i,j,nz-1] - ψx[i,j,nz-2])/dz - (ψz[i+1,j,nz-1] - ψz[i-1,j,nz-1])/(2*dx)
             w[i,j,nz-1] = 0.0
 
-    for k in range(1,nz-1):
-        for i in range(1,nx-1):
-            u[i,0,k] = 0.0          # Bottom wall
-            v[i,0,k] = 0.0
-            w[i,0,k] = 0.0
-            u[i,ny-1,k] = Ut        # Top wall
-            v[i,ny-1,k] = 0.0
-            w[i,ny-1,k] = 0.0
 
     # Velocity edge points
     for j in range(1,ny-1):
@@ -796,7 +881,6 @@ while t < tend:
     u_sol.append(u)
     v_sol.append(v)
     w_sol.append(w)
-
 
 
     #---------------------------------------------------------------------------------
