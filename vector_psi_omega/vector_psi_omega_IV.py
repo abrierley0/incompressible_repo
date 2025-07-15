@@ -37,7 +37,6 @@ print()
 
 
 # Initialise arrays
-#ψ0 = np.zeros([nx,ny,nz])
 ψx0 = np.zeros([nx,ny,nz])
 ψy0 = np.zeros([nx,ny,nz])
 ψz0 = np.zeros([nx,ny,nz])
@@ -54,36 +53,8 @@ w0 = np.zeros([nx,ny,nz])
 #---------------------------------------------
 # VECTOR-POTENTIAL (ψ) BOUNDARY CONDITIONS
 #---------------------------------------------
-# # according to Tokunaga (1992),
+# according to Tokunaga (1992),
 
-# for j in range(1,ny-1):
-#     for k in range(1,nz-1):
-#         ψx0[0,j,k] = ψx0[1,j,k]         # Left wall
-#         ψy0[0,j,k] = 0.0
-#         ψz0[0,j,k] = 0.0  
-#         ψx0[nx-1,j,k] = ψx0[nx-2,j,k]   # Right wall
-#         ψy0[nx-1,j,k] = 0.0
-#         ψz0[nx-1,j,k] = 0.0
-
-# for i in range(1,nx-1):
-#     for j in range(1,ny-1):
-#         ψx0[i,j,0] = 0.0                # Front wall
-#         ψy0[i,j,0] = 0.0
-#         ψz0[i,j,0] = ψz0[i,j,1]       
-#         ψx0[i,j,nz-1] = 0.0             # Back wall
-#         ψy0[i,j,nz-1] = 0.0
-#         ψz0[i,j,nz-1] = ψz0[i,j,nz-2]
-
-# for i in range(1,nx-1):
-#     for k in range(1,nz-1):
-#         ψx0[i,0,k] = 0.0                # Bottom wall
-#         ψy0[i,0,k] = ψy0[i,1,k]   
-#         ψz0[i,0,k] = 0.0
-#         ψx0[i,ny-1,k] = 0.0
-#         ψy0[i,ny-1,k] = ψy0[i,ny-2,k]
-#         ψz0[i,ny-1,k] = 0.0
-
-# GROK 4 SUGGESTION
 for j in range(1,ny-1):
     for k in range(1,nz-1):
         ψx0[0,j,k] = ψx0[1,j,k]         # Left wall
@@ -107,10 +78,9 @@ for i in range(1,nx-1):
         ψx0[i,0,k] = 0.0                # Bottom wall
         ψy0[i,0,k] = ψy0[i,1,k]   
         ψz0[i,0,k] = 0.0
-        ψx0[i,ny-1,k] = ψx0[i,ny-2,k]            # Top wall
-        ψy0[i,ny-1,k] = 0.0
-        ψz0[i,ny-1,k] = Ut*dy + ψz0[i,ny-2,k]
-
+        ψx0[i,ny-1,k] = 0.0
+        ψy0[i,ny-1,k] = ψy0[i,ny-2,k]   # Top wall
+        ψz0[i,ny-1,k] = 0.0
 
 # Vector-potential edge points
 for j in range(1,ny-1):
@@ -191,75 +161,41 @@ for i in range(1,nx-1):
 print()
 print(f"ψx0 is : ")
 print()
-print(ψx0)
+print(ψx0[:,:,3])
 print()
 
 
 #--------------------------------------------
 # VELOCITY VECTOR FIELD BOUNDARY CONDITIONS
 #--------------------------------------------
-# currently, just using no-slip and impermeability
-# conditions directly applied to u,v,w. But may need to use the
-# definition
-
 
 # MAIN VELOCITY BOUNDARY CONDITIONS
-# for j in range(1,ny-1):
-#     for k in range(1,nz-1):
-#         u0[0,j,k] = 0.0          # Left wall
-#         v0[0,j,k] = 0.0
-#         w0[0,j,k] = 0.0
-#         u0[nx-1,j,k] = 0.0       # Right wall
-#         v0[nx-1,j,k] = 0.0
-#         w0[nx-1,j,k] = 0.0
-
-# for i in range(1,nx-1):
-#     for j in range(1,ny-1):
-#         u0[i,j,0] = 0.0          # Front wall
-#         v0[i,j,0] = 0.0
-#         w0[i,j,0] = 0.0
-#         u0[i,j,nz-1] = 0.0       # Back wall
-#         v0[i,j,nz-1] = 0.0
-#         w0[i,j,nz-1] = 0.0
-
-# for k in range(1,nz-1):
-#     for i in range(1,nx-1):
-#         u0[i,0,k] = 0.0          # Bottom wall
-#         v0[i,0,k] = 0.0
-#         w0[i,0,k] = 0.0
-#         u0[i,ny-1,k] = Ut        # Top wall
-#         v0[i,ny-1,k] = 0.0
-#         w0[i,ny-1,k] = 0.0
-
-# GROK 4 SUGGESTION
-# Normal components zero
-# Central for tangential components
 for j in range(1,ny-1):
     for k in range(1,nz-1):
-        u0[0,j,k] = 0.0                                                                                  # Left wall
-        v0[0,j,k] = (ψx0[0,j,k+1] - ψx0[0,j,k-1])/(2*dz) - (ψz0[1,j,k] - ψz0[0,j,k])/dx
-        w0[0,j,k] = (ψy0[1,j,k] - ψy0[0,j,k])/dx - (ψx0[0,j+1,k] - ψx0[0,j-1,k])/(2*dy)
-        u0[nx-1,j,k] = 0.0                                                                               # Right wall
-        v0[nx-1,j,k] = (ψx0[nx-1,j,k+1] - ψx0[nx-1,j,k-1])/(2*dz) - (ψz0[nx-1,j,k] - ψz0[nx-2,j,k])/dx
-        w0[nx-1,j,k] = (ψy0[nx-1,j,k] - ψy0[nx-2,j,k])/dx - (ψx0[nx-1,j+1,k] - ψx0[nx-1,j-1,k])/(2*dy)
-
-for i in range(1,nx-1):
-    for k in range(1,nz-1):
-        u0[i,0,k] = (ψz0[i,1,k] - ψz0[i,0,k])/dy - (ψy0[i,0,k+1] - ψy0[i,0,k-1])/(2*dz)                      # Bottom wall
-        v0[i,0,k] = 0.0
-        w0[i,0,k] = (ψy0[i+1,0,k] - ψy0[i-1,0,k])/(2*dx) - (ψx0[i,1,k] - ψx0[i,0,k])/dy
-        u0[i,ny-1,k] = (ψz0[i,ny-1,k] - ψz0[i,ny-2,k])/dy - (ψy0[i,ny-1,k+1] - ψy0[i,ny-1,k-1])/(2*dz)       # Top wall
-        v0[i,ny-1,k] = 0.0
-        w0[i,ny-1,k] = (ψy0[i+1,ny-1,k] - ψy0[i-1,ny-1,k])/(2*dx) - (ψx0[i,ny-1,k] - ψx0[i,ny-2,k])/dy
+        u0[0,j,k] = 0.0          # Left wall
+        v0[0,j,k] = 0.0
+        w0[0,j,k] = 0.0
+        u0[nx-1,j,k] = 0.0       # Right wall
+        v0[nx-1,j,k] = 0.0
+        w0[nx-1,j,k] = 0.0
 
 for i in range(1,nx-1):
     for j in range(1,ny-1):
-        u0[i,j,0] = (ψz0[i,j+1,0] - ψz0[i,j-1,0])/(2*dy) - (ψy0[i,j,1] - ψy0[i,j,0])/dz                      # Front wall
-        v0[i,j,0] = (ψx0[i,j,1] - ψx0[i,j,0])/dz - (ψz0[i+1,j,0] - ψz0[i-1,j,0])/(2*dx)                                           
+        u0[i,j,0] = 0.0          # Front wall
+        v0[i,j,0] = 0.0
         w0[i,j,0] = 0.0
-        u0[i,j,nz-1] = (ψz0[i,j+1,nz-1] - ψz0[i,j-1,nz-1])/(2*dy) - (ψy0[i,j,nz-1] - ψy0[i,j,nz-2])/dz       # Back wall
-        v0[i,j,nz-1] = (ψx0[i,j,nz-1] - ψx0[i,j,nz-2])/dz - (ψz0[i+1,j,nz-1] - ψz0[i-1,j,nz-1])/(2*dx)
+        u0[i,j,nz-1] = 0.0       # Back wall
+        v0[i,j,nz-1] = 0.0
         w0[i,j,nz-1] = 0.0
+
+for k in range(1,nz-1):
+    for i in range(1,nx-1):
+        u0[i,0,k] = 0.0          # Bottom wall
+        v0[i,0,k] = 0.0
+        w0[i,0,k] = 0.0
+        u0[i,ny-1,k] = Ut        # Top wall
+        v0[i,ny-1,k] = 0.0
+        w0[i,ny-1,k] = 0.0
 
 # Velocity edge points
 
@@ -341,82 +277,40 @@ w0[nx-1,ny-1,nz-1] = (w0[nx-2,ny-1,nz-1] + w0[nx-1,ny-1,nz-2] + w0[nx-1,ny-2,nz-
 print()
 print(f"u0 is : ")
 print()
-print(u0)
+print(u0[:,:,3])
 print()
-
-
 
 #------------------------------------------------
 # VORTICITY VECTOR FIELD (Ω) BOUNDARY CONDITIONS
 #------------------------------------------------
 # derived using the definition of vorticity
 
-# for j in range(1,ny-1):
-#     for k in range(1,nz-1):
-#         Ωx0[0,j,k] = 0.0                                        # Left wall
-#         Ωy0[0,j,k] = -w0[1,j,k]/dx
-#         Ωz0[0,j,k] = v0[1,j,k]/dx
-#         Ωx0[nx-1,j,k] = 0.0                                     # Right wall
-#         Ωy0[nx-1,j,k] = w0[nx-2,j,k]/dx
-#         Ωz0[nx-1,j,k] =-v0[nx-2,j,k]/dx
+for j in range(1,ny-1):
+    for k in range(1,nz-1):
+        Ωx0[0,j,k] = 0.0                                        # Left wall
+        Ωy0[0,j,k] = -w0[1,j,k]/dx
+        Ωz0[0,j,k] = v0[1,j,k]/dx
+        Ωx0[nx-1,j,k] = 0.0                                     # Right wall
+        Ωy0[nx-1,j,k] = w0[nx-2,j,k]/dx
+        Ωz0[nx-1,j,k] =-v0[nx-2,j,k]/dx
 
-# for i in range(1,nx-1):
-#     for j in range(1,ny-1):
-#         Ωx0[i,j,0] = -v0[i,j,1]/dz                              # Front wall
-#         Ωy0[i,j,0] = u0[i,j,1]/dz
-#         Ωz0[i,j,0] = 0.0
-#         Ωx0[i,j,nz-1] = v0[i,j,nz-2]/dz                         # Back wall
-#         Ωy0[i,j,nz-1] = -u0[i,j,nz-2]/dz
-#         Ωz0[i,j,nz-1] = 0.0
+for i in range(1,nx-1):
+    for j in range(1,ny-1):
+        Ωx0[i,j,0] = -v0[i,j,1]/dz                              # Front wall
+        Ωy0[i,j,0] = u0[i,j,1]/dz
+        Ωz0[i,j,0] = 0.0
+        Ωx0[i,j,nz-1] = v0[i,j,nz-2]/dz                         # Back wall
+        Ωy0[i,j,nz-1] = -u0[i,j,nz-2]/dz
+        Ωz0[i,j,nz-1] = 0.0
         
-# for i in range(1,nx-1):
-#     for k in range(1,nz-1):
-#         Ωx0[i,0,k] = w0[i,1,k]/dy                               # Bottom wall
-#         Ωy0[i,0,k] = 0.0
-#         Ωz0[i,0,k] = -u0[i,1,k]/dy
-#         Ωx0[i,ny-1,k] = -w0[i,ny-2,k]/dy                        # Top wall
-#         #Ωy0[i,ny-1,k] = (u0[i,ny-1,k+1] - u0[i,ny-1,k])/dy
-#         Ωy0[i,ny-1,k] = 0.0                                     # Because the normal component is zero
-#         Ωz0[i,ny-1,k] = -(u0[i,ny-1,k] - u0[i,ny-2,k])/dy
-
-# VORTICITY VECTOR FIELD (Ω) BOUNDARY CONDITIONS
-# Second-order approximations
-
-for j in range(1, ny-1):
-    for k in range(1, nz-1):
-        # Left wall (normal -x)
-        Ωx0[0, j, k] = 0.0  # Normal vorticity ~0
-        Ωy0[0, j, k] = (3 * (w0[0, j, k] - w0[1, j, k]) / (2 * dx)) + Ωy0[1, j, k] / 2  # ≈ -∂w/∂x (forward inward, sign for curl)
-        Ωz0[0, j, k] = - (3 * (v0[0, j, k] - v0[1, j, k]) / (2 * dx)) + Ωz0[1, j, k] / 2  # ≈ ∂v/∂x (negative for consistency)
-
-        # Right wall (normal +x)
-        Ωx0[nx-1, j, k] = 0.0
-        Ωy0[nx-1, j, k] = (3 * (w0[nx-1, j, k] - w0[nx-2, j, k]) / (2 * dx)) + Ωy0[nx-2, j, k] / 2  # ∂w/∂x term with backward
-        Ωz0[nx-1, j, k] = - (3 * (v0[nx-1, j, k] - v0[nx-2, j, k]) / (2 * dx)) + Ωz0[nx-2, j, k] / 2
-
-for i in range(1, nx-1):
-    for j in range(1, ny-1):
-        # Front wall (normal -z)
-        Ωx0[i, j, 0] = (3 * (v0[i, j, 0] - v0[i, j, 1]) / (2 * dz**2)) + Ωx0[i, j, 1] / 2  # ∂v/∂z
-        Ωy0[i, j, 0] = - (3 * (u0[i, j, 0] - u0[i, j, 1]) / (2 * dz**2)) + Ωy0[i, j, 1] / 2  # -∂u/∂z
-        Ωz0[i, j, 0] = 0.0
-
-        # Back wall (normal +z)
-        Ωx0[i, j, nz-1] = (3 * (v0[i, j, nz-1] - v0[i, j, nz-2]) / (2 * dz)) + Ωx0[i, j, nz-2] / 2
-        Ωy0[i, j, nz-1] = - (3 * (u0[i, j, nz-1] - u0[i, j, nz-2]) / (2 * dz)) + Ωy0[i, j, nz-2] / 2
-        Ωz0[i, j, nz-1] = 0.0
-
-for i in range(1, nx-1):
-    for k in range(1, nz-1):
-        # Bottom wall (normal -y)
-        Ωx0[i, 0, k] = - (3 * (w0[i, 0, k] - w0[i, 1, k]) / (2 * dy)) + Ωx0[i, 1, k] / 2  # -∂w/∂y
-        Ωy0[i, 0, k] = 0.0
-        Ωz0[i, 0, k] = (3 * (u0[i, 0, k] - u0[i, 1, k]) / (2 * dy)) + Ωz0[i, 1, k] / 2  # ∂u/∂y (sign for Ωz = -∂u/∂y dominant)
-
-        # Top wall (normal +y, lid)
-        Ωx0[i, ny-1, k] = - (3 * (w0[i, ny-1, k] - w0[i, ny-2, k]) / (2 * dy)) + Ωx0[i, ny-2, k] / 2
-        Ωy0[i, ny-1, k] = 0.0
-        Ωz0[i, ny-1, k] = - (3 * (u0[i, ny-1, k] - u0[i, ny-2, k]) / (2 * dy)) + Ωz0[i, ny-2, k] / 2  # -∂u/∂y with backward
+for i in range(1,nx-1):
+    for k in range(1,nz-1):
+        Ωx0[i,0,k] = w0[i,1,k]/dy                               # Bottom wall
+        Ωy0[i,0,k] = 0.0
+        Ωz0[i,0,k] = -u0[i,1,k]/dy
+        Ωx0[i,ny-1,k] = -w0[i,ny-2,k]/dy                        # Top wall
+        Ωy0[i,ny-1,k] = 0.0                                     
+        Ωz0[i,ny-1,k] = -(Ut - u0[i,ny-2,k])/dy
 
 # Vorticity edge points
 for j in range(1,ny-1):
@@ -495,9 +389,9 @@ for i in range(1,nx-1):
 Ωz0[nx-1,ny-1,nz-1] = (Ωz0[nx-2,ny-1,nz-1] + Ωz0[nx-1,ny-1,nz-2] + Ωz0[nx-1,ny-2,nz-1]) / 3.0
 
 print()
-print(f"Ωx0 is : ")
+print(f"Ωz0 is : ")
 print()
-print(Ωx0)
+print(Ωz0[:,:,3])
 print()
 
 
@@ -526,15 +420,17 @@ w_sol.append(w0)
 
 
 # Time-marching parameters
-tend = 2.0
-tol = 1e-6
+tend = 0.2
+tol = 1e-2
 errx = 1e5
 erry = 1e5
 errz = 1e5
-itmax = 500
-β = 1.7
+itmax = 200
+β = 1.85
 #dt = 0.25*dx*dx/nu if Ut == 0 else min(0.25*dx*dx/nu, 4*nu/(Ut**2))
-dt = min(0.1 * dx**2 / nu, 4 * nu / (Ut**2))
+#dt = min(0.1 * dx**2 / nu, 4 * nu / (Ut**2))
+#dt = 0.1
+dt = min(0.15 * dx**2 / nu, 4 * nu / (Ut**2))
 
 # Start main time loop
 t = 0
@@ -549,6 +445,7 @@ while t < tend:
 
     # POISSON SOLVER FOR ψ_x
     it = 0
+    errx = 1e5
     ψx = ψx_sol[-1].copy()
     Ωxn = Ωx_sol[-1].copy()
     while it < itmax and errx > tol:
@@ -556,14 +453,16 @@ while t < tend:
         for i in range(1,nx-1):
             for j in range(1,ny-1):
                 for k in range(1,nz-1):
-                    ψx[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (-dx**2*dy**2*dz**2*Ωxn[i,j,k] + dy**2*dz**2*(ψx[i+1,j,k]+ψx[i-1,j,k]) + dx**2*dz**2*(ψx[i,j+1,k]+ψx[i,j-1,k]) + dx**2*dy**2*(ψx[i,j,k+1] + ψx[i,j,k-1])) + (1 - β) * ψx[i,j,k]
+                    ψx[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωxn[i,j,k] + dy**2*dz**2*(ψx[i+1,j,k]+ψx[i-1,j,k]) + dx**2*dz**2*(ψx[i,j+1,k]+ψx[i,j-1,k]) + dx**2*dy**2*(ψx[i,j,k+1] + ψx[i,j,k-1])) + (1 - β) * ψx[i,j,k]
         errx = np.linalg.norm(ψx.ravel() - ψx_k.ravel())
         it = it + 1
-        print(f"X Iteration: {it}")
-        print(f"X Error: {errx}")
+        if it % 50 == 0: 
+            print(f"X Iteration: {it}")
+            print(f"X Error: {errx}")
 
     # POISSON SOLVER FOR ψ_y
     it = 0
+    erry = 1e5
     ψy = ψy_sol[-1].copy()
     Ωyn = Ωy_sol[-1].copy()
     while it < itmax and erry > tol:
@@ -571,59 +470,50 @@ while t < tend:
         for i in range(1,nx-1):
             for j in range(1,ny-1):
                 for k in range(1,nz-1):
-                    ψy[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (-dx**2*dy**2*dz**2*Ωyn[i,j,k] + dy**2*dz**2*(ψy[i+1,j,k]+ψy[i-1,j,k]) + dx**2*dz**2*(ψy[i,j+1,k]+ψy[i,j-1,k]) + dx**2*dy**2*(ψy[i,j,k+1] + ψy[i,j,k-1])) + (1 - β) * ψy[i,j,k]
+                    ψy[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωyn[i,j,k] + dy**2*dz**2*(ψy[i+1,j,k]+ψy[i-1,j,k]) + dx**2*dz**2*(ψy[i,j+1,k]+ψy[i,j-1,k]) + dx**2*dy**2*(ψy[i,j,k+1] + ψy[i,j,k-1])) + (1 - β) * ψy[i,j,k]
         erry = np.linalg.norm(ψy.ravel() - ψy_k.ravel())
         it = it + 1
-        print(f"Y Iteration: {it}")
-        print(f"Y Error: {erry}")
+        if it % 50 == 0: 
+            print(f"Y Iteration: {it}")
+            print(f"Y Error: {erry}")
 
     # POISSON SOLVER FOR ψ_z
     it = 0 
+    errz = 1e5
     ψz = ψz_sol[-1].copy()
     Ωzn = Ωz_sol[-1].copy()
+    #print(f"Ωzn is {Ωzn}")
     while it < itmax and errz > tol:
         ψz_k = ψz.copy()
         for i in range(1,nx-1):
             for j in range(1,ny-1):
                 for k in range(1,nz-1):
-                    ψz[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (-dx**2*dy**2*dz**2*Ωzn[i,j,k] + dy**2*dz**2*(ψz[i+1,j,k]+ψz[i-1,j,k]) + dx**2*dz**2*(ψz[i,j+1,k]+ψz[i,j-1,k]) + dx**2*dy**2*(ψz[i,j,k+1] + ψz[i,j,k-1])) + (1 - β) * ψz[i,j,k]
+                    ψz[i,j,k] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωzn[i,j,k] + dy**2*dz**2*(ψz[i+1,j,k]+ψz[i-1,j,k]) + dx**2*dz**2*(ψz[i,j+1,k]+ψz[i,j-1,k]) + dx**2*dy**2*(ψz[i,j,k+1] + ψz[i,j,k-1])) + (1 - β) * ψz[i,j,k]
         errz = np.linalg.norm(ψz.ravel() - ψz_k.ravel())
         it = it + 1
-        print(f"Z Iteration: {it}")
-        print(f"Z Error: {errz}")
+        if it % 50 == 0: 
+            print(f"Z Iteration: {it}")
+            print(f"Z Error: {errz}")
+
+    # print()
+    # print(f"ψz at {t:.3f}s pre-BCs :")
+    # print()
+    # print(ψz[:,:,3])
+
+    # print()
+    # print(f"ψy at {t:.3f}s pre-BCs :")
+    # print()
+    # print(ψy[:,:,3])
+
+    # print()
+    # print(f"ψz at {t:.3f}s pre-BCs :")
+    # print()
+    # print(ψz[:,:,3])
 
 
     # #-------------------------------------------
     # # Re-apply boundary conditions to ψ
     # #-------------------------------------------
-    # for j in range(1,ny-1):
-    #     for k in range(1,nz-1):
-    #         ψx[0,j,k] = ψx[1,j,k]         # Left wall
-    #         ψy[0,j,k] = 0.0
-    #         ψz[0,j,k] = 0.0  
-    #         ψx[nx-1,j,k] = ψx[nx-2,j,k]   # Right wall
-    #         ψy[nx-1,j,k] = 0.0
-    #         ψz[nx-1,j,k] = 0.0
-
-    # for i in range(1,nx-1):
-    #     for j in range(1,ny-1):
-    #         ψx[i,j,0] = 0.0                # Front wall
-    #         ψy[i,j,0] = 0.0
-    #         ψz[i,j,0] = ψz[i,j,1]       
-    #         ψx[i,j,nz-1] = 0.0             # Back wall
-    #         ψy[i,j,nz-1] = 0.0
-    #         ψz[i,j,nz-1] = ψz[i,j,nz-2]
-
-    # for i in range(1,nx-1):
-    #     for k in range(1,ny-1):
-    #         ψx[i,0,k] = 0.0                # Bottom wall
-    #         ψy[i,0,k] = ψy[i,1,k]   
-    #         ψz[i,0,k] = 0.0
-    #         ψx[i,ny-1,k] = 0.0
-    #         ψy[i,ny-1,k] = ψy[i,ny-2,k]
-    #         ψz[i,ny-1,k] = 0.0
-
-    # GROK 4 SUGGESTION
     for j in range(1,ny-1):
         for k in range(1,nz-1):
             ψx[0,j,k] = ψx[1,j,k]         # Left wall
@@ -643,14 +533,13 @@ while t < tend:
             ψz[i,j,nz-1] = ψz[i,j,nz-2]
 
     for i in range(1,nx-1):
-        for k in range(1,nz-1):
+        for k in range(1,ny-1):
             ψx[i,0,k] = 0.0                # Bottom wall
             ψy[i,0,k] = ψy[i,1,k]   
             ψz[i,0,k] = 0.0
-            ψx[i,ny-1,k] = ψx[i,ny-2,k]            # Top wall
-            ψy[i,ny-1,k] = 0.0
-            ψz[i,ny-1,k] = Ut*dy + ψz[i,ny-2,k]
-
+            ψx[i,ny-1,k] = 0.0
+            ψy[i,ny-1,k] = ψy[i,ny-2,k]
+            ψz[i,ny-1,k] = 0.0
 
     # Vector-potential edge points
     for j in range(1,ny-1):
@@ -728,12 +617,24 @@ while t < tend:
     ψy[nx-1,ny-1,nz-1] = (ψy[nx-2,ny-1,nz-1] + ψy[nx-1,ny-1,nz-2] + ψy[nx-1,ny-2,nz-1]) / 3.0
     ψz[nx-1,ny-1,nz-1] = (ψz[nx-2,ny-1,nz-1] + ψz[nx-1,ny-1,nz-2] + ψz[nx-1,ny-2,nz-1]) / 3.0
 
-
-
     ψx_sol.append(ψx)
     ψy_sol.append(ψy)
     ψz_sol.append(ψz)
 
+    # print()
+    # print(f"ψx at {t:.3f}s post-BCs :")
+    # print()
+    # print(ψx[:,:,3])
+
+    # print()
+    # print(f"ψy at {t:.3f}s post-BCs :")
+    # print()
+    # print(ψy[:,:,3])
+
+    # print()
+    # print(f"ψz at {t:.3f}s post-BCs :")
+    # print()
+    # print(ψz[:,:,3])
 
 
     #---------------------------------------
@@ -748,99 +649,40 @@ while t < tend:
                 v[i,j,k] = (ψx[i,j,k+1] - ψx[i,j,k-1])/(2*dz) + (ψz[i-1,j,k] - ψz[i+1,j,k])/(2*dx)
                 w[i,j,k] = (ψy[i+1,j,k] - ψy[i-1,j,k])/(2*dx) + (ψx[i,j-1,k] - ψx[i,j+1,k])/(2*dy)
 
-    # # BOUNDARIES
-    # for j in range(1,ny-1):
-    #     for k in range(1,nz-1):
-    #         u[0,j,k] = 0.0                                      # Left wall
-    #         v[0,j,k] = -ψz[1,j,k]/dx
-    #         w[0,j,k] = ψy[1,j,k]/dx
-    #         u[nx-1,j,k] = ψz[nx-2,j,k]/dx                       # Right wall
-    #         v[nx-1,j,k] = -ψy[nx-2,j,k]/dx 
-    #         w[nx-1,j,k] = 0.0
 
-    # for i in range(1,nx-1):
-    #     for k in range(1,nz-1):
-    #         u[i,0,k] = ψz[i,1,k]/dy                             # Bottom wall
-    #         v[i,0,k] = 0.0
-    #         w[i,0,k] = -ψx[i,1,k]/dy
-    #         #------------
-    #         # TOP WALL
-    #         #------------
-    #         u[i,ny-1,k] = (ψz[i,ny-1,k] - ψz[i,ny-2,k])/dy - (ψy[i,ny-1,k+1]-ψx[i,ny-1,k])/dz
-    #         v[i,ny-1,k] = (ψx[i,ny-1,k+1] - ψx[i,ny-1,k])/dz - (ψz[i+1,ny-1,k]-ψz[i,ny-1,k])/dx
-    #         w[i,ny-1,k] = (ψy[i+1,ny-1,k] - ψy[i,ny-1,k])/dx - (ψx[i,ny-1,k] - ψx[i,ny-2,k])/dy
 
-    # for i in range(1,nx-1):
-    #     for j in range(1,ny-1):
-    #         u[i,j,0] = -ψy[i,j,1]/dz                            # Front wall
-    #         v[i,j,0] = ψx[i,j,1]/dz
-    #         w[i,j,0] = 0.0
-    #         u[i,j,nz-1] = ψy[i,j,nz-2]/dz                       # Back wall
-    #         v[i,j,nz-1] = -ψx[i,j,nz-2]/dz
-    #         w[i,j,nz-1] = 0.0
-
-    # OR,
+    # print()
+    # print(f"Velocity at {t:.3f}s pre-BCs :")
+    # print()
+    # print(u[:,:,3])
 
     # RE-APPLY VELOCITY BOUNDARY CONDITIONS
-
-    # # MAIN VELOCITY BOUNDARY CONDITIONS
-    # for j in range(1,ny-1):
-    #     for k in range(1,nz-1):
-    #         u[0,j,k] = 0.0          # Left wall
-    #         v[0,j,k] = 0.0
-    #         w[0,j,k] = 0.0
-    #         u[nx-1,j,k] = 0.0       # Right wall
-    #         v[nx-1,j,k] = 0.0
-    #         w[nx-1,j,k] = 0.0
-
-    # for i in range(1,nx-1):
-    #     for j in range(1,ny-1):
-    #         u[i,j,0] = 0.0          # Front wall
-    #         v[i,j,0] = 0.0
-    #         w[i,j,0] = 0.0
-    #         u[i,j,nz-1] = 0.0       # Back wall
-    #         v[i,j,nz-1] = 0.0
-    #         w[i,j,nz-1] = 0.0
-
-    # for k in range(1,nz-1):
-    #     for i in range(1,nx-1):
-    #         u[i,0,k] = 0.0          # Bottom wall
-    #         v[i,0,k] = 0.0
-    #         w[i,0,k] = 0.0
-    #         u[i,ny-1,k] = Ut        # Top wall
-    #         v[i,ny-1,k] = 0.0
-    #         w[i,ny-1,k] = 0.0
-
-    # GROK 4 SUGGESTION
-    # Normal components zero
-    # Central for tangential components
     for j in range(1,ny-1):
         for k in range(1,nz-1):
-            u[0,j,k] = 0.0                                                                                  # Left wall
-            v[0,j,k] = (ψx[0,j,k+1] - ψx[0,j,k-1])/(2*dz) - (ψz[1,j,k] - ψz[0,j,k])/dx
-            w[0,j,k] = (ψy[1,j,k] - ψy[0,j,k])/dx - (ψx[0,j+1,k] - ψx[0,j-1,k])/(2*dy)
-            u[nx-1,j,k] = 0.0                                                                               # Right wall
-            v[nx-1,j,k] = (ψx[nx-1,j,k+1] - ψx[nx-1,j,k-1])/(2*dz) - (ψz[nx-1,j,k] - ψz[nx-2,j,k])/dx
-            w[nx-1,j,k] = (ψy[nx-1,j,k] - ψy[nx-2,j,k])/dx - (ψx[nx-1,j+1,k] - ψx[nx-1,j-1,k])/(2*dy)
-
-    for i in range(1,nx-1):
-        for k in range(1,nz-1):
-            u[i,0,k] = (ψz[i,1,k] - ψz[i,0,k])/dy - (ψy[i,0,k+1] - ψy[i,0,k-1])/(2*dz)                      # Bottom wall
-            v[i,0,k] = 0.0
-            w[i,0,k] = (ψy[i+1,0,k] - ψy[i-1,0,k])/(2*dx) - (ψx[i,1,k] - ψx[i,0,k])/dy
-            u[i,ny-1,k] = (ψz[i,ny-1,k] - ψz[i,ny-2,k])/dy - (ψy[i,ny-1,k+1] - ψy[i,ny-1,k-1])/(2*dz)       # Top wall
-            v[i,ny-1,k] = 0.0
-            w[i,ny-1,k] = (ψy[i+1,ny-1,k] - ψy[i-1,ny-1,k])/(2*dx) - (ψx[i,ny-1,k] - ψx[i,ny-2,k])/dy
+            u[0,j,k] = 0.0          # Left wall
+            v[0,j,k] = 0.0
+            w[0,j,k] = 0.0
+            u[nx-1,j,k] = 0.0       # Right wall
+            v[nx-1,j,k] = 0.0
+            w[nx-1,j,k] = 0.0
 
     for i in range(1,nx-1):
         for j in range(1,ny-1):
-            u[i,j,0] = (ψz[i,j+1,0] - ψz[i,j-1,0])/(2*dy) - (ψy[i,j,1] - ψy[i,j,0])/dz                      # Front wall
-            v[i,j,0] = (ψx[i,j,1] - ψx[i,j,0])/dz - (ψz[i+1,j,0] - ψz[i-1,j,0])/(2*dx)                                           
+            u[i,j,0] = 0.0          # Front wall
+            v[i,j,0] = 0.0
             w[i,j,0] = 0.0
-            u[i,j,nz-1] = (ψz[i,j+1,nz-1] - ψz[i,j-1,nz-1])/(2*dy) - (ψy[i,j,nz-1] - ψy[i,j,nz-2])/dz       # Back wall
-            v[i,j,nz-1] = (ψx[i,j,nz-1] - ψx[i,j,nz-2])/dz - (ψz[i+1,j,nz-1] - ψz[i-1,j,nz-1])/(2*dx)
+            u[i,j,nz-1] = 0.0       # Back wall
+            v[i,j,nz-1] = 0.0
             w[i,j,nz-1] = 0.0
 
+    for k in range(1,nz-1):
+        for i in range(1,nx-1):
+            u[i,0,k] = 0.0          # Bottom wall
+            v[i,0,k] = 0.0
+            w[i,0,k] = 0.0
+            u[i,ny-1,k] = Ut        # Top wall
+            v[i,ny-1,k] = 0.0
+            w[i,ny-1,k] = 0.0
 
     # Velocity edge points
     for j in range(1,ny-1):
@@ -917,6 +759,11 @@ while t < tend:
     u[nx-1,ny-1,nz-1] = (u[nx-2,ny-1,nz-1] + u[nx-1,ny-1,nz-2] + u[nx-1,ny-2,nz-1]) / 3.0       # Back top right
     v[nx-1,ny-1,nz-1] = (v[nx-2,ny-1,nz-1] + v[nx-1,ny-1,nz-2] + v[nx-1,ny-2,nz-1]) / 3.0
     w[nx-1,ny-1,nz-1] = (w[nx-2,ny-1,nz-1] + w[nx-1,ny-1,nz-2] + w[nx-1,ny-2,nz-1]) / 3.0
+
+    # print()
+    # print(f"Velocity at {t:.3f}s post-BCs :")
+    # print()
+    # print(u[:,:,3])
 
     u_sol.append(u)
     v_sol.append(v)
@@ -995,75 +842,38 @@ while t < tend:
                 # The equation
                 Ωz[i,j,k] = Ωzn[i,j,k] + dt * (nu * (Dx + Dy + Dz) + Ux + Uy + Uz - (Cx + Cy + Cz))
 
-
+    # print()
+    # print(f"Vorticity at {t:.3f}s pre-BCs :")
+    # print()
+    # print(Ωz[:,:,3])
 
     # # Re-apply the vorticity boundary conditions
-    # for j in range(1,ny-1):
-    #     for k in range(1,nz-1):
-    #         Ωx[0,j,k] = 0.0                                 # Left wall
-    #         Ωy[0,j,k] = -w[1,j,k]/dx
-    #         Ωz[0,j,k] = v[1,j,k]/dx
-    #         Ωx[nx-1,j,k] = 0.0                              # Right wall
-    #         Ωy[nx-1,j,k] = -w[nx-2,j,k]/dx                  # SIGN ERROR
-    #         Ωz[nx-1,j,k] =-v[nx-2,j,k]/dx
+    for j in range(1,ny-1):
+        for k in range(1,nz-1):
+            Ωx[0,j,k] = 0.0                                 # Left wall
+            Ωy[0,j,k] = -w[1,j,k]/dx
+            Ωz[0,j,k] = v[1,j,k]/dx
+            Ωx[nx-1,j,k] = 0.0                              # Right wall
+            Ωy[nx-1,j,k] = -w[nx-2,j,k]/dx                  # SIGN ERROR
+            Ωz[nx-1,j,k] =-v[nx-2,j,k]/dx
 
-    # for i in range(1,nx-1):
-    #     for j in range(1,ny-1):
-    #         Ωx[i,j,0] = -v[i,j,1]/dz                        # Front wall
-    #         Ωy[i,j,0] = u[i,j,1]/dz
-    #         Ωz[i,j,0] = 0.0
-    #         Ωx[i,j,nz-1] = v[i,j,nz-2]/dz                   # Back wall
-    #         Ωy[i,j,nz-1] = -u[i,j,nz-2]/dz
-    #         Ωz[i,j,nz-1] = 0.0
+    for i in range(1,nx-1):
+        for j in range(1,ny-1):
+            Ωx[i,j,0] = -v[i,j,1]/dz                        # Front wall
+            Ωy[i,j,0] = u[i,j,1]/dz
+            Ωz[i,j,0] = 0.0
+            Ωx[i,j,nz-1] = v[i,j,nz-2]/dz                   # Back wall
+            Ωy[i,j,nz-1] = -u[i,j,nz-2]/dz
+            Ωz[i,j,nz-1] = 0.0
             
-    # for i in range(1,nx-1):
-    #     for k in range(1,nz-1):
-    #         Ωx[i,0,k] = w[i,1,k]/dy                         # Bottom wall
-    #         Ωy[i,0,k] = 0.0
-    #         Ωz[i,0,k] = -u[i,1,k]/dy
-    #         Ωx[i,ny-1,k] = -w[i,ny-2,k]/dy                     # Top wall
-    #         #Ωy[i,ny-1,k] = (u[i,ny-1,k+1] - u[i,ny-1,k])/dy
-    #         Ωy[i,ny-1,k] = 0.0
-    #         Ωz[i,ny-1,k] = -(u[i,ny-1,k] - u[i,ny-2,k])/dy
-
-    # VORTICITY VECTOR FIELD (Ω) BOUNDARY CONDITIONS
-    # Second-order approximations
-
-    for j in range(1, ny-1):
-        for k in range(1, nz-1):
-            # Left wall (normal -x)
-            Ωx[0, j, k] = 0.0  # Normal vorticity ~0
-            Ωy[0, j, k] = (3 * (w[0, j, k] - w[1, j, k]) / (2 * dx)) + Ωy[1, j, k] / 2  # ≈ -∂w/∂x (forward inward, sign for curl)
-            Ωz[0, j, k] = - (3 * (v[0, j, k] - v[1, j, k]) / (2 * dx)) + Ωz[1, j, k] / 2  # ≈ ∂v/∂x (negative for consistency)
-
-            # Right wall (normal +x)
-            Ωx[nx-1, j, k] = 0.0
-            Ωy[nx-1, j, k] = (3 * (w[nx-1, j, k] - w[nx-2, j, k]) / (2 * dx)) + Ωy[nx-2, j, k] / 2  # ∂w/∂x term with backward
-            Ωz[nx-1, j, k] = - (3 * (v[nx-1, j, k] - v[nx-2, j, k]) / (2 * dx)) + Ωz[nx-2, j, k] / 2
-
-    for i in range(1, nx-1):
-        for j in range(1, ny-1):
-            # Front wall (normal -z)
-            Ωx[i, j, 0] = (3 * (v[i, j, 0] - v[i, j, 1]) / (2 * dz)) + Ωx[i, j, 1] / 2  # ∂v/∂z
-            Ωy[i, j, 0] = - (3 * (u[i, j, 0] - u[i, j, 1]) / (2 * dz)) + Ωy[i, j, 1] / 2  # -∂u/∂z
-            Ωz[i, j, 0] = 0.0
-
-            # Back wall (normal +z)
-            Ωx[i, j, nz-1] = (3 * (v[i, j, nz-1] - v[i, j, nz-2]) / (2 * dz)) + Ωx[i, j, nz-2] / 2
-            Ωy[i, j, nz-1] = - (3 * (u[i, j, nz-1] - u[i, j, nz-2]) / (2 * dz)) + Ωy[i, j, nz-2] / 2
-            Ωz[i, j, nz-1] = 0.0
-
-    for i in range(1, nx-1):
-        for k in range(1, nz-1):
-            # Bottom wall (normal -y)
-            Ωx[i, 0, k] = - (3 * (w[i, 0, k] - w[i, 1, k]) / (2 * dy)) + Ωx[i, 1, k] / 2  # -∂w/∂y
-            Ωy[i, 0, k] = 0.0
-            Ωz[i, 0, k] = (3 * (u[i, 0, k] - u[i, 1, k]) / (2 * dy)) + Ωz[i, 1, k] / 2  # ∂u/∂y (sign for Ωz = -∂u/∂y dominant)
-
-            # Top wall (normal +y, lid)
-            Ωx[i, ny-1, k] = - (3 * (w[i, ny-1, k] - w[i, ny-2, k]) / (2 * dy)) + Ωx[i, ny-2, k] / 2
-            Ωy[i, ny-1, k] = 0.0
-            Ωz[i, ny-1, k] = - (3 * (u[i, ny-1, k] - u[i, ny-2, k]) / (2 * dy)) + Ωz[i, ny-2, k] / 2  # -∂u/∂y with backward
+    for i in range(1,nx-1):
+        for k in range(1,nz-1):
+            Ωx[i,0,k] = w[i,1,k]/dy                         # Bottom wall
+            Ωy[i,0,k] = 0.0
+            Ωz[i,0,k] = -u[i,1,k]/dy
+            Ωx[i,ny-1,k] = -w[i,ny-2,k]/dy                     # Top wall
+            Ωy[i,ny-1,k] = 0.0
+            Ωz[i,ny-1,k] = -(Ut - u0[i,ny-2,k])/dy
 
     # Vorticity edge points
     for j in range(1,ny-1):
@@ -1141,11 +951,20 @@ while t < tend:
     Ωy[nx-1,ny-1,nz-1] = (Ωy[nx-2,ny-1,nz-1] + Ωy[nx-1,ny-1,nz-2] + Ωy[nx-1,ny-2,nz-1]) / 3.0
     Ωz[nx-1,ny-1,nz-1] = (Ωz[nx-2,ny-1,nz-1] + Ωz[nx-1,ny-1,nz-2] + Ωz[nx-1,ny-2,nz-1]) / 3.0
 
+    # print()
+    # print(f"Vorticity at {t:.3f}s post-BCs :")
+    # print()
+    # print(Ωz[:,:,3])
 
     # Store the solution
     Ωx_sol.append(Ωx.copy())
     Ωy_sol.append(Ωy.copy())
     Ωz_sol.append(Ωz.copy())
+
+    # print()
+    # print(f"Ωz_sol at {t:.3f}s post-BCs :")
+    # print()
+    # print(Ωz[:,:,3])
 
     # Check for dodgy values
     vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
@@ -1153,130 +972,60 @@ while t < tend:
         print(f"Inf/NaN in vort_mag at t={t}")
         break
 
-
-
-
-
     t = t + dt
-    print(f"t = {t}")
+    print()
+    print("#----------------------------")
+    print(f"# t = {t:.3f}")
+    print("#----------------------------")
+    print()
 
+# Grok 4 recommended pyplot visualisation
+# mid = nx // 2
+# plt.figure(figsize=(20, 10))
+# plt.subplot(1, 3, 1)
+# plt.imshow(u[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='viridis')
+# plt.title('u-velocity (xz mid-plane)')
+# plt.colorbar()
+# plt.subplot(1, 3, 2)
+# vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
+# plt.imshow(vort_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma')
+# plt.title('Vorticity Magnitude (xz mid-plane)')
+# plt.colorbar()
+# plt.subplot(1, 3, 3)
+# psi_mag = np.sqrt(ψx**2 + ψy**2 + ψz**2)
+# plt.imshow(psi_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma')
+# plt.title('Vector Potential Magnitude (xz mid-plane)')
+# plt.colorbar()
+# plt.savefig('slices_III.png')
 
-# import vtk
-# from vtk.util.numpy_support import numpy_to_vtk
-
-# def save_to_vtk(u, v, w, Ωx, Ωy, Ωz, filename, nx, ny, nz, dx, dy, dz):
-#     # Create a structured grid
-#     grid = vtk.vtkStructuredGrid()
-#     grid.SetDimensions(nx, ny, nz)
-
-#     # Define points
-#     points = vtk.vtkPoints()
-#     for k in range(nz):
-#         for j in range(ny):
-#             for i in range(nx):
-#                 points.InsertNextPoint(i * dx, j * dy, k * dz)
-#     grid.SetPoints(points)
-
-#     # Add velocity vector field
-#     velocity = np.stack((u, v, w), axis=-1).reshape(-1, 3)
-#     vtk_velocity = numpy_to_vtk(velocity, deep=True)
-#     vtk_velocity.SetName("Velocity")
-#     grid.GetPointData().AddArray(vtk_velocity)
-
-#     # Add vorticity vector field
-#     vorticity = np.stack((Ωx, Ωy, Ωz), axis=-1).reshape(-1, 3)
-#     vtk_vorticity = numpy_to_vtk(vorticity, deep=True)
-#     vtk_vorticity.SetName("Vorticity")
-#     grid.GetPointData().AddArray(vtk_vorticity)
-
-#     # Add scalar fields (e.g., u component, vorticity magnitude)
-#     u_scalar = numpy_to_vtk(u.ravel(), deep=True)
-#     u_scalar.SetName("u_velocity")
-#     grid.GetPointData().AddArray(u_scalar)
-
-#     vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
-#     vort_mag_scalar = numpy_to_vtk(vort_mag.ravel(), deep=True)
-#     vort_mag_scalar.SetName("Vorticity_Magnitude")
-#     grid.GetPointData().AddArray(vort_mag_scalar)
-
-#     # Write to VTK file
-#     writer = vtk.vtkStructuredGridWriter()
-#     writer.SetFileName(filename)
-#     writer.SetInputData(grid)
-#     writer.SetFileType(vtk.VTK_BINARY)
-#     writer.Write()
-
-# # After the time loop, save the final state
-# save_to_vtk(u, v, w, Ωx, Ωy, Ωz, "output.vtk", nx, ny, nz, dx, dy, dz)
-
-# # Optionally, save at multiple time steps
-# # Inside the time loop, after storing solutions
-# if int(t/dt) % 10 == 0:  # Save every 10th step
-#     save_to_vtk(u, v, w, Ωx, Ωy, Ωz, f"output_t{t:.2f}.vtk", nx, ny, nz, dx, dy, dz)
-
-#Grok 4 alternative save method
-# import numpy as np  # Already used in your code, but ensure it's imported at the top if needed
-
-# def save_to_vtk_ascii(u, v, w, Ωx, Ωy, Ωz, filename, nx, ny, nz, dx, dy, dz):
-#     with open(filename, 'w') as f:
-#         f.write('# vtk DataFile Version 3.0\n')
-#         f.write('Lid-driven cavity simulation\n')
-#         f.write('ASCII\n')
-#         f.write('DATASET STRUCTURED_POINTS\n')
-#         f.write(f'DIMENSIONS {nx} {ny} {nz}\n')
-#         f.write('ORIGIN 0 0 0\n')
-#         f.write(f'SPACING {dx} {dy} {dz}\n')
-#         f.write(f'POINT_DATA {nx * ny * nz}\n')
-        
-#         # Velocity vector field
-#         f.write('VECTORS Velocity float\n')
-#         for k in range(nz):
-#             for j in range(ny):
-#                 for i in range(nx):
-#                     f.write(f'{u[i, j, k]:.6f} {v[i, j, k]:.6f} {w[i, j, k]:.6f}\n')
-        
-#         # Vorticity vector field
-#         f.write('VECTORS Vorticity float\n')
-#         for k in range(nz):
-#             for j in range(ny):
-#                 for i in range(nx):
-#                     f.write(f'{Ωx[i, j, k]:.6f} {Ωy[i, j, k]:.6f} {Ωz[i, j, k]:.6f}\n')
-        
-#         # u-velocity scalar
-#         f.write('SCALARS u_velocity float\n')
-#         f.write('LOOKUP_TABLE default\n')
-#         for k in range(nz):
-#             for j in range(ny):
-#                 for i in range(nx):
-#                     f.write(f'{u[i, j, k]:.6f}\n')
-        
-#         # Vorticity magnitude scalar
-#         vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
-#         f.write('SCALARS Vorticity_Magnitude float\n')
-#         f.write('LOOKUP_TABLE default\n')
-#         for k in range(nz):
-#             for j in range(ny):
-#                 for i in range(nx):
-#                     f.write(f'{vort_mag[i, j, k]:.6f}\n')
-
-# # After the time loop, save the final state
-# save_to_vtk_ascii(u, v, w, Ωx, Ωy, Ωz, "output.vtk", nx, ny, nz, dx, dy, dz)
-
-# # Optionally, inside the time loop after storing solutions (save every 10 steps as before)
-# if int(t / dt) % 10 == 0:
-#     save_to_vtk_ascii(u, v, w, Ωx, Ωy, Ωz, f"output_t{t:.2f}.vtk", nx, ny, nz, dx, dy, dz)
-
-# Alternative using Pyplot slices
 mid = nx // 2
-plt.figure(figsize=(10, 5))
-plt.subplot(1, 2, 1)
-plt.imshow(u[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='viridis')
+aspect_ratio = Lx / Ly
+subplot_height = 5
+subplot_width = subplot_height * aspect_ratio
+total_width = 3 * subplot_width
+
+plt.figure(figsize=(total_width, subplot_height))
+
+# Subplot 1: u-velocity
+plt.subplot(1, 3, 1)
+plt.imshow(u[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='viridis', aspect='equal')
 plt.title('u-velocity (xz mid-plane)')
 plt.colorbar()
-plt.subplot(1, 2, 2)
+
+# Subplot 2: Vorticity Magnitude
+plt.subplot(1, 3, 2)
 vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
-plt.imshow(vort_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma')
+plt.imshow(vort_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma', aspect='equal')
 plt.title('Vorticity Magnitude (xz mid-plane)')
 plt.colorbar()
-plt.savefig('slices.png')
-plt.show()
+
+# Subplot 3: Vector Potential Magnitude
+plt.subplot(1, 3, 3)
+psi_mag = np.sqrt(ψx**2 + ψy**2 + ψz**2)
+plt.imshow(psi_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma', aspect='equal')
+plt.title('Vector Potential Magnitude (xz mid-plane)')
+plt.colorbar()
+
+plt.tight_layout()
+plt.savefig('slices_III.png', dpi=300)
+
