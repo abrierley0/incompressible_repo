@@ -28,7 +28,7 @@ dz = Lz/(nz-1)
 
 # Physical parameters
 nu = 0.05
-Ut = 3.2
+Ut = 5.0
 Re = Ut*Lx/nu
 print()
 print(f"REYNOLDS' NUMBER IS {Re}")
@@ -998,6 +998,10 @@ while t < tend:
 # plt.colorbar()
 # plt.savefig('slices_III.png')
 
+#-----------------------
+# (X,Y,0.5)
+#----------------------
+
 mid = nx // 2
 aspect_ratio = Lx / Ly
 subplot_height = 5
@@ -1009,23 +1013,94 @@ plt.figure(figsize=(total_width, subplot_height))
 # Subplot 1: u-velocity
 plt.subplot(1, 3, 1)
 plt.imshow(u[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='viridis', aspect='equal')
-plt.title('u-velocity (xz mid-plane)')
+plt.title('u-velocity (Z=nx/2)')
 plt.colorbar()
+plt.xlabel('X')
+plt.ylabel('Y')
 
 # Subplot 2: Vorticity Magnitude
 plt.subplot(1, 3, 2)
 vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
 plt.imshow(vort_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma', aspect='equal')
-plt.title('Vorticity Magnitude (xz mid-plane)')
+plt.title('Vorticity Magnitude (Z=nx/2)')
 plt.colorbar()
+plt.xlabel('X')
+plt.ylabel('Y')
 
 # Subplot 3: Vector Potential Magnitude
 plt.subplot(1, 3, 3)
 psi_mag = np.sqrt(ψx**2 + ψy**2 + ψz**2)
 plt.imshow(psi_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma', aspect='equal')
-plt.title('Vector Potential Magnitude (xz mid-plane)')
+plt.title('Vector Potential Magnitude (Z=nx/2)')
 plt.colorbar()
+plt.xlabel('X')
+plt.ylabel('Y')
+
+plt.suptitle(f't = {t:.2f}, Re = {Re:.2f}, nx = {nx}, ny = {ny}, nz = {nz}')
 
 plt.tight_layout()
-plt.savefig('slices_III.png', dpi=300)
+plt.savefig('YX.png', dpi=300)
+
+#----------------------------------
+# (0.5,Y,Z)
+#------------------------------
+
+mid = nx // 2
+aspect_ratio = Lx / Ly
+subplot_height = 5
+subplot_width = subplot_height * aspect_ratio
+total_width = 3 * subplot_width
+
+plt.figure(figsize=(total_width, subplot_height))
+
+# Subplot 1: u-velocity
+plt.subplot(1, 3, 1)
+plt.imshow(u[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='viridis', aspect='equal')
+plt.title('u-velocity (X=nx/2)')
+plt.colorbar()
+plt.xlabel('Z')
+plt.ylabel('Y')
+
+# Subplot 2: Vorticity Magnitude
+plt.subplot(1, 3, 2)
+vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
+plt.imshow(vort_mag[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='plasma', aspect='equal')
+plt.title('Vorticity Magnitude (X=nx/2)')
+plt.colorbar()
+plt.xlabel('Z')
+plt.ylabel('Y')
+
+# Subplot 3: Vector Potential Magnitude
+plt.subplot(1, 3, 3)
+psi_mag = np.sqrt(ψx**2 + ψy**2 + ψz**2)
+plt.imshow(psi_mag[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='plasma', aspect='equal')
+plt.title('Vector Potential Magnitude (X=nx/2)')
+plt.colorbar()
+plt.xlabel('Z')
+plt.ylabel('Y')
+
+plt.suptitle(f't = {t:.2f}, Re = {Re:.2f}, nx = {nx}, ny = {ny}, nz = {nz}')
+
+plt.tight_layout()
+plt.savefig('ZY.png', dpi=300)
+
+
+
+
+#-----------------------------------------------
+# EXTRACT CENTREPLANE CENTRELINE VELOCITIES
+#-----------------------------------------------
+
+u_centreline = np.flip(u[nx//2,:,nz//2]/(2*Re))
+y = np.linspace(0,Ly,ny)
+
+
+plt.figure()
+plt.plot(y,u_centreline,'-kx')
+plt.xlabel('y')
+plt.ylabel('u/2Re')
+plt.grid(True)
+plt.suptitle(f'u/2Re along centerline (X={Lx/2:.2f}, Z={Lz/2:.2f})')
+plt.title(f't = {t:.2f}, Re = {Re:.2f}, nx = {nx}, ny = {ny}, nz = {nz}')
+plt.savefig('u_with_y.png')
 
