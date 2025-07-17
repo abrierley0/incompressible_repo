@@ -1,6 +1,7 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import os
+import pandas as pd
 
 
 # VECTOR-POTENTIAL VORTICITY FORMULATION
@@ -161,11 +162,11 @@ for i in range(1,nx-1):
 
 np.set_printoptions(linewidth=1000, threshold=np.inf)  # Ensure full matrix prints
 
-print()
-print(f"ψx0 is : ")
-print()
-print(ψx0[:,:,3])
-print()
+# print()
+# print(f"ψx0 is : ")
+# print()
+# print(ψx0[:,:,3])
+# print()
 
 
 #--------------------------------------------
@@ -277,11 +278,11 @@ u0[nx-1,ny-1,nz-1] = (u0[nx-2,ny-1,nz-1] + u0[nx-1,ny-1,nz-2] + u0[nx-1,ny-2,nz-
 v0[nx-1,ny-1,nz-1] = (v0[nx-2,ny-1,nz-1] + v0[nx-1,ny-1,nz-2] + v0[nx-1,ny-2,nz-1]) / 3.0
 w0[nx-1,ny-1,nz-1] = (w0[nx-2,ny-1,nz-1] + w0[nx-1,ny-1,nz-2] + w0[nx-1,ny-2,nz-1]) / 3.0
 
-print()
-print(f"u0 is : ")
-print()
-print(u0[:,:,3])
-print()
+# print()
+# print(f"u0 is : ")
+# print()
+# print(u0[:,:,3])
+# print()
 
 #------------------------------------------------
 # VORTICITY VECTOR FIELD (Ω) BOUNDARY CONDITIONS
@@ -391,11 +392,11 @@ for i in range(1,nx-1):
 Ωy0[nx-1,ny-1,nz-1] = (Ωy0[nx-2,ny-1,nz-1] + Ωy0[nx-1,ny-1,nz-2] + Ωy0[nx-1,ny-2,nz-1]) / 3.0
 Ωz0[nx-1,ny-1,nz-1] = (Ωz0[nx-2,ny-1,nz-1] + Ωz0[nx-1,ny-1,nz-2] + Ωz0[nx-1,ny-2,nz-1]) / 3.0
 
-print()
-print(f"Ωz0 is : ")
-print()
-print(Ωz0[:,:,3])
-print()
+# print()
+# print(f"Ωz0 is : ")
+# print()
+# print(Ωz0[:,:,3])
+# print()
 
 
 # Create solution storage
@@ -437,6 +438,7 @@ dt = min(0.15 * dx**2 / nu, 4 * nu / (Ut**2))
 
 # Start main time loop
 t = 0
+step = 0
 u = u0.copy()
 v = v0.copy()
 w = w0.copy()
@@ -976,11 +978,11 @@ while t < tend:
         break
 
     t = t + dt
+    step = step + 1
     print()
-    print("#----------------------------")
-    print(f"# t = {t:.3f}")
-    print("#----------------------------")
+    print(f'dt = {dt}')
     print()
+    print(f'step = {step}')
 
 # Grok 4 recommended pyplot visualisation
 # mid = nx // 2
@@ -1106,8 +1108,12 @@ u_centreline = np.flip(u[nx//2,:,nz//2]/(2*Re))
 y = np.linspace(0,Ly,ny)
 
 
+csv_data = pd.read_csv('lit_data/chen_u_centreline.csv')
+y_csv = csv_data['ku']  # Replace with actual column name
+x_csv = csv_data['x']  # Replace with actual column name
 plt.figure()
 plt.plot(y,u_centreline,'-kx')
+plt.plot(x_csv, y_csv, '-ro', label='CSV Data')
 plt.xlabel('y')
 plt.ylabel('u/2Re')
 plt.grid(True)
