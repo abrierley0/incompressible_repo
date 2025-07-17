@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
+import threading
+import time
 
 
 # VECTOR-POTENTIAL VORTICITY FORMULATION
@@ -16,6 +18,17 @@ import pandas as pd
 # adam.brierley@cranfield.ac.uk
 #
 # 2nd July 2025
+
+elapsed_time = 0
+
+def timer():
+    global elapsed_time
+    start = time.time()
+    while True:
+        elapsed_time = time.time() - start
+        time.sleep(1)
+
+threading.Thread(target=timer, daemon=True).start()
 
 nx = 32
 ny = 32
@@ -32,10 +45,12 @@ dz = Lz/(nz-1)
 nu = 0.05
 Ut = 5.0
 Re = Ut*Lx/nu
-print()
-print(f"REYNOLDS' NUMBER IS {Re}")
-print()
+#start_time = time.time()
 
+print()
+print('VECTOR-POTENTIAL VORTICITY FORMULATION FOR THE DRIVEN CUBE')
+print()
+print(f"Re = {Re}")
 
 
 # Initialise arrays
@@ -431,14 +446,22 @@ erry = 1e5
 errz = 1e5
 itmax = 200
 β = 1.85
+print(f'tend = {tend}')
 #dt = 0.25*dx*dx/nu if Ut == 0 else min(0.25*dx*dx/nu, 4*nu/(Ut**2))
 #dt = min(0.1 * dx**2 / nu, 4 * nu / (Ut**2))
 #dt = 0.1
 dt = min(0.15 * dx**2 / nu, 4 * nu / (Ut**2))
+print(f'dt = {dt:.3f}')
+print('---------------------')
+print('Poisson Parameters:')
+print(f"β = {β}")
+print(f'itmax = {itmax}')
+print(f"tol = {tol}")
+print('---------------------')
 
 # Start main time loop
 t = 0
-step = 0
+its = 0
 u = u0.copy()
 v = v0.copy()
 w = w0.copy()
@@ -978,11 +1001,17 @@ while t < tend:
         break
 
     t = t + dt
-    step = step + 1
-    print()
-    print(f'dt = {dt}')
-    print()
-    print(f'step = {step}')
+    its = its + 1
+    # print(f'\rits = {its}', end="")
+    # print(f'\rt = {t:.3f}', end="")
+
+    # print(f'\rits = {its}, t = {t:.3f}', end='')
+    print(f'\rits = {its}, t = {t:.3f}, Elapsed: {(elapsed_time/60.0):.2f} mins', end='')
+
+print()
+print('Done.')
+# elapsed_time = time.time() - start_time
+# print(f"Elapsed time: {elapsed_time:.2f} seconds")
 
 # Grok 4 recommended pyplot visualisation
 # mid = nx // 2
@@ -1109,7 +1138,7 @@ y = np.linspace(0,Ly,ny)
 
 
 csv_data = pd.read_csv('lit_data/chen_u_centreline.csv')
-y_csv = csv_data['ku']  # Replace with actual column name
+y_csv = csv_data['Ku']  # Replace with actual column name
 x_csv = csv_data['x']  # Replace with actual column name
 plt.figure()
 plt.plot(y,u_centreline,'-kx')
