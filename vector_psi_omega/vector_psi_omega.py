@@ -536,7 +536,7 @@ while t < tend:
             ψz[i,j,nz-1] = ψz[i,j,nz-2]
 
     for i in range(1,nx-1):
-        for k in range(1,ny-1):
+        for k in range(1,nz-1):
             ψx[i,0,k] = 0.0                # Bottom wall
             ψy[i,0,k] = ψy[i,1,k]   
             ψz[i,0,k] = 0.0
@@ -876,7 +876,7 @@ while t < tend:
             Ωz[i,0,k] = -u[i,1,k]/dy
             Ωx[i,ny-1,k] = -w[i,ny-2,k]/dy                     # Top wall
             Ωy[i,ny-1,k] = 0.0
-            Ωz[i,ny-1,k] = -(Ut - u0[i,ny-2,k])/dy
+            Ωz[i,ny-1,k] = -(Ut - u[i,ny-2,k])/dy
 
     # Vorticity edge points
     for j in range(1,ny-1):
@@ -1018,7 +1018,8 @@ plt.figure(figsize=(total_width, subplot_height))
 
 # Subplot 1: u-velocity
 plt.subplot(1, 3, 1)
-plt.imshow(u[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='viridis', aspect='equal')
+#plt.imshow(u[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='viridis', aspect='equal')
+plt.contour(u[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='viridis',levels=100)
 plt.title('u-velocity (Z=nx/2)')
 plt.colorbar()
 plt.xlabel('X')
@@ -1027,7 +1028,8 @@ plt.ylabel('Y')
 # Subplot 2: Vorticity Magnitude
 plt.subplot(1, 3, 2)
 vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
-plt.imshow(vort_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma', aspect='equal')
+#plt.imshow(vort_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma', aspect='equal')
+plt.contour(vort_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma',levels=100)
 plt.title('Vorticity Magnitude (Z=nx/2)')
 plt.colorbar()
 plt.xlabel('X')
@@ -1036,7 +1038,8 @@ plt.ylabel('Y')
 # Subplot 3: Vector Potential Magnitude
 plt.subplot(1, 3, 3)
 psi_mag = np.sqrt(ψx**2 + ψy**2 + ψz**2)
-plt.imshow(psi_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma', aspect='equal')
+#plt.imshow(psi_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma', aspect='equal')
+plt.contour(psi_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma',levels=100)
 plt.title('Vector Potential Magnitude (Z=nx/2)')
 plt.colorbar()
 plt.xlabel('X')
@@ -1048,49 +1051,49 @@ plt.tight_layout()
 #plt.savefig('YX.png', dpi=300)
 plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_YX.png'), dpi=300, bbox_inches='tight')
 
-#-------------------
-# ZY Centreplane
-#-------------------
+# #-------------------
+# # ZY Centreplane
+# #-------------------
 
-mid = nx // 2
-aspect_ratio = Lx / Ly
-subplot_height = 5
-subplot_width = subplot_height * aspect_ratio
-total_width = 3 * subplot_width
+# mid = nx // 2
+# aspect_ratio = Lx / Ly
+# subplot_height = 5
+# subplot_width = subplot_height * aspect_ratio
+# total_width = 3 * subplot_width
 
-plt.figure(figsize=(total_width, subplot_height))
+# plt.figure(figsize=(total_width, subplot_height))
 
-# Subplot 1: u-velocity
-plt.subplot(1, 3, 1)
-plt.imshow(u[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='viridis', aspect='equal')
-plt.title('u-velocity (X=nx/2)')
-plt.colorbar()
-plt.xlabel('Z')
-plt.ylabel('Y')
+# # Subplot 1: u-velocity
+# plt.subplot(1, 3, 1)
+# plt.imshow(u[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='viridis', aspect='equal')
+# plt.title('u-velocity (X=nx/2)')
+# plt.colorbar()
+# plt.xlabel('Z')
+# plt.ylabel('Y')
 
-# Subplot 2: Vorticity Magnitude
-plt.subplot(1, 3, 2)
-vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
-plt.imshow(vort_mag[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='plasma', aspect='equal')
-plt.title('Vorticity Magnitude (X=nx/2)')
-plt.colorbar()
-plt.xlabel('Z')
-plt.ylabel('Y')
+# # Subplot 2: Vorticity Magnitude
+# plt.subplot(1, 3, 2)
+# vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
+# plt.imshow(vort_mag[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='plasma', aspect='equal')
+# plt.title('Vorticity Magnitude (X=nx/2)')
+# plt.colorbar()
+# plt.xlabel('Z')
+# plt.ylabel('Y')
 
-# Subplot 3: Vector Potential Magnitude
-plt.subplot(1, 3, 3)
-psi_mag = np.sqrt(ψx**2 + ψy**2 + ψz**2)
-plt.imshow(psi_mag[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='plasma', aspect='equal')
-plt.title('Vector Potential Magnitude (X=nx/2)')
-plt.colorbar()
-plt.xlabel('Z')
-plt.ylabel('Y')
+# # Subplot 3: Vector Potential Magnitude
+# plt.subplot(1, 3, 3)
+# psi_mag = np.sqrt(ψx**2 + ψy**2 + ψz**2)
+# plt.imshow(psi_mag[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='plasma', aspect='equal')
+# plt.title('Vector Potential Magnitude (X=nx/2)')
+# plt.colorbar()
+# plt.xlabel('Z')
+# plt.ylabel('Y')
 
-plt.suptitle(f't = {t:.2f}, Re = {Re:.0f}, nx = {nx}, ny = {ny}, nz = {nz}')
+# plt.suptitle(f't = {t:.2f}, Re = {Re:.0f}, nx = {nx}, ny = {ny}, nz = {nz}')
 
-plt.tight_layout()
-#plt.savefig('ZY.png', dpi=300)
-plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_ZY.png'), dpi=300, bbox_inches='tight')
+# plt.tight_layout()
+# #plt.savefig('ZY.png', dpi=300)
+# plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_ZY.png'), dpi=300, bbox_inches='tight')
 
 
 
