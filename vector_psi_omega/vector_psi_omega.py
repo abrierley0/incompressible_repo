@@ -48,8 +48,9 @@ Re = Ut*Lx/nu
 #start_time = time.time()
 
 print()
-print('VECTOR-POTENTIAL VORTICITY FORMULATION FOR THE DRIVEN CUBE')
+print('THE VECTOR-POTENTIAL AND VORTICITY FORMULATION FOR THE DRIVEN CUBE')
 print()
+print('---------------------')
 print(f"Re = {Re}")
 
 
@@ -439,7 +440,7 @@ w_sol.append(w0)
 
 
 # Time-marching parameters
-tend = 0.2
+tend = 1.0
 tol = 1e-2
 errx = 1e5
 erry = 1e5
@@ -1010,7 +1011,7 @@ while t < tend:
 
 print()
 print('Done.')
-print()
+
 # elapsed_time = time.time() - start_time
 # print(f"Elapsed time: {elapsed_time:.2f} seconds")
 
@@ -1127,27 +1128,25 @@ plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_YX.png'), dpi=300, bbox
 # #plt.savefig('ZY.png', dpi=300)
 # plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_ZY.png'), dpi=300, bbox_inches='tight')
 
-
-
-
 #-----------------------------------------------
 # EXTRACT CENTREPLANE CENTRELINE VELOCITIES
 #-----------------------------------------------
 
-u_centreline = np.flip(u[nx//2,:,nz//2]/(2*Re))
-y = np.linspace(0,Ly,ny)
+u_centreline = np.flip(u[nx//2,:,nz//2]/Ut)
+y = np.linspace(Ly,0,ny)
 
 
 csv_data = pd.read_csv('lit_data/chen_u_centreline.csv')
 y_csv = csv_data['Ku']  # Replace with actual column name
-x_csv = csv_data['x']  # Replace with actual column name
+u_csv = csv_data['x']  # Replace with actual column name
 plt.figure()
-plt.plot(y,u_centreline,'-kx')
-plt.plot(x_csv, y_csv, '-ro', label='CSV Data')
+plt.plot(y,u_centreline,'-kx', label='My data')
+plt.plot(y_csv, u_csv, '-ro', label='Chen et al.')
 plt.xlabel('y')
-plt.ylabel('u/2Re')
+plt.ylabel('u/Ut')
 plt.grid(True)
-plt.suptitle(f'u/2Re along centerline (X={Lx/2:.2f}, Z={Lz/2:.2f})')
+plt.legend()
+plt.suptitle(f'u/Ut along centerline (x = {Lx/2:.1f}, z = {Lz/2:.2f})')
 plt.title(f't = {t:.2f}, Re = {Re:.0f}, nx = {nx}, ny = {ny}, nz = {nz}')
 #plt.savefig('u_with_y.png')
 plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_u.png'), dpi=300, bbox_inches='tight')
