@@ -440,7 +440,7 @@ w_sol.append(w0)
 
 
 # Time-marching parameters
-tend = 1.0
+tend = 2.0
 tol = 1e-2
 errx = 1e5
 erry = 1e5
@@ -1147,7 +1147,7 @@ plt.ylabel('u/Ut')
 plt.grid(True)
 plt.legend()
 plt.suptitle(f'u/Ut along centerline (x = {Lx/2:.1f}, z = {Lz/2:.2f})')
-plt.title(f't = {t:.2f}, Re = {Re:.0f}, nx = {nx}, ny = {ny}, nz = {nz}')
+plt.title(f't = {t:.2f}, Re = {Re:.0f}, nx = {nx}, ny = {ny}, nz = {nz}, tend = {tend}')
 #plt.savefig('u_with_y.png')
 plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_u.png'), dpi=300, bbox_inches='tight')
 
