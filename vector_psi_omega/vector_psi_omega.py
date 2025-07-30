@@ -30,9 +30,9 @@ def timer():
 
 threading.Thread(target=timer, daemon=True).start()
 
-nx = 32
-ny = 32
-nz = 32
+nx = 21
+ny = 21
+nz = 21
 Lx = 1.0
 Ly = 1.0
 Lz = 1.0
@@ -43,7 +43,7 @@ dz = Lz/(nz-1)
 
 # Physical parameters
 nu = 0.05
-Ut = 5.0
+Ut = 20.0
 Re = Ut*Lx/nu
 #start_time = time.time()
 
@@ -440,8 +440,8 @@ w_sol.append(w0)
 
 
 # Time-marching parameters
-tend = 2.0
-tol = 1e-2
+tend = 1.0
+tol = 1e-4
 errx = 1e5
 erry = 1e5
 errz = 1e5
@@ -451,7 +451,8 @@ print(f'tend = {tend}')
 #dt = 0.25*dx*dx/nu if Ut == 0 else min(0.25*dx*dx/nu, 4*nu/(Ut**2))
 #dt = min(0.1 * dx**2 / nu, 4 * nu / (Ut**2))
 #dt = 0.1
-dt = min(0.15 * dx**2 / nu, 4 * nu / (Ut**2))
+#dt = min(0.15 * dx**2 / nu, 4 * nu / (Ut**2))
+dt = 0.003
 print(f'dt = {dt:.3f}')
 print('---------------------')
 print('Poisson Parameters:')
@@ -486,6 +487,7 @@ while t < tend:
         errx = np.linalg.norm(ψx.ravel() - ψx_k.ravel())
         it = it + 1
         if it % 50 == 0: 
+            print()
             print(f"X Iteration: {it}")
             print(f"X Error: {errx}")
 
@@ -503,6 +505,7 @@ while t < tend:
         erry = np.linalg.norm(ψy.ravel() - ψy_k.ravel())
         it = it + 1
         if it % 50 == 0: 
+            print()
             print(f"Y Iteration: {it}")
             print(f"Y Error: {erry}")
 
@@ -521,6 +524,7 @@ while t < tend:
         errz = np.linalg.norm(ψz.ravel() - ψz_k.ravel())
         it = it + 1
         if it % 50 == 0: 
+            print()
             print(f"Z Iteration: {it}")
             print(f"Z Error: {errz}")
 
@@ -997,6 +1001,7 @@ while t < tend:
 
     # Check for dodgy values
     vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
+    #vort_crit = np.linalg(Ωx_sol[0] - Ωx_sol[-1])
     if np.any(np.isinf(vort_mag)) or np.any(np.isnan(vort_mag)):
         print(f"Inf/NaN in vort_mag at t={t}")
         break
@@ -1136,8 +1141,8 @@ u_centreline = np.flip(u[nx//2,:,nz//2]/Ut)
 y = np.linspace(Ly,0,ny)
 
 
-csv_data = pd.read_csv('lit_data/chen_u_centreline.csv')
-y_csv = csv_data['Ku']  # Replace with actual column name
+csv_data = pd.read_csv('lit_data/2016_chen_re400.csv')
+y_csv = csv_data['Re=100']  # Replace with actual column name
 u_csv = csv_data['x']  # Replace with actual column name
 plt.figure()
 plt.plot(y,u_centreline,'-kx', label='My data')
@@ -1147,7 +1152,7 @@ plt.ylabel('u/Ut')
 plt.grid(True)
 plt.legend()
 plt.suptitle(f'u/Ut along centerline (x = {Lx/2:.1f}, z = {Lz/2:.2f})')
-plt.title(f't = {t:.2f}, Re = {Re:.0f}, nx = {nx}, ny = {ny}, nz = {nz}, tend = {tend}')
+plt.title(f'tend = {t:.2f}, Re = {Re:.0f}, nx = {nx}, dt = {dt:.3f}, tol = {tol}, Elapsed: {(elapsed_time/60.0):.2f} mins')
 #plt.savefig('u_with_y.png')
 plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_u.png'), dpi=300, bbox_inches='tight')
 
