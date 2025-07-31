@@ -87,40 +87,40 @@ w0 = np.zeros([nx,ny,nz])
 # Front wall
 ψx0[1:nx-1,1:ny-1,0] = 0.0
 ψy0[1:nx-1,1:ny-1,0] = 0.0
-ψz0[1:nx-1,1:ny-1,0] = ψz0[1:nx-1,1:ny-1,0]
+ψz0[1:nx-1,1:ny-1,0] = ψz0[1:nx-1,1:ny-1,1]
 
-for i in range(1,nx-1):
-    for j in range(1,ny-1):
-        ψx0[i,j,0] = 0.0                # Front wall
-        ψy0[i,j,0] = 0.0
-        ψz0[i,j,0] = ψz0[i,j,1]       
-        ψx0[i,j,nz-1] = 0.0             # Back wall
-        ψy0[i,j,nz-1] = 0.0
-        ψz0[i,j,nz-1] = ψz0[i,j,nz-2]
+# Back wall
+ψx0[1:nx-1,1:ny-1,nz-1] = 0.0
+ψy0[1:nx-1,1:ny-1,nz-1] = 0.0
+ψz0[1:nx-1,1:ny-1,nz-1] = ψz0[1:nx-1,1:ny-1,nz-2]
 
-for i in range(1,nx-1):
-    for k in range(1,nz-1):
-        ψx0[i,0,k] = 0.0                # Bottom wall
-        ψy0[i,0,k] = ψy0[i,1,k]   
-        ψz0[i,0,k] = 0.0
-        ψx0[i,ny-1,k] = 0.0
-        ψy0[i,ny-1,k] = ψy0[i,ny-2,k]   # Top wall
-        ψz0[i,ny-1,k] = 0.0
+# Bottom wall
+ψx0[1:nx-1,0,1:nz-1] = 0.0
+ψy0[1:nx-1,0,1:nz-1] = ψy0[1:nx-1,1,1:nz-1]
+ψz0[1:nx-1,0,1:nz-1] = 0.0
+
+# Top wall
+ψx0[1:nx-1,ny-1,1:nz-1] = 0.0
+ψy0[1:nx-1,ny-1,1:nz-1] = ψy0[1:nx-1,ny-2,1:nz-1]
+ψz0[1:nx-1,ny-1,1:nz-1] = 0.0
+
+
+# Vector potential edge points
+# Vertical edges (y direction)
+ψx0[0,1:ny-1,0] = (ψx0[1,1:ny-1,0] + ψx0[0,1:ny-1,1])/2.0                    # Front left 
+ψy0[0,1:ny-1,0] = (ψy0[1,1:ny-1,0] + ψy0[0,1:ny-1,1])/2.0
+ψz0[0,1:ny-1,0] = (ψz0[1,1:ny-1,0] + ψz0[0,1:ny-1,1])/2.0
+ψx0[nx-1,1:ny-1,0] = (ψx0[nx-2,1:ny-1,] + ψx0[nx-1,1:ny-1,1])/2.0            # Front right
+ψy0[nx-1,1:ny-1,0] = (ψy0[nx-2,1:ny-1,] + ψy0[nx-1,1:ny-1,1])/2.0
+ψz0[nx-1,1:ny-1,0] = (ψz0[nx-2,1:ny-1,] + ψz0[nx-1,1:ny-1,1])/2.0
+ψx0[nx-1,1:ny-1,nz-1] = (ψx0[nx-1,1:ny-1,nz-2] + ψx0[nx-2,1:ny-1,nz-1])/2.0  # Back right
+ψy0[nx-1,1:ny-1,nz-1] = (ψy0[nx-1,1:ny-1,nz-2] + ψy0[nx-2,1:ny-1,nz-1])/2.0
+ψz0[nx-1,1:ny-1,nz-1] = (ψz0[nx-1,1:ny-1,nz-2] + ψz0[nx-2,1:ny-1,nz-1])/2.0
+ψx0[0,1:ny-1,nz-1] = (ψx0[1,1:ny-1,nz-1] + ψx0[0,1:ny-1,nz-2])/2.0           # Back-left edge
+ψy0[0,1:ny-1,nz-1] = (ψy0[1,1:ny-1,nz-1] + ψy0[0,1:ny-1,nz-2])/2.0
+ψz0[0,1:ny-1,nz-1] = (ψz0[1,1:ny-1,nz-1] + ψz0[0,1:ny-1,nz-2])/2.0
 
 # Vector-potential edge points
-for j in range(1,ny-1):
-    ψx0[0,j,0] = (ψx0[1,j,0] + ψx0[0,j,1])/2.0                            # Front-left edge
-    ψy0[0,j,0] = (ψy0[1,j,0] + ψy0[0,j,1])/2.0
-    ψz0[0,j,0] = (ψz0[1,j,0] + ψz0[0,j,1])/2.0
-    ψx0[nx-1,j,0] = (ψx0[nx-2,j,0] + ψx0[nx-1,j,1])/2.0                   # Front-right edge
-    ψy0[nx-1,j,0] = (ψy0[nx-2,j,0] + ψy0[nx-1,j,1])/2.0
-    ψz0[nx-1,j,0] = (ψz0[nx-2,j,0] + ψz0[nx-1,j,1])/2.0
-    ψx0[nx-1,j,nz-1] = (ψx0[nx-2,j,nz-1] + ψx0[nx-1,j,nz-2])/2.0          # Back-right edge
-    ψy0[nx-1,j,nz-1] = (ψy0[nx-2,j,nz-1] + ψy0[nx-1,j,nz-2])/2.0
-    ψz0[nx-1,j,nz-1] = (ψz0[nx-2,j,nz-1] + ψz0[nx-1,j,nz-2])/2.0
-    ψx0[0,j,nz-1] = (ψx0[1,j,nz-1] + ψx0[0,j,nz-2])/2.0                   # Back-left edge
-    ψy0[0,j,nz-1] = (ψy0[1,j,nz-1] + ψy0[0,j,nz-2])/2.0
-    ψz0[0,j,nz-1] = (ψz0[1,j,nz-1] + ψz0[0,j,nz-2])/2.0
 
 for k in range(1,nz-1):
     ψx0[0,0,k] = (ψx0[1,0,k] + ψx0[0,1,k])/2.0                            # Bottom-left edge
