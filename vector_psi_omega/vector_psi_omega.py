@@ -52,6 +52,7 @@ print('THE VECTOR-POTENTIAL AND VORTICITY FORMULATION FOR THE DRIVEN CUBE')
 print()
 print('---------------------')
 print(f"Re = {Re}")
+print(f"nx = {nx}")
 
 
 # Initialise arrays
@@ -176,13 +177,14 @@ for i in range(1,nx-1):
 ψy0[nx-1,ny-1,nz-1] = (ψy0[nx-2,ny-1,nz-1] + ψy0[nx-1,ny-1,nz-2] + ψy0[nx-1,ny-2,nz-1]) / 3.0
 ψz0[nx-1,ny-1,nz-1] = (ψz0[nx-2,ny-1,nz-1] + ψz0[nx-1,ny-1,nz-2] + ψz0[nx-1,ny-2,nz-1]) / 3.0
 
-np.set_printoptions(linewidth=1000, threshold=np.inf)  # Ensure full matrix prints
+np.set_printoptions(linewidth=1000, threshold=np.inf, precision=1, suppress=True)  # Ensure full matrix prints
+#np.set_printoptions(linewidth=1000, threshold=np.inf)
 
-# print()
-# print(f"ψx0 is : ")
-# print()
-# print(ψx0[:,:,3])
-# print()
+print()
+print(f"ψx0 is : ")
+print()
+print(ψx0[:,:,3])
+print()
 
 
 #--------------------------------------------
@@ -294,11 +296,11 @@ u0[nx-1,ny-1,nz-1] = (u0[nx-2,ny-1,nz-1] + u0[nx-1,ny-1,nz-2] + u0[nx-1,ny-2,nz-
 v0[nx-1,ny-1,nz-1] = (v0[nx-2,ny-1,nz-1] + v0[nx-1,ny-1,nz-2] + v0[nx-1,ny-2,nz-1]) / 3.0
 w0[nx-1,ny-1,nz-1] = (w0[nx-2,ny-1,nz-1] + w0[nx-1,ny-1,nz-2] + w0[nx-1,ny-2,nz-1]) / 3.0
 
-# print()
-# print(f"u0 is : ")
-# print()
-# print(u0[:,:,3])
-# print()
+print()
+print(f"u0 is : ")
+print()
+print(u0[:,:,3])
+print()
 
 #------------------------------------------------
 # VORTICITY VECTOR FIELD (Ω) BOUNDARY CONDITIONS
@@ -351,7 +353,7 @@ for k in range(1,nz-1):
     Ωx0[0,0,k] = (Ωx0[1,0,k] + Ωx0[0,1,k])/2.0                            # Bottom-left edge
     Ωy0[0,0,k] = (Ωy0[1,0,k] + Ωy0[0,1,k])/2.0        
     Ωz0[0,0,k] = (Ωz0[1,0,k] + Ωz0[0,1,k])/2.0
-    Ωx0[nx-1,0,k] = (Ωx0[nx-2,0,k] + Ωx0[nx-1,1,k])/2.0                      # Bottom-right edge
+    Ωx0[nx-1,0,k] = (Ωx0[nx-2,0,k] + Ωx0[nx-1,1,k])/2.0                   # Bottom-right edge
     Ωy0[nx-1,0,k] = (Ωy0[nx-2,0,k] + Ωy0[nx-1,1,k])/2.0        
     Ωz0[nx-1,0,k] = (Ωz0[nx-2,0,k] + Ωz0[nx-1,1,k])/2.0
     Ωx0[nx-1,ny-1,k] = (Ωx0[nx-2,ny-1,k] + Ωx0[nx-1,ny-2,k])/2.0          # Top-right edge
@@ -408,11 +410,11 @@ for i in range(1,nx-1):
 Ωy0[nx-1,ny-1,nz-1] = (Ωy0[nx-2,ny-1,nz-1] + Ωy0[nx-1,ny-1,nz-2] + Ωy0[nx-1,ny-2,nz-1]) / 3.0
 Ωz0[nx-1,ny-1,nz-1] = (Ωz0[nx-2,ny-1,nz-1] + Ωz0[nx-1,ny-1,nz-2] + Ωz0[nx-1,ny-2,nz-1]) / 3.0
 
-# print()
-# print(f"Ωz0 is : ")
-# print()
-# print(Ωz0[:,:,3])
-# print()
+print()
+print(f"Ωz0 is : ")
+print()
+print(Ωz0[:,:,3])
+print()
 
 
 # Create solution storage
@@ -451,8 +453,8 @@ print(f'tend = {tend}')
 #dt = 0.25*dx*dx/nu if Ut == 0 else min(0.25*dx*dx/nu, 4*nu/(Ut**2))
 #dt = min(0.1 * dx**2 / nu, 4 * nu / (Ut**2))
 #dt = 0.1
-#dt = min(0.15 * dx**2 / nu, 4 * nu / (Ut**2))
-dt = 0.003
+dt = min(0.15 * dx**2 / nu, 4 * nu / (Ut**2))
+#dt = 0.003
 print(f'dt = {dt:.3f}')
 print('---------------------')
 print('Poisson Parameters:')
@@ -526,7 +528,7 @@ while t < tend:
         if it % 50 == 0: 
             print()
             print(f"Z Iteration: {it}")
-            print(f"Z Error: {errz}")
+            print(f"Z Error: {errz:.3f}")
 
     # print()
     # print(f"ψz at {t:.3f}s pre-BCs :")
@@ -654,20 +656,20 @@ while t < tend:
     ψy_sol.append(ψy)
     ψz_sol.append(ψz)
 
-    # print()
-    # print(f"ψx at {t:.3f}s post-BCs :")
-    # print()
-    # print(ψx[:,:,3])
+    print()
+    print(f"ψx at {t:.3f}s post-BCs :")
+    print()
+    print(ψx[:,:,3])
 
-    # print()
-    # print(f"ψy at {t:.3f}s post-BCs :")
-    # print()
-    # print(ψy[:,:,3])
+    print()
+    print(f"ψy at {t:.3f}s post-BCs :")
+    print()
+    print(ψy[:,:,3])
 
-    # print()
-    # print(f"ψz at {t:.3f}s post-BCs :")
-    # print()
-    # print(ψz[:,:,3])
+    print()
+    print(f"Solve for ψz at {t:.3f}s then enforce BCs:")
+    print()
+    print(ψz[:,:,3])
 
 
     #---------------------------------------
@@ -793,10 +795,10 @@ while t < tend:
     v[nx-1,ny-1,nz-1] = (v[nx-2,ny-1,nz-1] + v[nx-1,ny-1,nz-2] + v[nx-1,ny-2,nz-1]) / 3.0
     w[nx-1,ny-1,nz-1] = (w[nx-2,ny-1,nz-1] + w[nx-1,ny-1,nz-2] + w[nx-1,ny-2,nz-1]) / 3.0
 
-    # print()
-    # print(f"Velocity at {t:.3f}s post-BCs :")
-    # print()
-    # print(u[:,:,3])
+    print()
+    print(f"Solve for u at {t:.3f}s then enforce BCs:")
+    print()
+    print(u[:,:,3])
 
     u_sol.append(u)
     v_sol.append(v)
@@ -984,10 +986,10 @@ while t < tend:
     Ωy[nx-1,ny-1,nz-1] = (Ωy[nx-2,ny-1,nz-1] + Ωy[nx-1,ny-1,nz-2] + Ωy[nx-1,ny-2,nz-1]) / 3.0
     Ωz[nx-1,ny-1,nz-1] = (Ωz[nx-2,ny-1,nz-1] + Ωz[nx-1,ny-1,nz-2] + Ωz[nx-1,ny-2,nz-1]) / 3.0
 
-    # print()
-    # print(f"Vorticity at {t:.3f}s post-BCs :")
-    # print()
-    # print(Ωz[:,:,3])
+    print()
+    print(f"Solve for Ωz at {t:.3f}s then enforce BCs :")
+    print()
+    print(Ωz[:,:,3])
 
     # Store the solution
     Ωx_sol.append(Ωx.copy())
@@ -1001,43 +1003,25 @@ while t < tend:
 
     # Check for dodgy values
     vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
-    #vort_crit = np.linalg(Ωx_sol[0] - Ωx_sol[-1])
+
     if np.any(np.isinf(vort_mag)) or np.any(np.isnan(vort_mag)):
         print(f"Inf/NaN in vort_mag at t={t}")
         break
 
     t = t + dt
     its = its + 1
-    # print(f'\rits = {its}', end="")
-    # print(f'\rt = {t:.3f}', end="")
-
-    # print(f'\rits = {its}, t = {t:.3f}', end='')
     print(f'\rits = {its}, t = {t:.3f}, Elapsed: {(elapsed_time/60.0):.2f} mins', end='')
+    print()
+
+    # Convergence criteria
+    conv_crit = 1e-3
+    vort_conv = np.linalg.norm(np.ravel(Ωx_sol[-1] - Ωx_sol[-2]))
+    print(f"Vorticity convergence: {vort_conv:.3f}")
+    if its > 10 and vort_conv < conv_crit:
+        break
 
 print()
 print('Done.')
-
-# elapsed_time = time.time() - start_time
-# print(f"Elapsed time: {elapsed_time:.2f} seconds")
-
-# Grok 4 recommended pyplot visualisation
-# mid = nx // 2
-# plt.figure(figsize=(20, 10))
-# plt.subplot(1, 3, 1)
-# plt.imshow(u[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='viridis')
-# plt.title('u-velocity (xz mid-plane)')
-# plt.colorbar()
-# plt.subplot(1, 3, 2)
-# vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
-# plt.imshow(vort_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma')
-# plt.title('Vorticity Magnitude (xz mid-plane)')
-# plt.colorbar()
-# plt.subplot(1, 3, 3)
-# psi_mag = np.sqrt(ψx**2 + ψy**2 + ψz**2)
-# plt.imshow(psi_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma')
-# plt.title('Vector Potential Magnitude (xz mid-plane)')
-# plt.colorbar()
-# plt.savefig('slices_III.png')
 
 save_dir = '/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results'
 os.makedirs(save_dir, exist_ok=True)
@@ -1056,7 +1040,6 @@ plt.figure(figsize=(total_width, subplot_height))
 
 # Subplot 1: u-velocity
 plt.subplot(1, 3, 1)
-#plt.imshow(u[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='viridis', aspect='equal')
 plt.contour(u[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='viridis',levels=100)
 plt.title('u-velocity (Z=nx/2)')
 plt.colorbar()
@@ -1066,7 +1049,6 @@ plt.ylabel('Y')
 # Subplot 2: Vorticity Magnitude
 plt.subplot(1, 3, 2)
 vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
-#plt.imshow(vort_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma', aspect='equal')
 plt.contour(vort_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma',levels=100)
 plt.title('Vorticity Magnitude (Z=nx/2)')
 plt.colorbar()
@@ -1076,7 +1058,6 @@ plt.ylabel('Y')
 # Subplot 3: Vector Potential Magnitude
 plt.subplot(1, 3, 3)
 psi_mag = np.sqrt(ψx**2 + ψy**2 + ψz**2)
-#plt.imshow(psi_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma', aspect='equal')
 plt.contour(psi_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma',levels=100)
 plt.title('Vector Potential Magnitude (Z=nx/2)')
 plt.colorbar()
@@ -1086,73 +1067,39 @@ plt.ylabel('Y')
 plt.suptitle(f't = {t:.2f}, Re = {Re:.0f}, nx = {nx}, ny = {ny}, nz = {nz}')
 
 plt.tight_layout()
-#plt.savefig('YX.png', dpi=300)
-plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_YX.png'), dpi=300, bbox_inches='tight')
-
-# #-------------------
-# # ZY Centreplane
-# #-------------------
-
-# mid = nx // 2
-# aspect_ratio = Lx / Ly
-# subplot_height = 5
-# subplot_width = subplot_height * aspect_ratio
-# total_width = 3 * subplot_width
-
-# plt.figure(figsize=(total_width, subplot_height))
-
-# # Subplot 1: u-velocity
-# plt.subplot(1, 3, 1)
-# plt.imshow(u[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='viridis', aspect='equal')
-# plt.title('u-velocity (X=nx/2)')
-# plt.colorbar()
-# plt.xlabel('Z')
-# plt.ylabel('Y')
-
-# # Subplot 2: Vorticity Magnitude
-# plt.subplot(1, 3, 2)
-# vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
-# plt.imshow(vort_mag[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='plasma', aspect='equal')
-# plt.title('Vorticity Magnitude (X=nx/2)')
-# plt.colorbar()
-# plt.xlabel('Z')
-# plt.ylabel('Y')
-
-# # Subplot 3: Vector Potential Magnitude
-# plt.subplot(1, 3, 3)
-# psi_mag = np.sqrt(ψx**2 + ψy**2 + ψz**2)
-# plt.imshow(psi_mag[mid, :, :], origin='lower', extent=[0, Lz, 0, Ly], cmap='plasma', aspect='equal')
-# plt.title('Vector Potential Magnitude (X=nx/2)')
-# plt.colorbar()
-# plt.xlabel('Z')
-# plt.ylabel('Y')
-
-# plt.suptitle(f't = {t:.2f}, Re = {Re:.0f}, nx = {nx}, ny = {ny}, nz = {nz}')
-
-# plt.tight_layout()
-# #plt.savefig('ZY.png', dpi=300)
-# plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_ZY.png'), dpi=300, bbox_inches='tight')
+plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_dt{dt:.3f}_nx{nx}_YX.png'), dpi=300, bbox_inches='tight')
 
 #-----------------------------------------------
-# EXTRACT CENTREPLANE CENTRELINE VELOCITIES
+# EXTRACT CENTREPLANE-CENTRELINE VELOCITIES
 #-----------------------------------------------
 
+# EXTRACTION
 u_centreline = np.flip(u[nx//2,:,nz//2]/Ut)
 y = np.linspace(Ly,0,ny)
 
+# CSV
+data = np.column_stack((y, u_centreline))
+np.savetxt(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_dt{dt:.3f}_nx{nx}_u.csv'), data, fmt='%.1g', delimiter=',', header='y,u_centreline', comments='')
 
-csv_data = pd.read_csv('lit_data/2016_chen_re400.csv')
-y_csv = csv_data['Re=100']  # Replace with actual column name
-u_csv = csv_data['x']  # Replace with actual column name
+# PLOT
+csv_data = pd.read_csv('lit_data/2016_chen_all_results.csv')
+y_csv_100 = csv_data['Re=100'] 
+y_csv_400 = csv_data['Re=400'] 
+y_csv_1000 = csv_data['Re=1000']
+u_csv_100 = csv_data['x100']
+u_csv_400 = csv_data['x400']
+u_csv_1000 = csv_data['x1000']
 plt.figure()
-plt.plot(y,u_centreline,'-kx', label='My data')
-plt.plot(y_csv, u_csv, '-ro', label='Chen et al.')
+plt.plot(y,u_centreline,'--b', label='My data, Re=100')
+plt.plot(y_csv_100, u_csv_100, '-b', label='Chen Re=100')
+plt.plot(y_csv_400, u_csv_400, '-r', label='Chen Re=400')
+plt.plot(y_csv_1000, u_csv_1000, '-k', label='Chen Re=1000')
 plt.xlabel('y')
 plt.ylabel('u/Ut')
-plt.grid(True)
 plt.legend()
 plt.suptitle(f'u/Ut along centerline (x = {Lx/2:.1f}, z = {Lz/2:.2f})')
+# Incorporate simulation settings in the file name
 plt.title(f'tend = {t:.2f}, Re = {Re:.0f}, nx = {nx}, dt = {dt:.3f}, tol = {tol}, Elapsed: {(elapsed_time/60.0):.2f} mins')
-#plt.savefig('u_with_y.png')
-plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_u.png'), dpi=300, bbox_inches='tight')
+# Save figure to the results folder
+plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_dt{dt:.3f}_nx{nx}_u.png'), dpi=300, bbox_inches='tight')
 
