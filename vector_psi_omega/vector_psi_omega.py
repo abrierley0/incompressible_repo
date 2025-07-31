@@ -464,12 +464,15 @@ print(f"tol = {tol}")
 print('---------------------')
 
 # Start main time loop
+
 t = 0
 its = 0
 u = u0.copy()
 v = v0.copy()
 w = w0.copy()
-while t < tend:
+vort_conv = 1e6
+conv_crit = 1e-1
+while vort_conv > conv_crit:
 
     #------------------------------------------------------------------
     # SOLVE THREE VECTOR-POTENTIAL POISSON EQUATIONS USING ITERATION
@@ -1014,11 +1017,12 @@ while t < tend:
     print()
 
     # Convergence criteria
-    conv_crit = 1e-3
-    vort_conv = np.linalg.norm(np.ravel(Ωx_sol[-1] - Ωx_sol[-2]))
-    print(f"Vorticity convergence: {vort_conv:.3f}")
-    if its > 10 and vort_conv < conv_crit:
-        break
+    
+    if its > 10:
+        vort_conv = np.linalg.norm(np.ravel(Ωx_sol[-1] - Ωx_sol[-2]))
+        print(f"Vorticity convergence: {vort_conv:.3f}")
+    #if its > 10 and vort_conv < conv_crit:
+    #    break
 
 print()
 print('Done.')
