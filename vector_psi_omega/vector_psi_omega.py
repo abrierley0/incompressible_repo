@@ -177,7 +177,7 @@ for i in range(1,nx-1):
 ψy0[nx-1,ny-1,nz-1] = (ψy0[nx-2,ny-1,nz-1] + ψy0[nx-1,ny-1,nz-2] + ψy0[nx-1,ny-2,nz-1]) / 3.0
 ψz0[nx-1,ny-1,nz-1] = (ψz0[nx-2,ny-1,nz-1] + ψz0[nx-1,ny-1,nz-2] + ψz0[nx-1,ny-2,nz-1]) / 3.0
 
-np.set_printoptions(linewidth=1000, threshold=np.inf, precision=1, suppress=True)  # Ensure full matrix prints
+np.set_printoptions(linewidth=1000, threshold=np.inf, precision=0, suppress=True)  # Ensure full matrix prints
 #np.set_printoptions(linewidth=1000, threshold=np.inf)
 
 print()
