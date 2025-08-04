@@ -1,7 +1,7 @@
 Vector Potential-Vorticity Formulation Code
 ===========================================
 
-*for a three-dimensional cube*
+*for a cube with fluid motion driven by the lid*
 -----------------------------
 
 ---------------------------------------------
