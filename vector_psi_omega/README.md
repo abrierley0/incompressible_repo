@@ -48,7 +48,7 @@ Then activate the environment,
 source myenv/bin/activate
 ```
 
-you are now safely 'inside' the environment and can install the packages you need.
+you are now safely 'inside' the environment and can install the packages you need without causing conflict if a different package version is installed elsewhere on the system.
 
 Deactivate at any time using,
 
