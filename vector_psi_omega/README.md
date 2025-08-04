@@ -56,7 +56,7 @@ Deactivate at any time using,
 deactivate
 ```
 
-4. **Install required packages**. Using *python package installer* or '*pip*', contain the packages and their versions *within* your new enironment so that they are directly accessible if you have activated the environment,
+4. **Install packages required to run the code**. Using *python package installer* or '*pip*', contain the packages and their versions *within* your new enironment so that they are directly accessible if you have activated the environment,
 
 ```bash
 pip install matplotlib
