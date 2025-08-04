@@ -14,7 +14,7 @@ This code is written for a three-dimensional cube with a moving top wall.
 
 * _**lit_data**_ - figures from the reference data in .png format, and also extracted data from these figures in .csv format (extraction done using engauge digitizer)
 * _**results**_ - storage for results, including slice visualisations in .png format and centreline velocity data in .csv format
-* _**config.yaml**_ - configuration file to configure the simulation as you choose
+* _**config.yaml**_ - configuration file to configure the simulation as you wish
 * _**vector_psi_omega.py**_ - the code
 
 #### Running the Code
