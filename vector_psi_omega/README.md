@@ -6,7 +6,7 @@ Vector Potential-Vorticity Formulation Code
 
 ---------------------------------------------
 
-The vector potential-vorticity formulation is a three dimensional extension of the streamfunction-vorticity formulation. The vector potential has been known to exist for a while, but storage and computational limitations prevented its wide use, also a difficulty with the vector potential boundary conditions. Hirasaki and Hellums found a general boundary conditons for this formulation, which works well if the walls are impermeable. Through-flows are more difficult.
+The vector potential-vorticity formulation is a three dimensional extension of the streamfunction-vorticity formulation. The vector potential has been known to exist for a while, but storage and computational limitations prevented its wide use, also a difficulty with the vector potential boundary conditions. Hirasaki and Hellums found a general boundary conditon for this formulation, which works well if the walls are impermeable. Through-flows are more difficult.
 
 This code is written for a three-dimensional cube with a moving top wall.
 
