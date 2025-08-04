@@ -5,9 +5,18 @@ _Written by Mr A. J. Brierley_\
 _Centre for Computational Engineering Sciences (CES)_\
 _Cranfield University, Bedfordshire, UK_\
 _adam.brierley@cranfield.ac.uk_\
-_6th April 2025_
+_4th August 2025_
+
+------------------------------------------------
+
+- [Incompressible Flows](#incompressible-flows)
+    - [Contents](#contents)
+
+------------------------------------------------
 
 Welcome. This is a repository for studying incompressible flow solvers.
+
+### Contents
 
 * pp - Pressure-Poisson
 * ac - Artificial Compressibility
