@@ -1,0 +1,27 @@
+
+# INPUT VALUES FOR VECTOR POTENTIAL-VORTICITY FORMULATION
+
+# Output file name
+# output:
+
+# Grid Settings
+nx: 21
+ny: 21
+nz: 21
+Lx: 1.0
+Ly: 1.0
+Lz: 1.0
+
+# Fluid Settings
+nu: 0.05
+Ut: 5.0
+
+# # # Time-marching Parameters
+# # dt:
+# # conv_crit:
+
+# # # Poisson-solver Parameters
+# # tol:
+# # itmax:
+# # β:
+# # dt:
