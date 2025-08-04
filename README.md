@@ -9,11 +9,6 @@ _4th August 2025_
 
 ------------------------------------------------
 
-- [Incompressible Flows](#incompressible-flows)
-    - [Contents](#contents)
-
-------------------------------------------------
-
 Welcome. This is a repository for studying incompressible flow solvers.
 
 ### Contents
@@ -24,5 +19,3 @@ Welcome. This is a repository for studying incompressible flow solvers.
 * psi_omega - Streamfunction-Vorticity Formulation
 * vector_psi_omega - Vector-Potential Vorticity Formulation
 * tdma - Tri-Diagonal Matrix Algorithm
-
-
