@@ -26,7 +26,7 @@ and double check the version,
 python3 --version
 ```
 
-3. **Create a Python virtual environment**. Specifically for running this code. (*This environment will ensure that when you install third party Python libraries or 'dependencies' which are required to run the code, that their versions will not conflict with other versions you may have installed elsewhere on your system. Use this environment specifically for running this code. It is a project-specific environment, containing the packages you need to run this code.*)
+3. **Create a Python virtual environment**. To contain packages needed specifically to run this code.
 
 Create the Python virtual environment by running,
 
