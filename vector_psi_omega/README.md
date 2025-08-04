@@ -1,7 +1,7 @@
 Vector Potential-Vorticity Formulation Code
 ===========================================
 
-*for a flow where fluid is contained within an impermeable cube, and fluid motion is driven by the motion of the top surface*
+*for a flow where an arbitrary fluid is contained within an impermeable cube, and fluid motion is driven by the motion of the top surface*
 -----------------------------
 
 ---------------------------------------------
