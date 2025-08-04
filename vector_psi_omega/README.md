@@ -6,7 +6,20 @@ Vector Potential-Vorticity Formulation Code
 
 ---------------------------------------------
 
-  For the numerical solution to the flow of a fluid which is incompressible and contained within a cube, where the flow is driven by the motion of the lid,
+The vector potential-vorticity formulation is a three dimensional extension of the streamfunction-vorticity formulation. The vector potential has been known to exist for a while, but storage and computational limitations prevented its wide use, also a difficulty with the vector potential boundary conditions. Hirasaki and Hellums found a general boundary conditons for this formulation, which works well if the walls are impermeable. Through-flows are more difficult.
+
+This code is written for a three-dimensional cube with a moving top wall.
+
+#### Contents
+
+* _**lit_data**_ - figures from the reference data in .png format, and also extracted data from these figures in .csv format (extraction done using engauge digitizer)
+* _**results**_ - storage for results, including slice visualisations in .png format and centreline velocity data in .csv format
+* _**config.yaml**_ - configuration file to configure the simulation as you choose
+* _**vector_psi_omega.py**_ - the code
+
+#### Running the Code
+
+For the numerical solution to the flow of a fluid which is incompressible and contained within a cube, where the flow is driven by the motion of the lid,
   
 1. **Configure your parameters** as required for simulation in the *config.yaml* file, by typing the following in the Linux terminal,
 
