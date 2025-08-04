@@ -6,7 +6,7 @@ Vector Potential-Vorticity Formulation Code
 
 ---------------------------------------------
 
-  For the numerical solution to the flow of a fluid which is incompressible, in a cube where the flow is driven by the motion of the lid,
+  For the numerical solution to the flow of a fluid which is incompressible and contained within a cube, where the flow is driven by the motion of the lid,
   
 1. **Configure your parameters** as required for simulation in the *config.yaml* file, by typing the following in the Linux terminal,
 
