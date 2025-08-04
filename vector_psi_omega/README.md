@@ -14,20 +14,6 @@ Vector Potential-Vorticity Formulation Code
 code config.yaml
 ```
 
-to open is VSCode. Or,
-
-```bash
-vim config.yaml
-```
-
-to edit directly with Vim. Or,
-
-```bash
-nano config.yaml
-```
-
-to edit directly with GNU nano. Or open with any code editor of your choosing!! You can type parameters like the grid spacing and kinematic viscosity.
-
 2. **Install Python**. If you are using the Ubuntu linux distribution, the package manager to install Python is,
 
 ```bash
