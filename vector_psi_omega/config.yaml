@@ -1,27 +1,26 @@
 
-# INPUT VALUES FOR VECTOR POTENTIAL-VORTICITY FORMULATION
+# CONFIGURATION
 
 # Output file name
-# output:
+output: run4
 
 # Grid Settings
-nx: 21
-ny: 21
-nz: 21
+nx: 32
+ny: 32
+nz: 32
 Lx: 1.0
 Ly: 1.0
 Lz: 1.0
 
 # Fluid Settings
-nu: 0.05
-Ut: 5.0
+nu: 0.05          
+Ut: 20.0           
 
-# # # Time-marching Parameters
-# # dt:
-# # conv_crit:
+# Time-marching Parameters
+dt: 0.0001
+conv_crit: 0.1
 
-# # # Poisson-solver Parameters
-# # tol:
-# # itmax:
-# # β:
-# # dt:
+# Poisson-solver Parameters
+β: 1.0            
+tol: 0.0001       
+itmax: 200        

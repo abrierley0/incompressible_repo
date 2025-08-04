@@ -25,7 +25,7 @@ import yaml
 
 
 
-# Time the runs
+# Wall time 
 elapsed_time = 0
 
 def timer():
@@ -65,6 +65,7 @@ print('THE VECTOR-POTENTIAL AND VORTICITY FORMULATION FOR THE DRIVEN CUBE')
 print()
 print('---------------------')
 print(f"Re = {Re}")
+print(f'Ut = {Ut}')
 print(f"nx = {nx}")
 
 
@@ -451,28 +452,28 @@ w_sol = []
 w_sol.append(w0)
 
 
-
-# Time-marching parameters
-#tend = 1.0
-tol = 1e-4
+# Poisson-solver parameters
+tol = config['tol']
 errx = 1e5
 erry = 1e5
 errz = 1e5
-itmax = 200
-β = 1.0
-#print(f'tend = {tend}')
-#dt = 0.25*dx*dx/nu if Ut == 0 else min(0.25*dx*dx/nu, 4*nu/(Ut**2))
-#dt = min(0.1 * dx**2 / nu, 4 * nu / (Ut**2))
-#dt = 0.1
-dt = min(0.15 * dx**2 / nu, 4 * nu / (Ut**2))
-#dt = 0.003
-print(f'dt = {dt:.3f}')
+itmax = config['tol']
+β = config['β']
+
+# Time marching parameters
+dt = config['dt']
+#dt = min(0.15 * dx**2 / nu, 4 * nu / (Ut**2))
+Ω_conv = config['Ω_conv']
+
+print(f'dt = {dt}')
+print(f'Ω_conv = {Ω_conv}')
 print('---------------------')
 print('Poisson Parameters:')
 print(f"β = {β}")
 print(f'itmax = {itmax}')
 print(f"tol = {tol}")
 print('---------------------')
+print()
 
 # Start main time loop
 
@@ -481,9 +482,8 @@ its = 0
 u = u0.copy()
 v = v0.copy()
 w = w0.copy()
-vort_conv = 10
-conv_crit = 1e-1
-while vort_conv > conv_crit:
+vort_conv = 10  # allow the flow to develop
+while vort_conv > Ω_conv:
 
     #------------------------------------------------------------------
     # SOLVE THREE VECTOR-POTENTIAL POISSON EQUATIONS USING ITERATION
@@ -1003,19 +1003,47 @@ while vort_conv > conv_crit:
     its = its + 1
 
     # Terminal
-    print(f'\rits = {its}, t = {t:.3f}, Elapsed: {(elapsed_time/60.0):.2f} mins', end='')
-    print()
+    if its % 500 == 0:
+        print(f'\rits = {its}, t = {t:.3f}, Elapsed: {elapsed_time:.3f} s', end='')
+        print()
 
     # Convergence criteria
-    if its > 10:
+    if its > 10 and its % 500 == 0:
         vort_conv = np.linalg.norm(np.vstack([
             np.ravel(Ωx_sol[-1] - Ωx_sol[-2]),
             np.ravel(Ωy_sol[-1] - Ωy_sol[-2]),
             np.ravel(Ωz_sol[-1] - Ωz_sol[-2])
         ]))
-        print(f"Vorticity convergence: {vort_conv:.3f}")
+        print(f"Ω convergence: {vort_conv:.3f}")
 
+print()
 
+print('-------------------------')
+
+print()
+print(f'SUMMARY')
+
+print()
+
+print('-------------------------')
+print(f'Run = \'{config['output']}\'')
+print(f"nx = {nx}")
+print('Fluid Parameters:')
+print(f'Ut = {Ut}')
+print(f"Re = {Re}")
+print('-------------------------')
+print('Time Marching Parameters:')
+print(f'dt = {dt}')
+print(f'conv_crit = {conv_crit}')
+print('-------------------------')
+print('Poisson Parameters:')
+print(f"β = {β}")
+print(f'itmax = {itmax}')
+print(f"tol = {tol}")
+print('-------------------------')
+print(f'Physical end time = {t:.3f} mins')
+print(f'Wall clock time = {elapsed_time:.3f} s')
+print(f'Iterations = {its}')
 print()
 print('Done.')
 
@@ -1060,10 +1088,10 @@ plt.colorbar()
 plt.xlabel('X')
 plt.ylabel('Y')
 
-plt.suptitle(f'tend = {t:.2f}, Re = {Re:.0f}, nx = {nx}, dt = {dt:.2f}, tol = {tol:.1f}, conv={vort_conv:.0e}, t: {(elapsed_time/60.0):.2f} mins')
+plt.suptitle(f'tend = {t:.2f}, Re = {Re:.0f}, nx = {nx}, dt = {dt:.2f}, tol = {tol:.1f}, conv={vort_conv:.0e}, t: {(elapsed_time):.2f} s')
 
 plt.tight_layout()
-plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_dt{dt:.3f}_nx{nx}_YX.png'), dpi=300, bbox_inches='tight')
+plt.savefig(os.path.join(save_dir, f'{config['output']}_YX.png'), dpi=300, bbox_inches='tight')
 
 #-----------------------------------------------
 # EXTRACT CENTREPLANE-CENTRELINE VELOCITIES
@@ -1075,7 +1103,7 @@ y = np.linspace(Ly,0,ny)
 
 # CSV
 data = np.column_stack((y, u_centreline))
-np.savetxt(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_dt{dt:.3f}_nx{nx}_u.csv'), data, fmt='%.1g', delimiter=',', header='y,u_centreline', comments='')
+np.savetxt(os.path.join(save_dir, f'{config['output']}_u.csv'), data, fmt='%.1g', delimiter=',', header='y,u_centreline', comments='')
 
 # PLOT
 csv_data = pd.read_csv('lit_data/2016_chen_all_results.csv')
@@ -1086,16 +1114,16 @@ u_csv_100 = csv_data['x100']
 u_csv_400 = csv_data['x400']
 u_csv_1000 = csv_data['x1000']
 plt.figure()
-plt.plot(y,u_centreline,'--m', label='My data, Re=400')
+plt.plot(y,u_centreline,'--m', label=f'Re={Re:.0f}')
 plt.plot(y_csv_100, u_csv_100, '-b', label='Chen Re=100')
 plt.plot(y_csv_400, u_csv_400, '-r', label='Chen Re=400')
 plt.plot(y_csv_1000, u_csv_1000, '-k', label='Chen Re=1000')
 plt.xlabel('y')
-plt.ylabel('u/Ut')
+plt.ylabel('Centreline Velocity')
 plt.legend()
-plt.suptitle(f'Centreline Velocities')
+plt.suptitle(f'{config['output']}')
 # Incorporate simulation settings in the file name
-plt.title(f'tend={t:.2f}, Re={Re:.0f}, nx={nx}, dt={dt:.2f}, tol={tol:.4f}, conv={vort_conv:.1f}, t={(elapsed_time/60.0):.2f}mins')
+plt.title(f'tend={t:.2f}, Re={Re:.0f}, nx={nx}, dt={dt}, tol={tol}, conv={vort_conv:.1f}, t={(elapsed_time):.2f}s')
 # Save figure to the results folder
-plt.savefig(os.path.join(save_dir, f'T{t:.1g}_RE{Re:.0f}_dt{dt:.3f}_nx{nx}_u.png'), dpi=300, bbox_inches='tight')
+plt.savefig(os.path.join(save_dir, f'{config['output']}_u.png'), dpi=300, bbox_inches='tight')
 
