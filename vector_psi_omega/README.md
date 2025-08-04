@@ -78,7 +78,7 @@ pip install pyyaml
 ###### List of Required Packages
 
 * *matplotlib* - plotting visualisations
-* *pandas*
+* *pandas* - used to read the .csv data from the literature and simulation for plotting
 * *pyyaml* - in order to use the configuration file
 
 5. **Run the code**, within your environment,
