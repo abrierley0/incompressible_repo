@@ -17,5 +17,5 @@ Welcome. This is a repository for studying incompressible flow solvers.
 * ac - Artificial Compressibility
 * fspp - Fractional-Step Pressure-Projection Method
 * psi_omega - Streamfunction-Vorticity Formulation
-* vector_psi_omega - Vector-Potential Vorticity Formulation
+* vector_psi_omega - Vector Potential-Vorticity Formulation
 * tdma - Tri-Diagonal Matrix Algorithm
