@@ -1,7 +1,7 @@
 Vector Potential-Vorticity Formulation Code
 ===========================================
 
-*for a cube with fluid motion driven by the lid*
+*for a flow where fluid is contained within an impermeable cube, and fluid motion is driven by the motion of the top surface*
 -----------------------------
 
 ---------------------------------------------
