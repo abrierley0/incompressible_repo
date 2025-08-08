@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import os
 import pandas as pd
 import sys
 import threading
 import time
+from pyevtk.hl import gridToVTK
 import yaml
 
 
@@ -81,6 +83,9 @@ print(f"nx = {nx}")
 u0 = np.zeros([nx,ny,nz])
 v0 = np.zeros([nx,ny,nz])
 w0 = np.zeros([nx,ny,nz])
+
+div_vel = np.zeros([nx,ny,nz])
+div_Ω = np.zeros([nx,ny,nz])
 
 
 #---------------------------------------------
@@ -457,7 +462,7 @@ tol = config['tol']
 errx = 1e5
 erry = 1e5
 errz = 1e5
-itmax = config['tol']
+itmax = config['itmax']
 β = config['β']
 
 # Time marching parameters
@@ -482,22 +487,33 @@ its = 0
 u = u0.copy()
 v = v0.copy()
 w = w0.copy()
-vort_conv = 10  # allow the flow to develop
+vort_conv = 1000  # allow the flow to develop initially
+ψx = ψx0.copy()
+Ωx = Ωx0.copy()
+ψy = ψy0.copy()
+Ωy = Ωy0.copy()
+ψz = ψz0.copy()
+Ωz = Ωz0.copy()  # Note this is not assignment like in C, but a link in memory, hence the .copy()
 while vort_conv > Ω_conv:
 
     #------------------------------------------------------------------
     # SOLVE THREE VECTOR-POTENTIAL POISSON EQUATIONS USING ITERATION
     #------------------------------------------------------------------
 
+    # 'k' is used for Poisson solver iteration
+    # 'n' is used for time iteration
+
     # POISSON SOLVER FOR ψ_x
     it = 0
     errx = 1e5
-    ψx = ψx_sol[-1].copy()
-    Ωxn = Ωx_sol[-1].copy()
+    # ψx = ψx_sol[-1].copy()
+    # Ωxn = Ωx_sol[-1].copy()
+    # ψxn = ψx
+    # Ωxn = Ωx
     while it < itmax and errx > tol:
-        ψx_k = ψx.copy()
-        ψx[1:nx-1,1:ny-1,1:nz-1] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωxn[1:nx-1,1:ny-1,1:nz-1] + dy**2*dz**2*(ψx_k[2:nx,1:ny-1,1:nz-1]+ψx_k[0,1:ny-1,1:nz-1]) + dx**2*dz**2*(ψx_k[1:nx-1,2:ny,1:nz-1]+ψx_k[1:nx-1,0:ny-2,1:nz-1]) + dx**2*dy**2*(ψx_k[1:nx-1,1:ny-1,2:nz] + ψx_k[1:nx-1,1:ny-1,0:nz-2])) + (1 - β) * ψx_k[1:nx-1,1:ny-1,1:nz-1]
-        errx = np.linalg.norm(ψx.ravel() - ψx_k.ravel())
+        ψxk = ψx.copy()
+        ψx[1:nx-1,1:ny-1,1:nz-1] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωx[1:nx-1,1:ny-1,1:nz-1] + dy**2*dz**2*(ψxk[2:nx,1:ny-1,1:nz-1]+ψxk[0:nx-2,1:ny-1,1:nz-1]) + dx**2*dz**2*(ψxk[1:nx-1,2:ny,1:nz-1]+ψxk[1:nx-1,0:ny-2,1:nz-1]) + dx**2*dy**2*(ψxk[1:nx-1,1:ny-1,2:nz] + ψxk[1:nx-1,1:ny-1,0:nz-2])) + (1 - β) * ψxk[1:nx-1,1:ny-1,1:nz-1]
+        errx = np.linalg.norm(ψx.ravel() - ψxk.ravel())
         it = it + 1
         if it % 50 == 0: 
             print()
@@ -507,12 +523,13 @@ while vort_conv > Ω_conv:
     # POISSON SOLVER FOR ψ_y
     it = 0
     erry = 1e5
-    ψy = ψy_sol[-1].copy()
-    Ωyn = Ωy_sol[-1].copy()
+    # ψy = ψy_sol[-1].copy()
+    # Ωyn = Ωy_sol[-1].copy()
+    # Ωyn = Ωy
     while it < itmax and erry > tol:
-        ψy_k = ψy.copy()
-        ψy[1:nx-1,1:ny-1,1:nz-1] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωyn[1:nx-1,1:ny-1,1:nz-1] + dy**2*dz**2*(ψy_k[2:nx,1:ny-1,1:nz-1]+ψy_k[0:nx-2,1:ny-1,1:nz-1]) + dx**2*dz**2*(ψy_k[1:nx-1,2:ny,1:nz-1]+ψy_k[1:nx-1,0:ny-2,1:nz-1]) + dx**2*dy**2*(ψy_k[1:nx-1,1:ny-1,2:nz] + ψy_k[1:nx-1,1:ny-1,0:nz-2])) + (1 - β) * ψy_k[1:nx-1,1:ny-1,1:nz-1]
-        erry = np.linalg.norm(ψy.ravel() - ψy_k.ravel())
+        ψyk = ψy.copy()
+        ψy[1:nx-1,1:ny-1,1:nz-1] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωy[1:nx-1,1:ny-1,1:nz-1] + dy**2*dz**2*(ψyk[2:nx,1:ny-1,1:nz-1]+ψyk[0:nx-2,1:ny-1,1:nz-1]) + dx**2*dz**2*(ψyk[1:nx-1,2:ny,1:nz-1]+ψyk[1:nx-1,0:ny-2,1:nz-1]) + dx**2*dy**2*(ψyk[1:nx-1,1:ny-1,2:nz] + ψyk[1:nx-1,1:ny-1,0:nz-2])) + (1 - β) * ψyk[1:nx-1,1:ny-1,1:nz-1]
+        erry = np.linalg.norm(ψy.ravel() - ψyk.ravel())
         it = it + 1
         if it % 50 == 0: 
             print()
@@ -523,18 +540,18 @@ while vort_conv > Ω_conv:
     # POISSON SOLVER FOR ψ_z
     it = 0 
     errz = 1e5
-    ψz = ψz_sol[-1].copy()
-    Ωzn = Ωz_sol[-1].copy()
+    # ψz = ψz_sol[-1].copy()
+    # Ωzn = Ωz_sol[-1].copy()
     #print(f"Ωzn is {Ωzn}")
     while it < itmax and errz > tol:
-        ψz_k = ψz.copy()
-        ψz[1:nx-1,1:ny-1,1:nz-1] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωzn[1:nx-1,1:ny-1,1:nz-1] + dy**2*dz**2*(ψz_k[2:nx,1:ny-1,1:nz-1]+ψz_k[0:nx-2,1:ny-1,1:nz-1]) + dx**2*dz**2*(ψz_k[1:nx-1,2:ny,1:nz-1]+ψz_k[1:nx-1,0:ny-2,1:nz-1]) + dx**2*dy**2*(ψz_k[1:nx-1,1:ny-1,2:nz] + ψz_k[1:nx-1,1:ny-1,0:nz-2])) + (1 - β) * ψz_k[1:nx-1,1:ny-1,1:nz-1]
-        errz = np.linalg.norm(ψz.ravel() - ψz_k.ravel())
+        ψzk = ψz.copy()
+        ψz[1:nx-1,1:ny-1,1:nz-1] = (β / (2*(dx**2*dz**2 + dy**2*dz**2 + dx**2*dy**2))) * (dx**2*dy**2*dz**2*Ωz[1:nx-1,1:ny-1,1:nz-1] + dy**2*dz**2*(ψzk[2:nx,1:ny-1,1:nz-1]+ψzk[0:nx-2,1:ny-1,1:nz-1]) + dx**2*dz**2*(ψzk[1:nx-1,2:ny,1:nz-1]+ψzk[1:nx-1,0:ny-2,1:nz-1]) + dx**2*dy**2*(ψzk[1:nx-1,1:ny-1,2:nz] + ψzk[1:nx-1,1:ny-1,0:nz-2])) + (1 - β) * ψzk[1:nx-1,1:ny-1,1:nz-1]
+        errz = np.linalg.norm(ψz.ravel() - ψzk.ravel())
         it = it + 1
         if it % 50 == 0: 
             print()
             print(f"Z Iteration: {it}")
-            print(f"Z Error: {errz:.3f}")
+            print(f"Z Error: {errz}")
 
     # print()
     # print(f"ψz at {t:.3f}s pre-BCs :")
@@ -662,9 +679,10 @@ while vort_conv > Ω_conv:
     ψy[nx-1,ny-1,nz-1] = (ψy[nx-2,ny-1,nz-1] + ψy[nx-1,ny-1,nz-2] + ψy[nx-1,ny-2,nz-1]) / 3.0
     ψz[nx-1,ny-1,nz-1] = (ψz[nx-2,ny-1,nz-1] + ψz[nx-1,ny-1,nz-2] + ψz[nx-1,ny-2,nz-1]) / 3.0
 
-    ψx_sol.append(ψx)
-    ψy_sol.append(ψy)
-    ψz_sol.append(ψz)
+    if its % 50 == 0:
+        ψx_sol.append(ψx)
+        ψy_sol.append(ψy)
+        ψz_sol.append(ψz)
 
     # print()
     # print(f"ψx at {t:.3f}s post-BCs :")
@@ -799,14 +817,22 @@ while vort_conv > Ω_conv:
     v[nx-1,ny-1,nz-1] = (v[nx-2,ny-1,nz-1] + v[nx-1,ny-1,nz-2] + v[nx-1,ny-2,nz-1]) / 3.0
     w[nx-1,ny-1,nz-1] = (w[nx-2,ny-1,nz-1] + w[nx-1,ny-1,nz-2] + w[nx-1,ny-2,nz-1]) / 3.0
 
+    # Divergence of velocity
+    div_vel[1:nx-1,1:ny-1,1:nz-1] = (
+                                    (u[2:nx,1:ny-1,1:nz-1] - u[0:nx-2,1:ny-1,1:nz-1])/(2*dx) + 
+                                    (v[1:nx-1,2:ny,1:nz-1] - v[1:nx-1,0:ny-2,1:nz-1])/(2*dy) + 
+                                    (w[1:nx-1,1:ny-1,2:nz] - w[1:nx-1,1:ny-1,0:nz-2])/(2*dz)
+    )
+
     # print()
     # print(f"Solve for u at {t:.3f}s then enforce BCs:")
     # print()
     # print(u[:,:,3])
 
-    u_sol.append(u)
-    v_sol.append(v)
-    w_sol.append(w)
+    if its % 50 == 0:
+        u_sol.append(u)
+        v_sol.append(v)
+        w_sol.append(w)
 
 
     #---------------------------------------------------------------------------------
@@ -814,10 +840,13 @@ while vort_conv > Ω_conv:
     #---------------------------------------------------------------------------------
     # We solve three equations, one for each vorticity component
 
+    Ωxn = Ωx.copy()
+    Ωyn = Ωy.copy()
+    Ωzn = Ωz.copy()
+
     #------------------------------
     # Ω_X
     #-------------------------------
-    Ωx = Ωxn.copy()
     Cx = u[1:nx-1,1:ny-1,1:nz-1] * (Ωxn[2:nx,1:ny-1,1:nz-1] - Ωxn[0:nx-2,1:nx-1,1:ny-1])/(2*dx)
     Cy = v[1:nx-1,1:ny-1,1:nz-1] * (Ωxn[1:nx-1,2:ny,1:nz-1] - Ωxn[1:nx-1,0:ny-2,1:nz-1])/(2*dy)
     Cz = w[1:nx-1,1:ny-1,1:nz-1] * (Ωxn[1:nx-1,1:ny-1,2:nz] - Ωxn[1:nx-1,1:ny-1,0:nz-2])/(2*dz)
@@ -836,7 +865,6 @@ while vort_conv > Ω_conv:
     #-------------------------------
     # Ω_Y
     #-------------------------------
-    Ωy = Ωyn.copy()
     Cx = u[1:nx-1,1:ny-1,1:nz-1] * (Ωyn[2:nx,1:ny-1,1:nz-1] - Ωyn[0:nx-2,1:ny-1,1:nz-1])/(2*dx)
     Cy = v[1:nx-1,1:ny-1,1:nz-1] * (Ωyn[1:nx-1,2:ny,1:nz-1] - Ωyn[1:nx-1,0:ny-2,1:nz-1])/(2*dy)
     Cz = w[1:nx-1,1:ny-1,1:nz-1] * (Ωyn[1:nx-1,1:ny-1,2:nz] - Ωyn[1:nx-1,1:ny-1,0:nz-2])/(2*dz)
@@ -856,7 +884,6 @@ while vort_conv > Ω_conv:
     #-------------------------------
     # Ω_Z
     #-------------------------------
-    Ωz = Ωzn.copy()
     Cx = u[1:nx-1,1:ny-1,1:nz-1] * (Ωzn[2:nx,1:ny-1,1:nz-1] - Ωzn[0:nx-2,1:ny-1,1:nz-1])/(2*dx)
     Cy = v[1:nx-1,1:ny-1,1:nz-1] * (Ωzn[1:nx-1,2:ny,1:nz-1] - Ωzn[1:nx-1,0:ny-2,1:nz-1])/(2*dy)
     Cz = w[1:nx-1,1:ny-1,1:nz-1] * (Ωzn[1:nx-1,1:ny-1,2:nz] - Ωzn[1:nx-1,1:ny-1,0:nz-2])/(2*dz)
@@ -983,9 +1010,10 @@ while vort_conv > Ω_conv:
     # print(Ωz[:,:,3])
 
     # Store the solution
-    Ωx_sol.append(Ωx.copy())
-    Ωy_sol.append(Ωy.copy())
-    Ωz_sol.append(Ωz.copy())
+    if its % 50 == 0:
+        Ωx_sol.append(Ωx.copy())
+        Ωy_sol.append(Ωy.copy())
+        Ωz_sol.append(Ωz.copy())
 
     # print()
     # print(f"Ωz_sol at {t:.3f}s post-BCs :")
@@ -1003,18 +1031,29 @@ while vort_conv > Ω_conv:
     its = its + 1
 
     # Terminal
-    if its % 500 == 0:
-        print(f'\rits = {its}, t = {t:.3f}, Elapsed: {elapsed_time:.3f} s', end='')
-        print()
+    # if its % 500 == 0:
+    print(f'\rits = {its}, t = {t:.3f}, Elapsed: {elapsed_time:.3f} s', end='')
+    print()
 
     # Convergence criteria
-    if its > 10 and its % 500 == 0:
-        vort_conv = np.linalg.norm(np.vstack([
-            np.ravel(Ωx_sol[-1] - Ωx_sol[-2]),
-            np.ravel(Ωy_sol[-1] - Ωy_sol[-2]),
-            np.ravel(Ωz_sol[-1] - Ωz_sol[-2])
-        ]))
-        print(f"Ω convergence: {vort_conv:.3f}")
+    # Maybe wrong
+    # if its > 10 and its % 500 == 0:
+    #     vort_conv = np.linalg.norm(np.vstack([
+    #         np.ravel(Ωx_sol[-1] - Ωx_sol[-2]),
+    #         np.ravel(Ωy_sol[-1] - Ωy_sol[-2]),
+    #         np.ravel(Ωz_sol[-1] - Ωz_sol[-2])
+    #     ]))
+    #     print(f"Ω convergence: {vort_conv:.3f}")
+    
+    #if its > 10 and its % 500 == 0:
+    vort_conv = np.linalg.norm(np.vstack([
+        np.ravel(Ωx - Ωxn),
+        np.ravel(Ωy - Ωyn),
+        np.ravel(Ωz - Ωzn)
+    ]))
+    print(f"Ω convergence: {vort_conv:.3f}")
+
+
 
 print()
 
@@ -1034,7 +1073,7 @@ print(f"Re = {Re}")
 print('-------------------------')
 print('Time Marching Parameters:')
 print(f'dt = {dt}')
-print(f'conv_crit = {conv_crit}')
+print(f'Ω_conv = {Ω_conv}')
 print('-------------------------')
 print('Poisson Parameters:')
 print(f"β = {β}")
@@ -1049,6 +1088,8 @@ print('Done.')
 
 save_dir = '/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results'
 os.makedirs(save_dir, exist_ok=True)
+
+print(f"Divergence of velocity: {div_vel[:,:,nz//2]}")
 
 #------------------
 # YX Centreplane
@@ -1088,7 +1129,7 @@ plt.colorbar()
 plt.xlabel('X')
 plt.ylabel('Y')
 
-plt.suptitle(f'tend = {t:.2f}, Re = {Re:.0f}, nx = {nx}, dt = {dt:.2f}, tol = {tol:.1f}, conv={vort_conv:.0e}, t: {(elapsed_time):.2f} s')
+plt.suptitle(f'tend = {t:.2f}, Re = {Re:.0f}, nx = {nx}, dt = {dt:.2f}, tol = {tol:.1f}, conv={Ω_conv:.0e}, t: {(elapsed_time):.2f} s')
 
 plt.tight_layout()
 plt.savefig(os.path.join(save_dir, f'{config['output']}_YX.png'), dpi=300, bbox_inches='tight')
@@ -1123,7 +1164,92 @@ plt.ylabel('Centreline Velocity')
 plt.legend()
 plt.suptitle(f'{config['output']}')
 # Incorporate simulation settings in the file name
-plt.title(f'tend={t:.2f}, Re={Re:.0f}, nx={nx}, dt={dt}, tol={tol}, conv={vort_conv:.1f}, t={(elapsed_time):.2f}s')
+plt.title(f'tend={t:.2f}, Re={Re:.0f}, nx={nx}, dt={dt}, tol={tol}, conv={Ω_conv:.1f}, t={(elapsed_time):.2f}s')
 # Save figure to the results folder
 plt.savefig(os.path.join(save_dir, f'{config['output']}_u.png'), dpi=300, bbox_inches='tight')
+
+
+# PARAVIEW FORMATS
+
+# Define the grid coordinates
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+z = np.linspace(0, Lz, nz)
+X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
+
+# Define the output VTK file path
+vtk_file = os.path.join(save_dir, f"{config['output']}_final")
+
+# Prepare data for VTK output
+# Point data: velocity components (u, v, w), vorticity components (Ωx, Ωy, Ωz), vector potential components (ψx, ψy, ψz)
+point_data = {
+    "velocity_u": u,
+    "velocity_v": v,
+    "velocity_w": w,
+    "vorticity_x": Ωx,
+    "vorticity_y": Ωy,
+    "vorticity_z": Ωz,
+    "vector_potential_x": ψx,
+    "vector_potential_y": ψy,
+    "vector_potential_z": ψz
+}
+
+# Save to VTK structured grid file
+gridToVTK(vtk_file, X, Y, Z, pointData=point_data)
+
+#print(f"VTK file saved: {vtk_file}.vts")
+
+
+# 3D PLOTS
+# Define grid coordinates
+x = np.linspace(0, Lx, nx)
+y = np.linspace(0, Ly, ny)
+z = np.linspace(0, Lz, nz)
+X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
+
+# Create save directory
+save_dir = '/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results'
+os.makedirs(save_dir, exist_ok=True)
+save_path = os.path.join(save_dir, f'{config['output']}_divU.png')  # Save as PNG
+
+# Create a 3D plot
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+# Select midpoints for slicing
+mid_x = nx // 2
+mid_y = ny // 2
+mid_z = nz // 2
+
+# Plot 2D slices of divergence
+# x-y plane at mid z
+xy_slice = div_vel[:, :, mid_z]
+ax.contourf(X[:, :, mid_z], Y[:, :, mid_z], xy_slice, zdir='z', offset=z[mid_z], cmap='viridis', alpha=0.6)
+
+# # y-z plane at mid x
+# yz_slice = div_vel[mid_x, :, :]
+# ax.contourf(X[mid_x, :, :], Y[mid_x, :, :], yz_slice, zdir='x', offset=x[mid_x], cmap='viridis', alpha=0.6)
+
+# # x-z plane at mid y
+# xz_slice = div_vel[:, mid_y, :]
+# ax.contourf(X[:, mid_y, :], Z[:, mid_y, :], xz_slice, zdir='y', offset=y[mid_y], cmap='viridis', alpha=0.6)
+
+# Set labels and title
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+ax.set_title('Divergence of Velocity Field (2D Slices)')
+ax.set_xlim(0, Lx)
+ax.set_ylim(0, Ly)
+ax.set_zlim(0, Lz)
+
+# Add a colorbar
+mappable = plt.cm.ScalarMappable(cmap='viridis')
+mappable.set_array(xy_slice)
+plt.colorbar(mappable, ax=ax, label='Divergence')
+
+# Save the figure
+plt.savefig(save_path, dpi=300, bbox_inches='tight')
+
+
 
