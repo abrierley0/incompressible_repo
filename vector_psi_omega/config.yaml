@@ -2,25 +2,25 @@
 # CONFIGURATION
 
 # Output file name
-output: run4
+output: run10
 
 # Grid Settings
-nx: 32
-ny: 32
-nz: 32
+nx: 21
+ny: 21
+nz: 21
 Lx: 1.0
 Ly: 1.0
 Lz: 1.0
 
 # Fluid Settings
 nu: 0.05          
-Ut: 20.0           
+Ut: 5.0           
 
 # Time-marching Parameters
-dt: 0.0001
-conv_crit: 0.1
+dt: 0.002
+Ω_conv: 0.1
 
 # Poisson-solver Parameters
 β: 1.0            
 tol: 0.0001       
-itmax: 200        
+itmax: 1000        

@@ -1009,6 +1009,13 @@ while vort_conv > Ω_conv:
     # print()
     # print(Ωz[:,:,3])
 
+    # Divergence of vorticity
+    div_Ω[1:nx-1,1:ny-1,1:nz-1] = (
+                                    (Ωx[2:nx,1:ny-1,1:nz-1] - Ωx[0:nx-2,1:ny-1,1:nz-1])/(2*dx) + 
+                                    (Ωy[1:nx-1,2:ny,1:nz-1] - Ωy[1:nx-1,0:ny-2,1:nz-1])/(2*dy) + 
+                                    (Ωz[1:nx-1,1:ny-1,2:nz] - Ωz[1:nx-1,1:ny-1,0:nz-2])/(2*dz)
+    )
+
     # Store the solution
     if its % 50 == 0:
         Ωx_sol.append(Ωx.copy())
@@ -1178,7 +1185,7 @@ z = np.linspace(0, Lz, nz)
 X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
 
 # Define the output VTK file path
-vtk_file = os.path.join(save_dir, f"{config['output']}_final")
+vtk_file = os.path.join(save_dir, f"{config['output']}")
 
 # Prepare data for VTK output
 # Point data: velocity components (u, v, w), vorticity components (Ωx, Ωy, Ωz), vector potential components (ψx, ψy, ψz)
@@ -1191,13 +1198,15 @@ point_data = {
     "vorticity_z": Ωz,
     "vector_potential_x": ψx,
     "vector_potential_y": ψy,
-    "vector_potential_z": ψz
+    "vector_potential_z": ψz,
+    "divergence_vel": div_vel,
+    "divergence_omega": div_Ω,
 }
 
 # Save to VTK structured grid file
 gridToVTK(vtk_file, X, Y, Z, pointData=point_data)
 
-#print(f"VTK file saved: {vtk_file}.vts")
+
 
 
 # 3D PLOTS
@@ -1212,44 +1221,40 @@ save_dir = '/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/res
 os.makedirs(save_dir, exist_ok=True)
 save_path = os.path.join(save_dir, f'{config['output']}_divU.png')  # Save as PNG
 
-# Create a 3D plot
-fig = plt.figure(figsize=(10, 8))
-ax = fig.add_subplot(111, projection='3d')
+# Create a divergence plot
+fig = plt.figure(figsize=(10, 5))  # Adjusted for two square subplots
+plt.subplots_adjust(wspace=0.3)  # Space between subplots
 
-# Select midpoints for slicing
-mid_x = nx // 2
-mid_y = ny // 2
+# First subplot
+ax = fig.add_subplot(121)
 mid_z = nz // 2
-
-# Plot 2D slices of divergence
-# x-y plane at mid z
 xy_slice = div_vel[:, :, mid_z]
-ax.contourf(X[:, :, mid_z], Y[:, :, mid_z], xy_slice, zdir='z', offset=z[mid_z], cmap='viridis', alpha=0.6)
-
-# # y-z plane at mid x
-# yz_slice = div_vel[mid_x, :, :]
-# ax.contourf(X[mid_x, :, :], Y[mid_x, :, :], yz_slice, zdir='x', offset=x[mid_x], cmap='viridis', alpha=0.6)
-
-# # x-z plane at mid y
-# xz_slice = div_vel[:, mid_y, :]
-# ax.contourf(X[:, mid_y, :], Z[:, mid_y, :], xz_slice, zdir='y', offset=y[mid_y], cmap='viridis', alpha=0.6)
-
-# Set labels and title
+ax.contourf(X[:, :, mid_z], Y[:, :, mid_z], xy_slice, cmap='viridis')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
-ax.set_zlabel('Z')
-ax.set_title('Divergence of Velocity Field (2D Slices)')
 ax.set_xlim(0, Lx)
 ax.set_ylim(0, Ly)
-ax.set_zlim(0, Lz)
-
-# Add a colorbar
+ax.set_aspect('equal')  # Square aspect ratio
 mappable = plt.cm.ScalarMappable(cmap='viridis')
 mappable.set_array(xy_slice)
-plt.colorbar(mappable, ax=ax, label='Divergence')
+plt.colorbar(mappable, ax=ax, label='Divergence U')
+
+# Second subplot
+ax = fig.add_subplot(122)
+xy_slice = div_Ω[:, :, 1]
+ax.contourf(X[:, :, mid_z], Y[:, :, mid_z], xy_slice, cmap='viridis')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_xlim(0, Lx)
+ax.set_ylim(0, Ly)
+ax.set_aspect('equal')  # Square aspect ratio
+mappable = plt.cm.ScalarMappable(cmap='viridis')
+mappable.set_array(xy_slice)
+plt.colorbar(mappable, ax=ax, label='Divergence Ω')
 
 # Save the figure
-plt.savefig(save_path, dpi=300, bbox_inches='tight')
+plt.savefig(save_path, dpi=800, bbox_inches='tight')  # Tight layout for better sizing
+plt.close()
 
 
 
