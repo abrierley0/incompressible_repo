@@ -2,7 +2,7 @@
 # CONFIGURATION
 
 # Output file name
-output: run10
+output: run11
 
 # Grid Settings
 nx: 21

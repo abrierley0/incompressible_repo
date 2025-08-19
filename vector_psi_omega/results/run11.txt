@@ -1,0 +1,22 @@
+
+SUMMARY
+
+-------------------------
+Run = 'run11'
+nx = 21
+Fluid Parameters:
+Ut = 5.0
+Re = 100.0
+-------------------------
+Time Marching Parameters:
+dt = 0.002
+Ω_conv = 0.1
+-------------------------
+Poisson Parameters:
+β = 1.0
+itmax = 1000
+tol = 0.0001
+-------------------------
+Physical end time = 0.990 mins
+Wall clock time = 1724.370 s
+Iterations = 495

@@ -904,7 +904,8 @@ while vort_conv > Ω_conv:
     # print()
     # print(Ωz[:,:,3])
 
-    # # Re-apply the vorticity boundary conditions
+    # Re-apply the vorticity boundary conditions
+    # First-order accurate
     Ωx[0,1:ny-1,1:nz-1] = 0.0                                        # Left wall
     Ωy[0,1:ny-1,1:nz-1] = -w[1,1:ny-1,1:nz-1]/dx
     Ωz[0,1:ny-1,1:nz-1] = v[1,1:ny-1,1:nz-1]/dx
