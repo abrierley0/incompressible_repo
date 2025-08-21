@@ -1,16 +1,16 @@
+# %%
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import os
 import pandas as pd
+from pyevtk.hl import gridToVTK
 import sys
 import threading
 import time
-from pyevtk.hl import gridToVTK
 import yaml
 
-
-
+# %% [markdown]
 # VECTOR-POTENTIAL VORTICITY FORMULATION
 #
 # Written by Mr A. J. Brierley
@@ -22,14 +22,29 @@ import yaml
 #
 # adam.brierley@cranfield.ac.uk
 #
-# 4th August 2025
+# Last update: 18th August 2025
+
+# %%
+# Enable in-line plot displays in Jupyter Notebook
+# %matplotlib inline
+# %config InlineBackend.figure_format = 'svg'
+
+# %%
+# Enable LaTeX rendering
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
 
 
+# %%
+# Results folder
+results_folder = 'results'
+os.makedirs(results_folder, exist_ok=True)  # Create folder if does not exist
 
-
+# %%
 # Wall time 
 elapsed_time = 0
 
+# %%
 def timer():
     global elapsed_time
     start = time.time()
@@ -37,14 +52,17 @@ def timer():
         elapsed_time = time.time() - start
         time.sleep(1)
 
+# %%
 threading.Thread(target=timer, daemon=True).start()
 
 
+# %%
 # Open and read the input parameters
 with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
 
 
+# %%
 # Grid settings
 nx = config['nx']
 ny = config['ny']
@@ -57,11 +75,13 @@ dy = Ly/(ny-1)
 dz = Lz/(nz-1)
 
 
+# %%
 # Physical parameters
 nu = config['nu']
 Ut = config['Ut']
 Re = Ut*Lx/nu
 
+# %%
 print()
 print('THE VECTOR-POTENTIAL AND VORTICITY FORMULATION FOR THE DRIVEN CUBE')
 print()
@@ -71,26 +91,31 @@ print(f'Ut = {Ut}')
 print(f"nx = {nx}")
 
 
+# %%
 # Initialise arrays
 ψx0 = np.zeros([nx,ny,nz])
 ψy0 = np.zeros([nx,ny,nz])
 ψz0 = np.zeros([nx,ny,nz])
 
+# %%
 Ωx0 = np.zeros([nx,ny,nz])
 Ωy0 = np.zeros([nx,ny,nz])
 Ωz0 = np.zeros([nx,ny,nz])
 
+# %%
 u0 = np.zeros([nx,ny,nz])
 v0 = np.zeros([nx,ny,nz])
 w0 = np.zeros([nx,ny,nz])
 
+# %%
 div_vel = np.zeros([nx,ny,nz])
 div_Ω = np.zeros([nx,ny,nz])
 
 
-#---------------------------------------------
+# %% [markdown]
+# ---------------------------------------------
 # VECTOR-POTENTIAL (ψ) BOUNDARY CONDITIONS
-#---------------------------------------------
+# ---------------------------------------------
 # according to Tokunaga (1992),
 
 # Left wall
@@ -140,6 +165,7 @@ div_Ω = np.zeros([nx,ny,nz])
 ψy0[0,1:ny-1,nz-1] = (ψy0[1,1:ny-1,nz-1] + ψy0[0,1:ny-1,nz-2])/2.0
 ψz0[0,1:ny-1,nz-1] = (ψz0[1,1:ny-1,nz-1] + ψz0[0,1:ny-1,nz-2])/2.0
 
+# %%
 # z direction edges
 ψx0[0,0,1:nz-1] = (ψx0[1,0,1:nz-1] + ψx0[0,1,1:nz-1])/2.0                            # Bottom-left edge
 ψy0[0,0,1:nz-1] = (ψy0[1,0,1:nz-1] + ψy0[0,1,1:nz-1])/2.0        
@@ -154,6 +180,7 @@ div_Ω = np.zeros([nx,ny,nz])
 ψy0[0,ny-1,1:nz-1] = (ψy0[0,ny-2,1:nz-1] + ψy0[1,ny-1,1:nz-1])/2.0        
 ψz0[0,ny-1,1:nz-1] = (ψz0[0,ny-2,1:nz-1] + ψz0[1,ny-1,1:nz-1])/2.0
 
+# %%
 # x direction edges
 ψx0[1:nx-1,0,0] = (ψx0[1:nx-1,1,0] + ψx0[1:nx-1,0,1])/2.0                            # Front-bottom edge
 ψy0[1:nx-1,0,0] = (ψy0[1:nx-1,1,0] + ψy0[1:nx-1,0,1])/2.0        
@@ -168,42 +195,52 @@ div_Ω = np.zeros([nx,ny,nz])
 ψy0[1:nx-1,ny-1,nz-1] = (ψy0[1:nx-1,ny-2,nz-1] + ψy0[1:nx-1,ny-1,nz-2])/2.0        
 ψz0[1:nx-1,ny-1,nz-1] = (ψz0[1:nx-1,ny-2,nz-1] + ψz0[1:nx-1,ny-1,nz-2])/2.0
 
+# %%
 # Vector-potential corner points
 ψx0[0,0,0] = (ψx0[1,0,0] + ψx0[0,1,0] + ψx0[0,0,1]) / 3.0                                           # Lower bottom left 
 ψy0[0,0,0] = (ψy0[1,0,0] + ψy0[0,1,0] + ψy0[0,0,1]) / 3.0
 ψz0[0,0,0] = (ψz0[1,0,0] + ψz0[0,1,0] + ψz0[0,0,1]) / 3.0
 
+# %%
 ψx0[0,0,nz-1] = (ψx0[0,0,nz-2] + ψx0[1,0,nz-1] + ψx0[0,1,nz-1]) / 3.0                               # Lower back left
 ψy0[0,0,nz-1] = (ψy0[0,0,nz-2] + ψy0[1,0,nz-1] + ψy0[0,1,nz-1]) / 3.0
 ψz0[0,0,nz-1] = (ψz0[0,0,nz-2] + ψz0[1,0,nz-1] + ψz0[0,1,nz-1]) / 3.0
 
+# %%
 ψx0[nx-1,0,0] = (ψx0[nx-2,0,0] + ψx0[nx-1,1,0] + ψx0[nx-1,0,1]) / 3.0                               # Lower front right 
 ψy0[nx-1,0,0] = (ψy0[nx-2,0,0] + ψy0[nx-1,1,0] + ψy0[nx-1,0,1]) / 3.0
 ψz0[nx-1,0,0] = (ψz0[nx-2,0,0] + ψz0[nx-1,1,0] + ψz0[nx-1,0,1]) / 3.0
 
+# %%
 ψx0[nx-1,0,nz-1] = (ψx0[nx-2,0,nz-1] + ψx0[nx-1,0,nz-2] + ψx0[nx-1,1,nz-1]) / 3.0                   # Lower back right
 ψy0[nx-1,0,nz-1] = (ψy0[nx-2,0,nz-1] + ψy0[nx-1,0,nz-2] + ψy0[nx-1,1,nz-1]) / 3.0
 ψz0[nx-1,0,nz-1] = (ψz0[nx-2,0,nz-1] + ψz0[nx-1,0,nz-2] + ψz0[nx-1,1,nz-1]) / 3.0
 
+# %%
 ψx0[0,ny-1,0] = (ψx0[1,ny-1,0] + ψx0[0,ny-2,0] + ψx0[0,ny-1,1]) / 3.0                               # Front top left
 ψy0[0,ny-1,0] = (ψy0[1,ny-1,0] + ψy0[0,ny-2,0] + ψy0[0,ny-1,1]) / 3.0
 ψz0[0,ny-1,0] = (ψz0[1,ny-1,0] + ψz0[0,ny-2,0] + ψz0[0,ny-1,1]) / 3.0
 
+# %%
 ψx0[0,ny-1,nz-1] = (ψx0[0,ny-1,nz-2] + ψx0[1,ny-1,nz-1] + ψx0[0,ny-2,nz-1]) / 3.0                   # Back top left
 ψy0[0,ny-1,nz-1] = (ψy0[0,ny-1,nz-2] + ψy0[1,ny-1,nz-1] + ψy0[0,ny-2,nz-1]) / 3.0
 ψz0[0,ny-1,nz-1] = (ψz0[0,ny-1,nz-2] + ψz0[1,ny-1,nz-1] + ψz0[0,ny-2,nz-1]) / 3.0
 
+# %%
 ψx0[nx-1,ny-1,0] = (ψx0[nx-2,ny-1,0] + ψx0[nx-1,ny-2,0] + ψx0[nx-1,ny-1,1]) / 3.0                   # Front top right
 ψy0[nx-1,ny-1,0] = (ψy0[nx-2,ny-1,0] + ψy0[nx-1,ny-2,0] + ψy0[nx-1,ny-1,1]) / 3.0
 ψz0[nx-1,ny-1,0] = (ψz0[nx-2,ny-1,0] + ψz0[nx-1,ny-2,0] + ψz0[nx-1,ny-1,1]) / 3.0
 
+# %%
 ψx0[nx-1,ny-1,nz-1] = (ψx0[nx-2,ny-1,nz-1] + ψx0[nx-1,ny-1,nz-2] + ψx0[nx-1,ny-2,nz-1]) / 3.0       # Back top right
 ψy0[nx-1,ny-1,nz-1] = (ψy0[nx-2,ny-1,nz-1] + ψy0[nx-1,ny-1,nz-2] + ψy0[nx-1,ny-2,nz-1]) / 3.0
 ψz0[nx-1,ny-1,nz-1] = (ψz0[nx-2,ny-1,nz-1] + ψz0[nx-1,ny-1,nz-2] + ψz0[nx-1,ny-2,nz-1]) / 3.0
 
+# %%
 np.set_printoptions(linewidth=1000, threshold=np.inf, precision=1, suppress=True)  # Ensure full matrix prints
 #np.set_printoptions(linewidth=1000, threshold=np.inf)
 
+# %% [markdown]
 # print()
 # print(f"ψx0 is : ")
 # print()
@@ -211,12 +248,15 @@ np.set_printoptions(linewidth=1000, threshold=np.inf, precision=1, suppress=True
 # print()
 
 
-#--------------------------------------------
+# %% [markdown]
+# --------------------------------------------
 # VELOCITY VECTOR FIELD BOUNDARY CONDITIONS
-#--------------------------------------------
+# --------------------------------------------
 
+# %% [markdown]
 # MAIN VELOCITY BOUNDARY CONDITIONS
 
+# %%
 u0[0,1:ny-1,1:nz-1] = 0.0          # Left wall
 v0[0,1:ny-1,1:nz-1] = 0.0
 w0[0,1:ny-1,1:nz-1] = 0.0
@@ -225,6 +265,7 @@ v0[nx-1,1:ny-1,1:nz-1] = 0.0
 w0[nx-1,1:ny-1,1:nz-1] = 0.0
 
 
+# %%
 u0[1:nx-1,1:ny-1,0] = 0.0          # Front wall
 v0[1:nx-1,1:ny-1,0] = 0.0
 w0[1:nx-1,1:ny-1,0] = 0.0
@@ -233,6 +274,7 @@ v0[1:nx-1,1:ny-1,nz-1] = 0.0
 w0[1:nx-1,1:ny-1,nz-1] = 0.0
 
 
+# %%
 u0[1:nx-1,0,1:nz-1] = 0.0          # Bottom wall
 v0[1:nx-1,0,1:nz-1] = 0.0
 w0[1:nx-1,0,1:nz-1] = 0.0
@@ -240,9 +282,11 @@ u0[1:nx-1,ny-1,1:nz-1] = Ut        # Top wall
 v0[1:nx-1,ny-1,1:nz-1] = 0.0
 w0[1:nx-1,ny-1,1:nz-1] = 0.0
 
+# %% [markdown]
 # Velocity edge points
 
 
+# %%
 u0[0,1:ny-1,0] = (u0[1,1:ny-1,0] + u0[0,1:ny-1,1])/2.0                            # Front-left edge
 v0[0,1:ny-1,0] = (v0[1,1:ny-1,0] + v0[0,1:ny-1,1])/2.0
 w0[0,1:ny-1,0] = (w0[1,1:ny-1,0] + w0[0,1:ny-1,1])/2.0
@@ -257,6 +301,7 @@ v0[0,1:ny-1,nz-1] = (v0[1,1:ny-1,nz-1] + v0[0,1:ny-1,nz-2])/2.0
 w0[0,1:ny-1,nz-1] = (w0[1,1:ny-1,nz-1] + w0[0,1:ny-1,nz-2])/2.0
 
 
+# %%
 u0[0,0,1:nz-1] = (u0[1,0,1:nz-1] + u0[0,1,1:nz-1])/2.0                            # Bottom-left edge
 v0[0,0,1:nz-1] = (v0[1,0,1:nz-1] + v0[0,1,1:nz-1])/2.0        
 w0[0,0,1:nz-1] = (w0[1,0,1:nz-1] + w0[0,1,1:nz-1])/2.0
@@ -271,6 +316,7 @@ v0[0,ny-1,1:nz-1] = (v0[0,ny-2,1:nz-1] + v0[1,ny-1,1:nz-1])/2.0
 w0[0,ny-1,1:nz-1] = (w0[0,ny-2,1:nz-1] + w0[1,ny-1,1:nz-1])/2.0
 
 
+# %%
 u0[1:nx-1,0,0] = (u0[1:nx-1,1,0] + u0[1:nx-1,0,1])/2.0                            # Front-bottom edge
 v0[1:nx-1,0,0] = (v0[1:nx-1,1,0] + v0[1:nx-1,0,1])/2.0        
 w0[1:nx-1,0,0] = (w0[1:nx-1,1,0] + w0[1:nx-1,0,1])/2.0
@@ -284,50 +330,61 @@ u0[1:nx-1,ny-1,nz-1] = (u0[1:nx-1,ny-2,nz-1] + u0[1:nx-1,ny-1,nz-2])/2.0        
 v0[1:nx-1,ny-1,nz-1] = (v0[1:nx-1,ny-2,nz-1] + v0[1:nx-1,ny-1,nz-2])/2.0        
 w0[1:nx-1,ny-1,nz-1] = (w0[1:nx-1,ny-2,nz-1] + w0[1:nx-1,ny-1,nz-2])/2.0
 
+# %%
 # Velocity corner points
 u0[0,0,0] = (u0[1,0,0] + u0[0,1,0] + u0[0,0,1]) / 3.0                                           # Lower bottom left 
 v0[0,0,0] = (v0[1,0,0] + v0[0,1,0] + v0[0,0,1]) / 3.0
 w0[0,0,0] = (w0[1,0,0] + w0[0,1,0] + w0[0,0,1]) / 3.0
 
+# %%
 u0[0,0,nz-1] = (u0[0,0,nz-2] + u0[1,0,nz-1] + u0[0,1,nz-1]) / 3.0                               # Lower back left
 v0[0,0,nz-1] = (v0[0,0,nz-2] + v0[1,0,nz-1] + v0[0,1,nz-1]) / 3.0
 w0[0,0,nz-1] = (w0[0,0,nz-2] + w0[1,0,nz-1] + w0[0,1,nz-1]) / 3.0
 
+# %%
 u0[nx-1,0,0] = (u0[nx-2,0,0] + u0[nx-1,1,0] + u0[nx-1,0,1]) / 3.0                               # Lower front right 
 v0[nx-1,0,0] = (v0[nx-2,0,0] + v0[nx-1,1,0] + v0[nx-1,0,1]) / 3.0
 w0[nx-1,0,0] = (w0[nx-2,0,0] + w0[nx-1,1,0] + w0[nx-1,0,1]) / 3.0
 
+# %%
 u0[nx-1,0,nz-1] = (u0[nx-2,0,nz-1] + u0[nx-1,0,nz-2] + u0[nx-1,1,nz-1]) / 3.0                   # Lower back right
 v0[nx-1,0,nz-1] = (v0[nx-2,0,nz-1] + v0[nx-1,0,nz-2] + v0[nx-1,1,nz-1]) / 3.0
 w0[nx-1,0,nz-1] = (w0[nx-2,0,nz-1] + w0[nx-1,0,nz-2] + w0[nx-1,1,nz-1]) / 3.0
 
+# %%
 u0[0,ny-1,0] = (u0[1,ny-1,0] + u0[0,ny-2,0] + u0[0,ny-1,1]) / 3.0                               # Front top left
 v0[0,ny-1,0] = (v0[1,ny-1,0] + v0[0,ny-2,0] + v0[0,ny-1,1]) / 3.0
 w0[0,ny-1,0] = (w0[1,ny-1,0] + w0[0,ny-2,0] + w0[0,ny-1,1]) / 3.0
 
+# %%
 u0[0,ny-1,nz-1] = (u0[0,ny-1,nz-2] + u0[1,ny-1,nz-1] + u0[0,ny-2,nz-1]) / 3.0                   # Back top left
 v0[0,ny-1,nz-1] = (v0[0,ny-1,nz-2] + v0[1,ny-1,nz-1] + v0[0,ny-2,nz-1]) / 3.0
 w0[0,ny-1,nz-1] = (w0[0,ny-1,nz-2] + w0[1,ny-1,nz-1] + w0[0,ny-2,nz-1]) / 3.0
 
+# %%
 u0[nx-1,ny-1,0] = (u0[nx-2,ny-1,0] + u0[nx-1,ny-2,0] + u0[nx-1,ny-1,1]) / 3.0                   # Front top right
 v0[nx-1,ny-1,0] = (v0[nx-2,ny-1,0] + v0[nx-1,ny-2,0] + v0[nx-1,ny-1,1]) / 3.0
 w0[nx-1,ny-1,0] = (w0[nx-2,ny-1,0] + w0[nx-1,ny-2,0] + w0[nx-1,ny-1,1]) / 3.0
 
+# %%
 u0[nx-1,ny-1,nz-1] = (u0[nx-2,ny-1,nz-1] + u0[nx-1,ny-1,nz-2] + u0[nx-1,ny-2,nz-1]) / 3.0       # Back top right
 v0[nx-1,ny-1,nz-1] = (v0[nx-2,ny-1,nz-1] + v0[nx-1,ny-1,nz-2] + v0[nx-1,ny-2,nz-1]) / 3.0
 w0[nx-1,ny-1,nz-1] = (w0[nx-2,ny-1,nz-1] + w0[nx-1,ny-1,nz-2] + w0[nx-1,ny-2,nz-1]) / 3.0
 
+# %% [markdown]
 # print()
 # print(f"u0 is : ")
 # print()
 # print(u0[:,:,3])
 # print()
 
-#------------------------------------------------
+# %% [markdown]
+# ------------------------------------------------
 # VORTICITY VECTOR FIELD (Ω) BOUNDARY CONDITIONS
-#------------------------------------------------
+# ------------------------------------------------
 # derived using the definition of vorticity
 
+# %%
 Ωx0[0,1:ny-1,1:nz-1] = 0.0                                        # Left wall
 Ωy0[0,1:ny-1,1:nz-1] = -w0[1,1:ny-1,1:nz-1]/dx
 Ωz0[0,1:ny-1,1:nz-1] = v0[1,1:ny-1,1:nz-1]/dx
@@ -336,13 +393,15 @@ w0[nx-1,ny-1,nz-1] = (w0[nx-2,ny-1,nz-1] + w0[nx-1,ny-1,nz-2] + w0[nx-1,ny-2,nz-
 Ωz0[nx-1,1:ny-1,1:nz-1] =-v0[nx-2,1:ny-1,1:nz-1]/dx
 
 
+# %%
 Ωx0[1:nx-1,1:ny-1,0] = -v0[1:nx-1,1:ny-1,1]/dz                              # Front wall
 Ωy0[1:nx-1,1:ny-1,0] = u0[1:nx-1,1:ny-1,1]/dz
 Ωz0[1:nx-1,1:ny-1,0] = 0.0
 Ωx0[1:nx-1,1:ny-1,nz-1] = v0[1:nx-1,1:ny-1,nz-2]/dz                         # Back wall
 Ωy0[1:nx-1,1:ny-1,nz-1] = -u0[1:nx-1,1:ny-1,nz-2]/dz
 Ωz0[1:nx-1,1:ny-1,nz-1] = 0.0
-        
+
+
 
 Ωx0[1:nx-1,0,1:nz-1] = w0[1:nx-1,1,1:nz-1]/dy                               # Bottom wall
 Ωy0[1:nx-1,0,1:nz-1] = 0.0
@@ -351,7 +410,9 @@ w0[nx-1,ny-1,nz-1] = (w0[nx-2,ny-1,nz-1] + w0[nx-1,ny-1,nz-2] + w0[nx-1,ny-2,nz-
 Ωy0[1:nx-1,ny-1,1:nz-1] = 0.0                                     
 Ωz0[1:nx-1,ny-1,1:nz-1] = -(Ut - u0[1:nx-1,ny-2,1:nz-1])/dy
 
+
 # Vorticity edge points
+
 
 Ωx0[0,1:ny-1,0] = (Ωx0[1,1:ny-1,0] + Ωx0[0,1:ny-1,1])/2.0                            # Front-left edge
 Ωy0[0,1:ny-1,0] = (Ωy0[1,1:ny-1,0] + Ωy0[0,1:ny-1,1])/2.0
@@ -394,44 +455,54 @@ w0[nx-1,ny-1,nz-1] = (w0[nx-2,ny-1,nz-1] + w0[nx-1,ny-1,nz-2] + w0[nx-1,ny-2,nz-
 Ωy0[1:nx-1,ny-1,nz-1] = (Ωy0[1:nx-1,ny-2,nz-1] + Ωy0[1:nx-1,ny-1,nz-2])/2.0        
 Ωz0[1:nx-1,ny-1,nz-1] = (Ωz0[1:nx-1,ny-2,nz-1] + Ωz0[1:nx-1,ny-1,nz-2])/2.0
 
+
 # Vorticity corner points
 Ωx0[0,0,0] = (Ωx0[1,0,0] + Ωx0[0,1,0] + Ωx0[0,0,1]) / 3.0                                       # Front bottom left 
 Ωy0[0,0,0] = (Ωy0[1,0,0] + Ωy0[0,1,0] + Ωy0[0,0,1]) / 3.0
 Ωz0[0,0,0] = (Ωz0[1,0,0] + Ωz0[0,1,0] + Ωz0[0,0,1]) / 3.0
 
+
 Ωx0[0,0,nz-1] = (Ωx0[0,0,nz-2] + Ωx0[1,0,nz-1] + Ωx0[0,1,nz-1]) / 3.0                           # Back bottom left
 Ωy0[0,0,nz-1] = (Ωy0[0,0,nz-2] + Ωy0[1,0,nz-1] + Ωy0[0,1,nz-1]) / 3.0
 Ωz0[0,0,nz-1] = (Ωz0[0,0,nz-2] + Ωz0[1,0,nz-1] + Ωz0[0,1,nz-1]) / 3.0
+
 
 Ωx0[nx-1,0,0] = (Ωx0[nx-2,0,0] + Ωx0[nx-1,1,0] + Ωx0[nx-1,0,1]) / 3.0                           # Front bottom right
 Ωy0[nx-1,0,0] = (Ωy0[nx-2,0,0] + Ωy0[nx-1,1,0] + Ωy0[nx-1,0,1]) / 3.0
 Ωz0[nx-1,0,0] = (Ωz0[nx-2,0,0] + Ωz0[nx-1,1,0] + Ωz0[nx-1,0,1]) / 3.0
 
+
 Ωx0[nx-1,0,nz-1] = (Ωx0[nx-2,0,nz-1] + Ωx0[nx-1,0,nz-2] + Ωx0[nx-1,1,nz-1]) / 3.0               # Back bottom right
 Ωy0[nx-1,0,nz-1] = (Ωy0[nx-2,0,nz-1] + Ωy0[nx-1,0,nz-2] + Ωy0[nx-1,1,nz-1]) / 3.0
 Ωz0[nx-1,0,nz-1] = (Ωz0[nx-2,0,nz-1] + Ωz0[nx-1,0,nz-2] + Ωz0[nx-1,1,nz-1]) / 3.0
+
 
 Ωx0[0,ny-1,0] = (Ωx0[1,ny-1,0] + Ωx0[0,ny-2,0] + Ωx0[0,ny-1,1]) / 3.0                           # Front top left
 Ωy0[0,ny-1,0] = (Ωy0[1,ny-1,0] + Ωy0[0,ny-2,0] + Ωy0[0,ny-1,1]) / 3.0
 Ωz0[0,ny-1,0] = (Ωz0[1,ny-1,0] + Ωz0[0,ny-2,0] + Ωz0[0,ny-1,1]) / 3.0
 
+
 Ωx0[0,ny-1,nz-1] = (Ωx0[0,ny-1,nz-2] + Ωx0[1,ny-1,nz-1] + Ωx0[0,ny-2,nz-1]) / 3.0               # Back top left
 Ωy0[0,ny-1,nz-1] = (Ωy0[0,ny-1,nz-2] + Ωy0[1,ny-1,nz-1] + Ωy0[0,ny-2,nz-1]) / 3.0
 Ωz0[0,ny-1,nz-1] = (Ωz0[0,ny-1,nz-2] + Ωz0[1,ny-1,nz-1] + Ωz0[0,ny-2,nz-1]) / 3.0
+
 
 Ωx0[nx-1,ny-1,0] = (Ωx0[nx-2,ny-1,0] + Ωx0[nx-1,ny-2,0] + Ωx0[nx-1,ny-1,1]) / 3.0               # Front top right
 Ωy0[nx-1,ny-1,0] = (Ωy0[nx-2,ny-1,0] + Ωy0[nx-1,ny-2,0] + Ωy0[nx-1,ny-1,1]) / 3.0
 Ωz0[nx-1,ny-1,0] = (Ωz0[nx-2,ny-1,0] + Ωz0[nx-1,ny-2,0] + Ωz0[nx-1,ny-1,1]) / 3.0
 
+
 Ωx0[nx-1,ny-1,nz-1] = (Ωx0[nx-2,ny-1,nz-1] + Ωx0[nx-1,ny-1,nz-2] + Ωx0[nx-1,ny-2,nz-1]) / 3.0   # Back top right
 Ωy0[nx-1,ny-1,nz-1] = (Ωy0[nx-2,ny-1,nz-1] + Ωy0[nx-1,ny-1,nz-2] + Ωy0[nx-1,ny-2,nz-1]) / 3.0
 Ωz0[nx-1,ny-1,nz-1] = (Ωz0[nx-2,ny-1,nz-1] + Ωz0[nx-1,ny-1,nz-2] + Ωz0[nx-1,ny-2,nz-1]) / 3.0
+
 
 # print()
 # print(f"Ωz0 is : ")
 # print()
 # print(Ωz0[:,:,3])
 # print()
+
 
 
 # Create solution storage
@@ -442,6 +513,7 @@ w0[nx-1,ny-1,nz-1] = (w0[nx-2,ny-1,nz-1] + w0[nx-1,ny-1,nz-2] + w0[nx-1,ny-2,nz-
 ψz_sol = []
 ψz_sol.append(ψz0)
 
+
 Ωx_sol = []
 Ωx_sol.append(Ωx0)
 Ωy_sol = []
@@ -449,12 +521,14 @@ w0[nx-1,ny-1,nz-1] = (w0[nx-2,ny-1,nz-1] + w0[nx-1,ny-1,nz-2] + w0[nx-1,ny-2,nz-
 Ωz_sol = []
 Ωz_sol.append(Ωz0)
 
+
 u_sol = []
 u_sol.append(u0)
 v_sol = []
 v_sol.append(v0)
 w_sol = []
 w_sol.append(w0)
+
 
 
 # Poisson-solver parameters
@@ -684,22 +758,8 @@ while vort_conv > Ω_conv:
         ψy_sol.append(ψy)
         ψz_sol.append(ψz)
 
-    # print()
-    # print(f"ψx at {t:.3f}s post-BCs :")
-    # print()
-    # print(ψx[:,:,3])
 
-    # print()
-    # print(f"ψy at {t:.3f}s post-BCs :")
-    # print()
-    # print(ψy[:,:,3])
-
-    # print()
-    # print(f"Solve for ψz at {t:.3f}s then enforce BCs:")
-    # print()
-    # print(ψz[:,:,3])
-
-
+    
     #---------------------------------------
     # SOLVE FOR THE VELOCITY VECTOR FIELD
     #---------------------------------------
@@ -710,11 +770,7 @@ while vort_conv > Ω_conv:
     w[1:nx-1,1:ny-1,1:nz-1] = (ψy[2:nx,1:ny-1,1:nz-1] - ψy[0:nx-2,1:ny-1,1:nz-1])/(2*dx) + (ψx[1:nx-1,0:ny-2,1:nz-1] - ψx[1:nx-1,2:ny,1:nz-1])/(2*dy)
 
 
-
-    # print()
-    # print(f"Velocity at {t:.3f}s pre-BCs :")
-    # print()
-    # print(u[:,:,3])
+    
 
     # RE-APPLY VELOCITY BOUNDARY CONDITIONS
     u[0,1:ny-1,1:nz-1] = 0.0          # Left wall
@@ -824,10 +880,6 @@ while vort_conv > Ω_conv:
                                     (w[1:nx-1,1:ny-1,2:nz] - w[1:nx-1,1:ny-1,0:nz-2])/(2*dz)
     )
 
-    # print()
-    # print(f"Solve for u at {t:.3f}s then enforce BCs:")
-    # print()
-    # print(u[:,:,3])
 
     if its % 50 == 0:
         u_sol.append(u)
@@ -899,13 +951,8 @@ while vort_conv > Ω_conv:
     # The equation
     Ωz[1:nx-1,1:ny-1,1:nz-1] = Ωzn[1:nx-1,1:ny-1,1:nz-1] + dt * (nu * (Dx + Dy + Dz) + Ux + Uy + Uz - (Cx + Cy + Cz))
 
-    # print()
-    # print(f"Vorticity at {t:.3f}s pre-BCs :")
-    # print()
-    # print(Ωz[:,:,3])
 
-    # Re-apply the vorticity boundary conditions
-    # First-order accurate
+    # # Re-apply the vorticity boundary conditions
     Ωx[0,1:ny-1,1:nz-1] = 0.0                                        # Left wall
     Ωy[0,1:ny-1,1:nz-1] = -w[1,1:ny-1,1:nz-1]/dx
     Ωz[0,1:ny-1,1:nz-1] = v[1,1:ny-1,1:nz-1]/dx
@@ -1005,10 +1052,7 @@ while vort_conv > Ω_conv:
     Ωy[nx-1,ny-1,nz-1] = (Ωy[nx-2,ny-1,nz-1] + Ωy[nx-1,ny-1,nz-2] + Ωy[nx-1,ny-2,nz-1]) / 3.0
     Ωz[nx-1,ny-1,nz-1] = (Ωz[nx-2,ny-1,nz-1] + Ωz[nx-1,ny-1,nz-2] + Ωz[nx-1,ny-2,nz-1]) / 3.0
 
-    # print()
-    # print(f"Solve for Ωz at {t:.3f}s then enforce BCs :")
-    # print()
-    # print(Ωz[:,:,3])
+
 
     # Divergence of vorticity
     div_Ω[1:nx-1,1:ny-1,1:nz-1] = (
@@ -1023,11 +1067,6 @@ while vort_conv > Ω_conv:
         Ωy_sol.append(Ωy.copy())
         Ωz_sol.append(Ωz.copy())
 
-    # print()
-    # print(f"Ωz_sol at {t:.3f}s post-BCs :")
-    # print()
-    # print(Ωz[:,:,3])
-
     # Check for dodgy values
     vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
 
@@ -1039,21 +1078,9 @@ while vort_conv > Ω_conv:
     its = its + 1
 
     # Terminal
-    # if its % 500 == 0:
     print(f'\rits = {its}, t = {t:.3f}, Elapsed: {elapsed_time:.3f} s', end='')
     print()
 
-    # Convergence criteria
-    # Maybe wrong
-    # if its > 10 and its % 500 == 0:
-    #     vort_conv = np.linalg.norm(np.vstack([
-    #         np.ravel(Ωx_sol[-1] - Ωx_sol[-2]),
-    #         np.ravel(Ωy_sol[-1] - Ωy_sol[-2]),
-    #         np.ravel(Ωz_sol[-1] - Ωz_sol[-2])
-    #     ]))
-    #     print(f"Ω convergence: {vort_conv:.3f}")
-    
-    #if its > 10 and its % 500 == 0:
     vort_conv = np.linalg.norm(np.vstack([
         np.ravel(Ωx - Ωxn),
         np.ravel(Ωy - Ωyn),
@@ -1062,13 +1089,12 @@ while vort_conv > Ω_conv:
     print(f"Ω convergence: {vort_conv:.3f}")
 
 
-
 print()
 
 print('-------------------------')
 
 print()
-print(f'SUMMARY')
+print('SUMMARY')
 
 print()
 
@@ -1094,168 +1120,127 @@ print(f'Iterations = {its}')
 print()
 print('Done.')
 
+data_list = [
+    '',
+    'SUMMARY',
+    '',
+    '-------------------------',
+    f"Run = '{config['output']}'",
+    f"nx = {nx}",
+    'Fluid Parameters:',
+    f"Ut = {Ut}",
+    f"Re = {Re}",
+    '-------------------------',
+    'Time Marching Parameters:',
+    f'dt = {dt}',
+    f'Ω_conv = {Ω_conv}',
+    '-------------------------',
+    'Poisson Parameters:',
+    f"β = {β}",
+    f'itmax = {itmax}',
+    f"tol = {tol}",
+    '-------------------------',
+    f'Physical end time = {t:.3f} mins',
+    f'Wall clock time = {elapsed_time:.3f} s',
+    f'Iterations = {its}',
+]
+
+# Create a text file containing information about each run
+with open(os.path.join(results_folder, f"{config['output']}.txt"), 'w') as file:
+    for line in data_list:
+        file.write(line + '\n')       
+
 save_dir = '/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results'
 os.makedirs(save_dir, exist_ok=True)
 
-print(f"Divergence of velocity: {div_vel[:,:,nz//2]}")
+# Save CSV
+u_centreline = u[nx//2,:,nz//2]/Ut
+y = np.linspace(0,1,len(u_centreline))
+data = pd.DataFrame({'u_centreline': u_centreline, 'y': y})
+data.to_csv(os.path.join(results_folder, f'{config['output']}_centreline_u.csv'), index=False)
 
-#------------------
-# YX Centreplane
-#------------------
-
-mid = nx // 2
-aspect_ratio = Lx / Ly
-subplot_height = 5
-subplot_width = subplot_height * aspect_ratio
-total_width = 3 * subplot_width
-
-plt.figure(figsize=(total_width, subplot_height))
-
-# Subplot 1: u-velocity
-plt.subplot(1, 3, 1)
-plt.contour(u[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='viridis',levels=100)
-plt.title('u-velocity (Z=nx/2)')
-plt.colorbar()
-plt.xlabel('X')
-plt.ylabel('Y')
-
-# Subplot 2: Vorticity Magnitude
-plt.subplot(1, 3, 2)
-vort_mag = np.sqrt(Ωx**2 + Ωy**2 + Ωz**2)
-plt.contour(vort_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma',levels=100)
-plt.title('Vorticity Magnitude (Z=nx/2)')
-plt.colorbar()
-plt.xlabel('X')
-plt.ylabel('Y')
-
-# Subplot 3: Vector Potential Magnitude
-plt.subplot(1, 3, 3)
-psi_mag = np.sqrt(ψx**2 + ψy**2 + ψz**2)
-plt.contour(psi_mag[:, :, mid].T, origin='lower', extent=[0, Lx, 0, Ly], cmap='plasma',levels=100)
-plt.title('Vector Potential Magnitude (Z=nx/2)')
-plt.colorbar()
-plt.xlabel('X')
-plt.ylabel('Y')
-
-plt.suptitle(f'tend = {t:.2f}, Re = {Re:.0f}, nx = {nx}, dt = {dt:.2f}, tol = {tol:.1f}, conv={Ω_conv:.0e}, t: {(elapsed_time):.2f} s')
-
-plt.tight_layout()
-plt.savefig(os.path.join(save_dir, f'{config['output']}_YX.png'), dpi=300, bbox_inches='tight')
-
-#-----------------------------------------------
-# EXTRACT CENTREPLANE-CENTRELINE VELOCITIES
-#-----------------------------------------------
-
-# EXTRACTION
-u_centreline = np.flip(u[nx//2,:,nz//2]/Ut)
-y = np.linspace(Ly,0,ny)
-
-# CSV
-data = np.column_stack((y, u_centreline))
-np.savetxt(os.path.join(save_dir, f'{config['output']}_u.csv'), data, fmt='%.1g', delimiter=',', header='y,u_centreline', comments='')
-
-# PLOT
-csv_data = pd.read_csv('lit_data/2016_chen_all_results.csv')
-y_csv_100 = csv_data['Re=100'] 
-y_csv_400 = csv_data['Re=400'] 
-y_csv_1000 = csv_data['Re=1000']
-u_csv_100 = csv_data['x100']
-u_csv_400 = csv_data['x400']
-u_csv_1000 = csv_data['x1000']
+# Plot the x velocity
 plt.figure()
-plt.plot(y,u_centreline,'--m', label=f'Re={Re:.0f}')
-plt.plot(y_csv_100, u_csv_100, '-b', label='Chen Re=100')
-plt.plot(y_csv_400, u_csv_400, '-r', label='Chen Re=400')
-plt.plot(y_csv_1000, u_csv_1000, '-k', label='Chen Re=1000')
-plt.xlabel('y')
-plt.ylabel('Centreline Velocity')
-plt.legend()
-plt.suptitle(f'{config['output']}')
-# Incorporate simulation settings in the file name
-plt.title(f'tend={t:.2f}, Re={Re:.0f}, nx={nx}, dt={dt}, tol={tol}, conv={Ω_conv:.1f}, t={(elapsed_time):.2f}s')
-# Save figure to the results folder
-plt.savefig(os.path.join(save_dir, f'{config['output']}_u.png'), dpi=300, bbox_inches='tight')
-
-
-# PARAVIEW FORMATS
-
-# Define the grid coordinates
-x = np.linspace(0, Lx, nx)
-y = np.linspace(0, Ly, ny)
-z = np.linspace(0, Lz, nz)
-X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
-
-# Define the output VTK file path
-vtk_file = os.path.join(save_dir, f"{config['output']}")
-
-# Prepare data for VTK output
-# Point data: velocity components (u, v, w), vorticity components (Ωx, Ωy, Ωz), vector potential components (ψx, ψy, ψz)
-point_data = {
-    "velocity_u": u,
-    "velocity_v": v,
-    "velocity_w": w,
-    "vorticity_x": Ωx,
-    "vorticity_y": Ωy,
-    "vorticity_z": Ωz,
-    "vector_potential_x": ψx,
-    "vector_potential_y": ψy,
-    "vector_potential_z": ψz,
-    "divergence_vel": div_vel,
-    "divergence_omega": div_Ω,
-}
-
-# Save to VTK structured grid file
-gridToVTK(vtk_file, X, Y, Z, pointData=point_data)
-
-
-
-
-# 3D PLOTS
-# Define grid coordinates
-x = np.linspace(0, Lx, nx)
-y = np.linspace(0, Ly, ny)
-z = np.linspace(0, Lz, nz)
-X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
-
-# Create save directory
-save_dir = '/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results'
-os.makedirs(save_dir, exist_ok=True)
-save_path = os.path.join(save_dir, f'{config['output']}_divU.png')  # Save as PNG
-
-# Create a divergence plot
-fig = plt.figure(figsize=(10, 5))  # Adjusted for two square subplots
-plt.subplots_adjust(wspace=0.3)  # Space between subplots
-
-# First subplot
-ax = fig.add_subplot(121)
-mid_z = nz // 2
-xy_slice = div_vel[:, :, mid_z]
-ax.contourf(X[:, :, mid_z], Y[:, :, mid_z], xy_slice, cmap='viridis')
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_xlim(0, Lx)
-ax.set_ylim(0, Ly)
-ax.set_aspect('equal')  # Square aspect ratio
-mappable = plt.cm.ScalarMappable(cmap='viridis')
-mappable.set_array(xy_slice)
-plt.colorbar(mappable, ax=ax, label='Divergence U')
-
-# Second subplot
-ax = fig.add_subplot(122)
-xy_slice = div_Ω[:, :, 1]
-ax.contourf(X[:, :, mid_z], Y[:, :, mid_z], xy_slice, cmap='viridis')
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_xlim(0, Lx)
-ax.set_ylim(0, Ly)
-ax.set_aspect('equal')  # Square aspect ratio
-mappable = plt.cm.ScalarMappable(cmap='viridis')
-mappable.set_array(xy_slice)
-plt.colorbar(mappable, ax=ax, label='Divergence Ω')
-
-# Save the figure
-plt.savefig(save_path, dpi=800, bbox_inches='tight')  # Tight layout for better sizing
+plt.contourf(u[:,:,nz//2].T)
+#plt.imshow(u[:,:,11].T, origin='lower',interpolation='bilinear')
+plt.axis('square')
+plt.tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelleft=False)
+plt.colorbar(label='x Velocity [m/s]')
+plt.gca().invert_xaxis()
+plt.savefig(os.path.join(results_folder, f'{config['output']}_u.pdf'), format='pdf', bbox_inches='tight')
 plt.close()
 
+# Plot the y velocity
+plt.figure()
+plt.contourf(v[:,:,nz//2].T)
+plt.axis('square')
+plt.tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelleft=False)
+plt.colorbar(label='y Velocity [m/s]')
+plt.savefig(os.path.join(results_folder, f'{config['output']}_v.pdf'), format='pdf', bbox_inches='tight')
+plt.close()
 
+# Plot the z velocity
+plt.figure()
+plt.contourf(w[:,:,11].T)
+plt.axis('square')
+plt.tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelleft=False)
+plt.colorbar(label='z Velocity [m/s]')
+plt.savefig(os.path.join(results_folder, f'{config['output']}_w.pdf'), format='pdf', bbox_inches='tight')
+plt.close()
 
+# Centreline Velocities
+plt.figure()
+u_centreline = u[nx//2,:,nz//2]/Ut
+y = np.linspace(0,1,len(u_centreline))
+chen = pd.read_csv('lit_data/2016_chen_all_results.csv')
+myresult = pd.read_csv('results/run11_centreline_u.csv')
+plt.plot(chen['x100'][::5],chen['Re=100'][::5],'kx',markersize=5,label=f'Chen, Re = 100')
+plt.plot(chen['x400'][::5],chen['Re=400'][::5],'ko',markersize=3,label=f'Chen, Re = 400')
+plt.plot(chen['x1000'][::5],chen['Re=1000'][::5],'k*',label=f'Chen, Re = 1000')
+plt.plot(u_centreline,y,'k--',label=f'My result, Re = {Re:.0f}')
+plt.plot(myresult['u_centreline'],myresult['y'],'k:',label=f'My result, Re = 100')
+plt.legend()
+plt.xlabel('x velocity [m/s]')
+plt.ylabel('y')
+plt.gca().invert_xaxis()
+plt.savefig(os.path.join(results_folder, f'{config['output']}_centrelines.pdf'), format='pdf', bbox_inches='tight')
+plt.close()
+
+# Plot the z vorticity
+plt.figure()
+plt.contour(Ωz[:,:,nz//2].T)
+plt.axis('square')
+plt.tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelleft=False)
+#plt.colorbar(label='z Vorticity [1/s]')
+plt.savefig(os.path.join(results_folder, f'{config['output']}_omegaz.pdf'), format='pdf', bbox_inches='tight')
+plt.close()
+
+# Velocity magnitude
+plt.figure()
+vel_mag = np.sqrt(u**2 + v**2 + w**2)
+plt.contourf(vel_mag[:,:,nz//2].T)
+#plt.imshow(vel_mag[:,:,11].T)
+plt.axis('square')
+plt.tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelleft=False)
+plt.colorbar(label='Velocity Magnitude [m/s]')
+plt.savefig(os.path.join(results_folder, f'{config['output']}_vmag.pdf'), format='pdf', bbox_inches='tight')
+plt.close()
+
+# Divergence of velocity
+#plt.contourf(div_vel[:,:,11].T)
+plt.figure()
+plt.imshow(div_vel[:,:,nz//2].T, origin='lower', cmap='viridis')
+plt.axis('square')
+plt.tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelleft=False)
+plt.colorbar(label='Divergence of Velocity [m/s]')
+plt.savefig(os.path.join(results_folder, f'{config['output']}_div_u.pdf'), format='pdf', bbox_inches='tight')
+plt.close()
+
+# Divergence of vorticity
+plt.figure()
+plt.imshow(div_Ω[:,:,11].T, origin='lower', cmap='viridis')
+plt.axis('square')
+plt.tick_params(axis='both', which='both', bottom=False, top=False, left=False, right=False, labelbottom=False, labelleft=False)
+plt.colorbar(label='Divergence of Vorticity')
+plt.savefig(os.path.join(results_folder, f'{config['output']}_div_omega.pdf'), format='pdf', bbox_inches='tight')
+plt.close()

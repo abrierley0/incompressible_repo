@@ -1,4 +1,4 @@
-INFO   - main args=engauge run9_u.csv
+INFO   - main args=/usr/bin/engauge run15.txt
 INFO   - MainWindow::MainWindow curDir=/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results
 INFO   - MainWindow::setCurrentFile
 INFO   - MainWindow::updateWindowTitle
@@ -157,19 +157,19 @@ INFO   - MainWindow::updateFittingWindow
 INFO   - MainWindow::updateGeometryWindow
 INFO   - MainWindow::setCurrentFile
 INFO   - MainWindow::updateWindowTitle
-INFO   - MainWindow::showEvent files=/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results/run9_u.csv
+INFO   - MainWindow::showEvent files=/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results/run15.txt
 INFO   - MainWindow::slotLoadStartupFiles
 INFO   - LoadFileInfo::loadsAsDigFile
 INFO   - CoordSystemContext::CoordSystemContext
-INFO   - Document::Document fileName=/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results/run9_u.csv
+INFO   - Document::Document fileName=/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results/run15.txt
 INFO   - Document::bytesIndicatePreVersion6
 INFO   - Document::versionFromFile
 INFO   - Document::loadVersion6
 INFO   - CoordSystemContext::addCoordSystems numberToAdd=1
 INFO   - CoordSystem::CoordSystem
 INFO   - CoordSystemContext::~CoordSystemContext
-INFO   - MainWindow::fileImport fileName=/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results/run9_u.csv curDir=/home/brierleyajb/Documents/papers/driven_cavity importType=0
-INFO   - Jpeg2000::load filename=/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results/run9_u.csv
+INFO   - MainWindow::fileImport fileName=/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results/run15.txt curDir=/home/brierleyajb/Documents/papers/driven_cavity importType=0
+INFO   - Jpeg2000::load filename=/home/brierleyajb/Documents/incompressible_repo/vector_psi_omega/results/run15.txt
 ERROR  - Jpeg2000::load encountered error creating decoding stream
 INFO   - DlgSettingsAxesChecker::~DlgSettingsAxesChecker
 INFO   - DlgSettingsAbstractBase::~DlgSettingsAbstractBase name=DlgSettingsAxesChecker

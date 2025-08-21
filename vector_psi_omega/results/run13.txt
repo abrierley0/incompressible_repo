@@ -2,7 +2,7 @@
 SUMMARY
 
 -------------------------
-Run = 'run11'
+Run = 'run13'
 nx = 21
 Fluid Parameters:
 Ut = 5.0
@@ -18,5 +18,5 @@ itmax = 1000
 tol = 0.0001
 -------------------------
 Physical end time = 0.990 mins
-Wall clock time = 1277.366 s
+Wall clock time = 7984.514 s
 Iterations = 495
