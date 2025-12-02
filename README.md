@@ -14,7 +14,7 @@ Contact me here:    _adambrierley3@gmail.com_
 
 Welcome. This is a repository for studying incompressible fluid flow solvers.
 
-My Master's thesis at Cranfield University primarily involved first psi_omega and then vector_psi_omega.
+My Master's thesis at Cranfield University primarily involved first 'psi_omega' and then 'vector_psi_omega'.
 
 ### Contents
 
