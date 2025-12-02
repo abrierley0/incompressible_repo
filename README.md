@@ -6,14 +6,15 @@ _Cranfield University_\
 _Bedfordshire_\
 _UK_
 
-_02/12/2025_
+Updated:    _02/12/2025_
 
 Contact me here:    _adambrierley3@gmail.com_
 
 ------------------------------------------------
 
-Welcome. This is a repository for studying incompressible fluid flow solvers. 
-My Master's thesis at Cranfield University primarily involved first _**psi\_omega**_ and then _**vector\_psi\_omega**_.
+Welcome. This is a repository for studying incompressible fluid flow solvers.
+
+My Master's thesis at Cranfield University primarily involved first psi_omega and then vector_psi_omega.
 
 ### Contents
 
