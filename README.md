@@ -25,4 +25,4 @@ My Master's thesis at Cranfield University primarily involved first psi_omega an
 * psi_omega - Streamfunction-Vorticity Formulation (2D)
 * vector_psi_omega - Vector Potential-Vorticity Formulation (3D)
 
-![Alt text](run18_div_u.pdf)
+![Alt text](run18_div_u.png)
