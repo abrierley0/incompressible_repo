@@ -13,7 +13,7 @@ Contact me here:    _adambrierley3@gmail.com_
 ------------------------------------------------
 
 Welcome. This is a repository for studying incompressible fluid flow solvers. 
-My Master's thesis at Cranfield University primarily involved first _psi\_omega_ and then _vector\_psi\_omega_.
+My Master's thesis at Cranfield University primarily involved first _**psi\_omega**_ and then _**vector\_psi\_omega**_.
 
 ### Contents
 
@@ -21,5 +21,5 @@ My Master's thesis at Cranfield University primarily involved first _psi\_omega_
 * ac - Artificial Compressibility
 * fspp - Fractional-Step Pressure-Projection Method
 * fsac-pp - fractional-step-artificial-compressibility-pressure-projection
-* psi_omega - Streamfunction-Vorticity Formulation (2D)
-* vector_psi_omega - Vector Potential-Vorticity Formulation (3D)
+* **psi_omega** - Streamfunction-Vorticity Formulation (2D)
+* **vector_psi_omega** - Vector Potential-Vorticity Formulation (3D)
