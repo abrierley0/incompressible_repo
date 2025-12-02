@@ -5,12 +5,15 @@ _Written by Mr A. Brierley_\
 _Cranfield University_\
 _Bedfordshire_\
 _UK_\
-_adambrierley3@gmail.com_\
-_02/12/2025_
+
+_02/12/2025_\
+
+Contact me: _adambrierley3@gmail.com_\
 
 ------------------------------------------------
 
-Welcome. This is a repository for studying incompressible fluid flow solvers.
+Welcome. This is a repository for studying incompressible fluid flow solvers. 
+My Master's thesis at Cranfield primarily involved first _psi\_omega_ and then _vector\_psi\_omega_.
 
 ### Contents
 
