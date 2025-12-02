@@ -22,6 +22,7 @@ My Master's thesis at Cranfield University primarily involved first 'psi_omega' 
 * ac - Artificial Compressibility
 * fspp - Fractional-Step Pressure-Projection Method
 * fsac-pp - Fractional-Step-Artificial-Compressibility-Pressure-Projection
+* SIMPLE - Semi-Implicit Method for Pressure-Linked Equations
 * psi_omega - Streamfunction-Vorticity Formulation (2D)
 * vector_psi_omega - Vector Potential-Vorticity Formulation (3D)
 
