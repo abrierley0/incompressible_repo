@@ -3,6 +3,8 @@ Pressure-Poisson Solver
 
 Method originally used by Harlow & Welch at Los Alamos in the 1950s.
 
+The Pressure-Poisson equation is derived quite simply by taking the divergence of the 3D incompressible Navier-Stokes equations, and then using several vector identities.
+
 System in vector form:
 
 $$\nabla \cdot \textbf{u} = 0$$
