@@ -13,9 +13,9 @@ System in vector form:
 
 $$\nabla \cdot \vec{u} = 0$$
 
-$$\frac{\partial \textbf{u}}{\partial t} + (\textbf{u} \cdot \nabla)\textbf{u} = \textbf{g} - \frac{1}{\rho} \nabla p + \nu \nabla^2 \textbf{u}$$
+$$\frac{\partial \vec{u}}{\partial t} + (\vec{u} \cdot \nabla)\vec{u} = \vec{g} - \frac{1}{\rho} \nabla p + \nu \nabla^2 \vec{u}$$
 
-$$\nabla^2 p = - \rho \left[(\nabla \otimes \textbf{u}) \cdot \cdot (\nabla \otimes \textbf{u})\right]$$
+$$\nabla^2 p = - \rho \left[(\nabla \otimes \vec{u}) \cdot \cdot (\nabla \otimes \vec{u})\right]$$
 
 System in scalar form:
 
@@ -33,7 +33,7 @@ To start the iterative process we require an intial velocity field everywhere an
 
 <u>Intial Conditions</u>
 
-$$\textbf{u} = \textbf{u}_0 (\textbf{r}; t=0)$$
-$$p = p_0(\textbf{r};t=0)$$
+$$\vec{u} = \vec{u}_0 (\vec{r}; t=0)$$
+$$p = p_0(\vec{r};t=0)$$
 
 and these must satisfy the divergence-free constraint.
