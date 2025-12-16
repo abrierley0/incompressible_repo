@@ -3,6 +3,8 @@ Pressure-Poisson Solver
 
 Method originally used by Harlow & Welch at Los Alamos in the 1950s.
 
+The pressure and the velocity has to be coupled, because there is no independent equation available for the pressure as the equation of state is invalid.
+
 The Pressure-Poisson equation is derived quite simply by taking the divergence of the 3D incompressible Navier-Stokes equations, and then using several vector identities.
 
 <u>Unknowns (Primitive Variables)</u>
@@ -37,3 +39,5 @@ $$\vec{u} = \vec{u}_0 (\vec{r}; t=0)$$
 $$p = p_0(\vec{r};t=0)$$
 
 and these must satisfy the divergence-free constraint.
+
+The Pressure-Poisson can be solved using Gauss-Seidel S.O.R (Successive Over-Relaxation) iterative method. For the solution of other equations, numerical schemes to high order can be experimented with. Discretisation approach may be finite difference, finite element, or finite volume.
