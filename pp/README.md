@@ -11,7 +11,7 @@ $$p = p(x,y,z;t) = ?$$ $$u = u(x,y,z;t) = ?$$ $$v = v(x,y,z;t) = ?$$ $$w = w(x,y
 
 System in vector form:
 
-$$\nabla \cdot \textbf{u} = 0$$
+$$\nabla \cdot \vec{u} = 0$$
 
 $$\frac{\partial \textbf{u}}{\partial t} + (\textbf{u} \cdot \nabla)\textbf{u} = \textbf{g} - \frac{1}{\rho} \nabla p + \nu \nabla^2 \textbf{u}$$
 
