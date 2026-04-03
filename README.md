@@ -1,10 +1,9 @@
 Incompressible Fluid Flow Solvers
 =================================
 
-_Written by Mr A. Brierley_\
+_Written by Adam Brierley_\
 _Cranfield University_\
 _Bedfordshire_\
-_UK_
 
 Updated:    _02/12/2025_
 
@@ -14,7 +13,12 @@ Contact me here:    _adambrierley3@gmail.com_
 
 Welcome. This is a repository for studying incompressible fluid flow solvers.
 
-My Master's thesis at Cranfield University primarily involved the vorticity formulations.
+My Master's thesis at Cranfield University primarily involved the vorticity-based formulations.
+
+Below are listed all of the various approaches to solving the flow of incompressible fluid numerically.
+
+The vector-potential vorticity formulation (vector_psi_omega), which is applicable for three-dimensional 
+fluid flows, has been less exploited historically.
 
 ### Contents
 
