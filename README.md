@@ -3,11 +3,11 @@ Incompressible Fluid Flow Solvers
 
 _Written by Adam Brierley_\
 _Cranfield University_\
-_Bedfordshire_\
+_Bedfordshire_
 
 Updated:    _02/12/2025_
 
-Contact me here:    _adambrierley3@gmail.com_
+Contact me here:    _adambrierley@proton.me_
 
 ------------------------------------------------
 
